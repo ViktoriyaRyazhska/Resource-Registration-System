@@ -30,10 +30,14 @@ public class Polygon implements Serializable{
     @ManyToOne
     @JoinColumn(name = "resource_id", nullable = false)
     private Resource resource;
-    
+
+    @Lob
+    @Column(name = "coordinates", nullable = false)
+    private String coordinates;
+
   //for deleting the resource with its childs
-    @OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.REMOVE, mappedBy="polygon")
-    public List<Area> areas;
+//    @OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.REMOVE, mappedBy="polygon")
+//    public List<Area> areas;
 
     public Polygon() {
     }
@@ -92,5 +96,13 @@ public class Polygon implements Serializable{
 
     public void setResource(Resource resource) {
         this.resource = resource;
+    }
+
+    public String getCoordinates() {
+        return coordinates;
+    }
+
+    public void setCoordinates(String coordinates) {
+        this.coordinates = coordinates;
     }
 }

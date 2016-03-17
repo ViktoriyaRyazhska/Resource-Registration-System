@@ -13,7 +13,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "linear_parameters")
-public class LinearParameter implements Serializable {
+public class LinearParameter implements ResourceParameter, Serializable {
 
 
     private static final long serialVersionUID = 1L;

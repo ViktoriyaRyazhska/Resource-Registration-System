@@ -1,19 +1,19 @@
-package org.registrator.community.dto.JSON;
+package org.registrator.community.dto.json;
 
-public class ResourceNumberDTOJSON {
+public class ResourceNumberJson {
 
 	private String login;
 	private String resource_number;
 	private String registrator_number;
 	private String identifier;
 
-	public ResourceNumberDTOJSON(String resource_number,String registrator_number,String identifier) {
+	public ResourceNumberJson(String resource_number, String registrator_number, String identifier) {
 		this.identifier = identifier;
 		this.resource_number = resource_number;
 		this.registrator_number = registrator_number;
 	}
 	
-	public ResourceNumberDTOJSON() {
+	public ResourceNumberJson() {
 	}
 	
 	public String getLogin() {

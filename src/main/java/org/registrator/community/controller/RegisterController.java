@@ -7,9 +7,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.registrator.community.components.AdminSettings;
+import org.registrator.community.dto.UserRegistrationDTO;
 import org.registrator.community.entity.TerritorialCommunity;
 import org.registrator.community.enumeration.RegistrationMethod;
-import org.registrator.community.forms.RegistrationForm;
 import org.registrator.community.service.CommunityService;
 import org.registrator.community.service.UserService;
 import org.registrator.community.validator.UserDataValidator;
@@ -46,7 +46,7 @@ public class RegisterController {
     public String showNewUserRegisterForm(Model model, HttpServletRequest request) {
         List<TerritorialCommunity> territorialCommunities = communityService.findAllByAsc(); 
         model.addAttribute("territorialCommunities", territorialCommunities);
-        model.addAttribute("registrationForm", new RegistrationForm());
+        model.addAttribute("registrationForm", new UserRegistrationDTO());
         log.info("Loaded 'New user registration form' " + request.getRemoteAddr());
         if ((adminSettings.getRegistrationMethod() == RegistrationMethod.MANUAL)){
             return "redirect:/";
@@ -56,11 +56,12 @@ public class RegisterController {
 
     @PreAuthorize("hasRole('ROLE_ANONYMOUS')")
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public String processNewUserData(@Valid RegistrationForm registrationForm, BindingResult result, Model model) {
+    public String processNewUserData(@Valid UserRegistrationDTO registrationForm, BindingResult result, Model model) {
         validator.validate(registrationForm, result);
         if (result.hasErrors()) {
             List<TerritorialCommunity> territorialCommunities = communityService.findAllByAsc();
             model.addAttribute("territorialCommunities", territorialCommunities);
+            model.addAttribute("registrationForm", registrationForm);
             log.warn("Registration form sent to server with following errors: \n" + result.getFieldErrors()
                     + "\n Error messages displayed to user.");
             return "register";

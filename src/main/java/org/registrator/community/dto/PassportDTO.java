@@ -3,18 +3,15 @@ package org.registrator.community.dto;
 import java.io.Serializable;
 
 import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
-
-import org.hibernate.validator.constraints.NotEmpty;
 
 public class PassportDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@Pattern(regexp = "[(?=.*[А-ЯІЇЄ]).{2}]*", message = "Поле повинне містити 2 великі літери")
+	@Pattern(regexp = "[[А-ЯІЇЄ]){2}]*", message = "{msg.registration.onlytwoletters}")
 	private String seria;
 
-	@Pattern(regexp = "[(?=.*[0-9]).{6}]*", message = "Поле повинне містити 6 цифр")
+	@Pattern(regexp = "[[0-9]){6}]*", message = "{msg.registration.only6digits}")
 	private String number;
 
 	private String published_by_data;

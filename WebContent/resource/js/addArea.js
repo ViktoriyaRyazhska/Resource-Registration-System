@@ -1,6 +1,8 @@
 function addNewPolygon(polygonNumber) {
     var newPolygon = $('<div id="polygon_'+(polygonNumber+1)+'"></div>');
-    var newLabel = $('<h4>'+jQuery.i18n.prop('msg.Polygon')+" "+(polygonNumber+1)+':</h4>');
+    var newLabel = $('<h4>'+jQuery.i18n.prop('msg.Polygon')+
+		' <span class="polygonIndex">'+(polygonNumber+1)+'</span>'+
+        ':</h4>');
     newPolygon.append(newLabel);
     newPolygon.append($('#areaInput1').clone());
     //newPolygon.find('#myparam1').val('0');
@@ -29,10 +31,10 @@ function addNewPoint(polygonNumber,
         console.log("point num: " + num);
         polygon.find('#myparam1').val(latitudeDegrees);
         polygon.find('#myparam2').val(latitudeMinutes);
-        polygon.find('#myparam3').val(latitudeSeconds);
+        polygon.find('#myparam3').val(latitudeSeconds.toFixed(7));
         polygon.find('#myparam4').val(longitudeDegrees);
         polygon.find('#myparam5').val(longitudeMinutes);
-        polygon.find('#myparam6').val(longitudeSeconds);
+        polygon.find('#myparam6').val(longitudeSeconds.toFixed(7));
 	}
     else {
     	
@@ -43,11 +45,6 @@ function addNewPoint(polygonNumber,
 			$(this).attr( "name",$(this).attr("name").replace(
 					'points[' + prevNum + ']',
 					'points[' + num + ']'));
-            //if (polygonNumber > 0) {
-            //    $(this).attr( "name",$(this).attr("name").replace(
-            //        'poligons[' + (polygonNumber-1) + ']',
-            //        'poligons[' + polygonNumber + ']'));
-            //}
 			});
       
 		newElem.find('input#pointNumber').val(newNum);
@@ -106,21 +103,21 @@ $(document).ready(
 			}
 			
 			$('#btnAddAreaPoint').click(function() {
-                if ($('#myparam1').val() == 0) {
+                if ($('div[id^=polygon_]').last().find('#myparam1').val() == 0) {
 					bootbox.alert(jQuery.i18n.prop('msg.enterFirstPoint'));
                 }
                 var num = $('div[id^=polygon_]').length -1;
 				addNewPoint(num,0,0,0.0,0,0,0.0);
 			});
 
-			$('#btnDelAreaPoint').click(function() {
-				var num = $('.clonedAreaInput').length;
-				$('#areaInput' + num).remove();
-				if (num == 2) {
-					$('#btnDelAreaPoint').attr('disabled', 'disabled');
-                }
-			});
-			
-			$('.deleteButton').attr('disabled', 'disabled');
+			//$('#btnDelAreaPoint').click(function() {
+			//	var num = $('.clonedAreaInput').length;
+			//	$('#areaInput' + num).remove();
+			//	if (num == 2) {
+			//		$('#btnDelAreaPoint').attr('disabled', 'disabled');
+             //   }
+			//});
+			//
+			//$('.deleteButton').attr('disabled', 'disabled');
 
 		});

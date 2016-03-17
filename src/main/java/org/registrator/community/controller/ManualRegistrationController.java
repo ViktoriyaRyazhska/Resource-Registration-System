@@ -5,8 +5,8 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.registrator.community.dto.UserRegistrationDTO;
 import org.registrator.community.entity.TerritorialCommunity;
-import org.registrator.community.forms.RegistrationForm;
 import org.registrator.community.service.CommunityService;
 import org.registrator.community.service.UserService;
 import org.registrator.community.validator.UserDataValidator;
@@ -43,7 +43,7 @@ public class ManualRegistrationController {
     public String showNewUserRegisterForm(Model model) {
         List<TerritorialCommunity> territorialCommunities = communityService.findAllByAsc();
         model.addAttribute("territorialCommunities", territorialCommunities);
-        model.addAttribute("registrationForm", new RegistrationForm());
+        model.addAttribute("registrationForm", new UserRegistrationDTO());
         logger.info("Loaded registration form");
         return "regForComm";
     }
@@ -57,11 +57,12 @@ public class ManualRegistrationController {
      */
     @PreAuthorize("hasRole('ROLE_COMMISSIONER') or hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/manualregistration", method = RequestMethod.POST)
-    public String processNewUserData(@Valid RegistrationForm registrationForm, BindingResult result, Model model) {
+    public String processNewUserData(@Valid UserRegistrationDTO registrationForm, BindingResult result, Model model) {
         validator.validate(registrationForm, result);   
         if (result.hasErrors()) {
             List<TerritorialCommunity> territorialCommunities = communityService.findAllByAsc();
             model.addAttribute("territorialCommunities", territorialCommunities);
+            model.addAttribute("registrationForm", registrationForm);
             logger.warn("Registration form sent to server with following errors: \n" + result.getFieldErrors()
                     + "\n Error messages displayed to admin or commissioner.");
             return "regForComm";

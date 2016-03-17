@@ -15,9 +15,10 @@ import org.registrator.community.dto.PassportDTO;
 import org.registrator.community.dto.ResourceNumberDTO;
 import org.registrator.community.dto.TomeDTO;
 import org.registrator.community.dto.UserDTO;
+import org.registrator.community.dto.UserRegistrationDTO;
 import org.registrator.community.dto.WillDocumentDTO;
-import org.registrator.community.dto.JSON.ResourceNumberDTOJSON;
-import org.registrator.community.dto.JSON.UserStatusDTOJSON;
+import org.registrator.community.dto.json.ResourceNumberJson;
+import org.registrator.community.dto.json.UserStatusJson;
 import org.registrator.community.entity.Address;
 import org.registrator.community.entity.OtherDocuments;
 import org.registrator.community.entity.PassportInfo;
@@ -29,7 +30,6 @@ import org.registrator.community.entity.User;
 import org.registrator.community.entity.WillDocument;
 import org.registrator.community.enumeration.RoleType;
 import org.registrator.community.enumeration.UserStatus;
-import org.registrator.community.forms.RegistrationForm;
 import org.registrator.community.service.CommunityService;
 import org.registrator.community.service.UserService;
 import org.slf4j.Logger;
@@ -91,24 +91,24 @@ public class UserServiceImpl implements UserService {
 	/**
 	 * Method, which changes user status
 	 * 
-	 * @param userStatusDTO
+	 * @param userStatusJson
 	 * @return void
 	 * 
 	 */
 	@Transactional
 	@Override
-	public void changeUserStatus(UserStatusDTOJSON userStatusDTO) {
+	public void changeUserStatus(UserStatusJson userStatusJson) {
 		logger.info("begin");
-		User user = getUserByLogin(userStatusDTO.getLogin());
-		if (userStatusDTO.getStatus().equals(UserStatus.BLOCK.toString())) {
+		User user = getUserByLogin(userStatusJson.getLogin());
+		if (userStatusJson.getStatus().equals(UserStatus.BLOCK.toString())) {
 			logger.info("set user status to" + UserStatus.BLOCK);
 			user.setStatus(UserStatus.BLOCK);
 		} else {
-			if (userStatusDTO.getStatus().equals(UserStatus.ACTIVE.toString())) {
+			if (userStatusJson.getStatus().equals(UserStatus.ACTIVE.toString())) {
 				logger.info("set user status to" + UserStatus.ACTIVE);
 				user.setStatus(UserStatus.ACTIVE);
 			} else {
-				if (userStatusDTO.getStatus().equals(UserStatus.INACTIVE.toString())) {
+				if (userStatusJson.getStatus().equals(UserStatus.INACTIVE.toString())) {
 					logger.info("set user status to" + UserStatus.INACTIVE);
 					user.setStatus(UserStatus.INACTIVE);
 				}
@@ -311,19 +311,19 @@ public class UserServiceImpl implements UserService {
 				address.getCity(), address.getStreet(), address.getBuilding(), address.getFlat());
 		ResourceNumber resourceNumber = resourceNumberRepository.findResourceNumberByUser(user);
 		Tome tome = tomeRepository.findTomeByRegistrator(user);
-		ResourceNumberDTOJSON resourceNumberDTOJSON = null;
+		ResourceNumberJson resourceNumberJson = null;
 		if ((tome != null) && (resourceNumber != null)) {
-			resourceNumberDTOJSON = new ResourceNumberDTOJSON(resourceNumber.getNumber().toString(),
+			resourceNumberJson = new ResourceNumberJson(resourceNumber.getNumber().toString(),
 					resourceNumber.getRegistratorNumber(), tome.getIdentifier());
 		} else {
-			resourceNumberDTOJSON = new ResourceNumberDTOJSON();
-			resourceNumberDTOJSON.setResource_number("0");
-			resourceNumberDTOJSON.setRegistrator_number("0");
-			resourceNumberDTOJSON.setIdentifier("0");
+			resourceNumberJson = new ResourceNumberJson();
+			resourceNumberJson.setResource_number("0");
+			resourceNumberJson.setRegistrator_number("0");
+			resourceNumberJson.setIdentifier("0");
 		}
 		UserDTO userdto = new UserDTO(user.getFirstName(), user.getLastName(), user.getMiddleName(),
 				user.getRole().toString(), user.getLogin(), user.getEmail(), user.getStatus().toString(), addressDto,
-				passportDto, user.getTerritorialCommunity().getName(), resourceNumberDTOJSON);
+				passportDto, user.getTerritorialCommunity().getName(), resourceNumberJson);
 		if (!user.getWillDocument().isEmpty()) {
 			WillDocument willDocument = user.getWillDocument().get(user.getWillDocument().size() - 1);
 			WillDocumentDTO willDocumentDTO = new WillDocumentDTO();
@@ -408,6 +408,59 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	@Transactional
+	public void registerUser(UserRegistrationDTO registrationForm) {
+	    TerritorialCommunity territorialCommunity = communityService
+	            .findByName(registrationForm.getTerritorialCommunity());
+	    User user = new User();
+	    user.setLogin(registrationForm.getLogin());
+	    user.setEmail(registrationForm.getEmail());
+	    user.setPasswordHash(userPasswordEncoder.encode(registrationForm.getPassword()));
+	    user.setFirstName(registrationForm.getFirstName());
+	    user.setLastName(registrationForm.getLastName());
+	    user.setMiddleName(registrationForm.getMiddleName());
+	    user.setPhoneNumber(registrationForm.getPhoneNumber());
+	    user.setRole(roleRepository.findRoleByType(RoleType.USER));
+	    user.setStatus(UserStatus.INACTIVE);
+	    user.setPhoneNumber(registrationForm.getPhoneNumber());
+	    user.setDateOfAccession(registrationForm.getDateOfAccession());
+	    user.setTerritorialCommunity(territorialCommunity);
+	    
+	    userRepository.save(user);
+	    log.info("Inserted new user data into 'users' table: user_id = " + user.getUserId());
+	    
+	    if (userRepository.findUserByLogin(user.getLogin()) != null) {
+	        // insert user's passport data into "passport_data" table
+	        PassportDTO passportDTO = registrationForm.getPassport();
+	        PassportInfo passport = new PassportInfo();
+	        passport.setUser(user);
+	        passport.setSeria(passportDTO.getSeria());
+	        passport.setNumber((passportDTO.getNumber()));
+	        passport.setPublishedByData(passportDTO.getPublished_by_data());
+	        passport.setComment(passportDTO.getComment());
+	        
+	        passportRepository.save(passport);
+	        log.info("Inserted passport data for user with passport_data_id", user.getLogin(),
+	                passport.getPassportId());
+	        
+	        // insert user's address records into "address" table
+	        AddressDTO addressDTO = registrationForm.getAddress();
+	        Address address = new Address();
+	        address.setUser(user);
+	        address.setCity(addressDTO.getCity());
+	        address.setRegion(addressDTO.getRegion());
+	        address.setDistrict(addressDTO.getDistrict());
+	        address.setStreet(addressDTO.getStreet());
+	        address.setBuilding(addressDTO.getBuilding());
+	        address.setFlat(addressDTO.getFlat());
+	        address.setPostCode(addressDTO.getPostcode());
+	        
+	        addressRepository.save(address);
+	        log.info("Inserted address data for user with address_id", user.getLogin(), address.getAddressId());
+	    }
+	    
+	}
+/*	@Override
+	@Transactional
 	public void registerUser(RegistrationForm registrationForm) {
 		TerritorialCommunity territorialCommunity = communityService
 				.findByName(registrationForm.getTerritorialCommunity());
@@ -456,7 +509,7 @@ public class UserServiceImpl implements UserService {
 		}
 
 	}
-
+*/
 	@Transactional
 	@Override
 	public boolean checkUsernameNotExistInDB(String login) {
@@ -497,20 +550,20 @@ public class UserServiceImpl implements UserService {
 				address.getCity(), address.getStreet(), address.getBuilding(), address.getFlat());
 		ResourceNumber resourceNumber = resourceNumberRepository.findResourceNumberByUser(user);
 		Tome tome = tomeRepository.findTomeByRegistrator(user);
-		ResourceNumberDTOJSON resourceNumberDTOJSON = null;
+		ResourceNumberJson resourceNumberJson = null;
 		if ((tome != null) && (resourceNumber != null)) {
-			resourceNumberDTOJSON = new ResourceNumberDTOJSON(resourceNumber.getNumber().toString(),
+			resourceNumberJson = new ResourceNumberJson(resourceNumber.getNumber().toString(),
 					resourceNumber.getRegistratorNumber(), tome.getIdentifier());
 		} else {
-			resourceNumberDTOJSON = new ResourceNumberDTOJSON();
-			resourceNumberDTOJSON = new ResourceNumberDTOJSON();
-			resourceNumberDTOJSON.setResource_number("0");
-			resourceNumberDTOJSON.setRegistrator_number("0");
-			resourceNumberDTOJSON.setIdentifier("0");
+			resourceNumberJson = new ResourceNumberJson();
+			resourceNumberJson = new ResourceNumberJson();
+			resourceNumberJson.setResource_number("0");
+			resourceNumberJson.setRegistrator_number("0");
+			resourceNumberJson.setIdentifier("0");
 		}
 		UserDTO userdto = new UserDTO(user.getFirstName(), user.getLastName(), user.getMiddleName(),
 				user.getRole().toString(), user.getLogin(), user.getEmail(), user.getStatus().toString(), addressDto,
-				passportDto, user.getTerritorialCommunity().getName(), resourceNumberDTOJSON);
+				passportDto, user.getTerritorialCommunity().getName(), resourceNumberJson);
 		if (!user.getWillDocument().isEmpty()) {
 			WillDocument willDocument = user.getWillDocument().get(user.getWillDocument().size() - 1);
 			WillDocumentDTO willDocumentDTO = new WillDocumentDTO();
@@ -548,14 +601,14 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void CreateTomeAndRecourceNumber(UserDTO userDto) {
 		try {
-			if (!userDto.getResourceNumberDTOJSON().getLogin().equals("0")) {
+			if (!userDto.getResourceNumberJson().getLogin().equals("0")) {
 				System.out.println("3");
-				User user = userRepository.findUserByLogin(userDto.getResourceNumberDTOJSON().getLogin());
-				TomeDTO tomeDto = new TomeDTO(userDto.getResourceNumberDTOJSON().getIdentifier(), user.getFirstName(),
+				User user = userRepository.findUserByLogin(userDto.getResourceNumberJson().getLogin());
+				TomeDTO tomeDto = new TomeDTO(userDto.getResourceNumberJson().getIdentifier(), user.getFirstName(),
 						user.getLastName(), user.getMiddleName());
 				ResourceNumberDTO resourseNumberDto = new ResourceNumberDTO(
-						Integer.parseInt(userDto.getResourceNumberDTOJSON().getResource_number()),
-						userDto.getResourceNumberDTOJSON().getRegistrator_number());
+						Integer.parseInt(userDto.getResourceNumberJson().getResource_number()),
+						userDto.getResourceNumberJson().getRegistrator_number());
 				ResourceNumber resourceNumber = new ResourceNumber(resourseNumberDto.getNumber(),
 						resourseNumberDto.getRegistratorNumber(), user);
 				Tome tome = new Tome(user, tomeDto.getTomeIdentifier());

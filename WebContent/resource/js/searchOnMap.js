@@ -112,16 +112,7 @@ function initialize() {
                 position: place.geometry.location
             }));
 
-
-//Expires date for cookie
-            var d = new Date();
-            d.setTime(d.getTime() + 7 * 24 * 60 * 60 * 1000);
-//Deleting of the old cookie
-            document.cookie = "LastMapSearchLat=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
-            document.cookie = "LastMapSearchLng=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
-//Add new cookie
-            document.cookie = "LastMapSearchLat=" + place.geometry.location.lat() + ";expires=" + d.toUTCString();
-            document.cookie = "LastMapSearchLng=" + place.geometry.location.lng() + ";expires=" + d.toUTCString();
+            coordinatesCookie(place.geometry.location.lat(),place.geometry.location.lng() );
 
             if (place.geometry.viewport) {
                 // Only geocodes have viewport.
@@ -163,7 +154,7 @@ function initialize() {
         $("#search_by_point").find(".longitudeMinutes").val(longitudeMinutes);
         $("#search_by_point").find(".longitudeSeconds").val(longitudeSeconds);
 
-        searchOnMapByPoint(marker.getPosition(), marker);
+        searchOnMapByPoint(marker);
     });
     google.maps.event.addListener(drawingManager, 'rectanglecomplete', function (rectangle) {
         // Clear out the old polygons.
@@ -216,19 +207,24 @@ function initialize() {
     });
 }
 
-function searchOnMapByPoint(latLng, marker) {
+function searchOnMapByPoint(marker, page) {
+    var latLng = marker.getPosition();
 
     map.setCenter(latLng);
     map.setZoom(13);
 
     var lat = latLng.lat();
     var lng = latLng.lng();
+    var page = page || 0;
+
+    coordinatesCookie(lat, lng);
 
     $("#dark_bg").show();
     $.ajax({
         data: {
             "lat": lat,
-            "lng": lng
+            "lng": lng,
+            "page": page
         },
         type: "POST",
         url: baseUrl.toString() + "/registrator/resource/getResourcesByPoint",
@@ -236,7 +232,7 @@ function searchOnMapByPoint(latLng, marker) {
         contentType: "application/x-www-form-urlencoded;charset=UTF-8",
         dataType: 'json',
         success: function (data) {
-            createPolygons(data);
+            createPolygons(data, page);
             marker.setMap(map);
             markers.push(marker);
             var json = [];
@@ -248,7 +244,7 @@ function searchOnMapByPoint(latLng, marker) {
                     i--;
                 }
                 else {
-                    json.push(data[i]);
+                    json.push(data.polygons[i]);
                 }
             }
             console.log("polygons: "+ polygons.length);
@@ -264,12 +260,13 @@ function searchOnMapByPoint(latLng, marker) {
     });
 }
 
-function searchOnMapByArea(rectangle) {
+function searchOnMapByArea(rectangle, page) {
     map.fitBounds(rectangle.getBounds());
     var maxLat = rectangle.getBounds().getNorthEast().lat();
     var minLat = rectangle.getBounds().getSouthWest().lat();
     var maxLng = rectangle.getBounds().getNorthEast().lng();
     var minLng = rectangle.getBounds().getSouthWest().lng();
+    var page = page || 0;
 
     if (polygons.length > 0) {
         for (var i = 0; i < polygons.length; i++) {
@@ -285,19 +282,22 @@ function searchOnMapByArea(rectangle) {
             "maxLat": maxLat,
             "minLng": minLng,
             "maxLng": maxLng,
-            "resType": "all"
+            "resType": "all",
+            "page": page
         },
         type: "POST",
         url: baseUrl.toString() + "/registrator/resource/getResourcesByAreaLimits",
-        timeout: 20000,
+        timeout: 60000,
         contentType: "application/x-www-form-urlencoded;charset=UTF-8",
         dataType: 'json',
         success: function (data) {
-            createPolygons(data);
+            createPolygons(data, page);
             rectangle.setMap(map);
             rectangles.push(rectangle);
             showPolygons(polygons);
-            createDataTable(data);
+            createDataTable(data.polygons);
+
+            //var countResources = data.countPolygons;
 
             if(resTypes.length > 0) {
                 var resTypeFilter = "<p>Фільтр:</p>";
@@ -307,6 +307,68 @@ function searchOnMapByArea(rectangle) {
             }
             $("#resTypeFilter").html(resTypeFilter);
 
+            $("#dark_bg").hide();
+        },
+        error: function () {
+            $("#dark_bg").hide();
+            bootbox.alert(jQuery.i18n.prop('msg.error'));
+        }
+    });
+
+    coordinatesCookie(rectangle.getBounds().getCenter().lat(),rectangle.getBounds().getCenter().lng());
+}
+
+function searchByParameters(page) {
+
+
+    var json = new Object();
+    json.discreteParameters = [];
+    json.linearParameters = [];
+
+    json.resourceTypeId = $("#resourcesTypeSelect").val();
+    json.page = page || 0;
+
+    $("#dark_bg").show();
+
+    $(".discreteParameter").each(function () {
+        var id_param = $(this).attr("param_id");
+        var compare_sign = $(this).find(".compare").val();
+        var value = $(this).find(".value").val();
+        if (value) {
+            var node = new Object();
+            node.id = id_param;
+            node.compare = compare_sign;
+            node.value = value;
+            json.discreteParameters.push(node);
+
+        }
+    });
+
+    var compare_sign = "linear";
+    $(".linearParameter").each(function () {
+        var id_param = $(this).attr("param_id");
+        var value = $(this).find(".value").val();
+        if (value) {
+
+            var node = new Object();
+            node.id = id_param;
+            node.compare = compare_sign;
+            node.value = value;
+            json.linearParameters.push(node);
+
+        }
+    });
+
+    $.ajax({
+        type: "POST",
+        url: baseUrl.toString() + "/registrator/resource/resourceSearch",
+        data: JSON.stringify(json),
+        contentType: 'application/json; charset=utf-8',
+        timeout: 60000,
+        dataType: 'json',
+        success: function(data){
+            createDataTable(data.polygons);
+            createPolygons(data, page);
             $("#dark_bg").hide();
         },
         error: function () {
@@ -351,7 +413,8 @@ function createDataTable (json) {
     }
 }
 
-function createPolygons (json) {
+function createPolygons (json, page) {
+    var page = page || 0;
     clearMap();
     var polygonFillColors = ["#ADD8E6","#008080","#32cd32","#ffff00","#f08080","#8a2be2", "#00ffff"];
     var fillColor;
@@ -366,60 +429,64 @@ function createPolygons (json) {
     //Remove the old resource type filter buttons
     $("#resTypeFilter").html("");
 
-    for (var i = 0; i < json.length; i++) {
+    if(json.polygons!= undefined) {
+        for (var i = 0; i < json.polygons.length; i++) {
 
-        var polygonPath = [];
-        var points = json[i].points;
-        var bounds = new google.maps.LatLngBounds();
+            var polygonPath = [];
+            var points = json.polygons[i].points;
+            var bounds = new google.maps.LatLngBounds();
 
-        for (var j = 0; j < points.length; j++) {
-            var myLatLng = new google.maps.LatLng(points[j].latitude, points[j].longitude);
-            polygonPath.push(myLatLng);
-            bounds.extend(myLatLng);
-        }
-
-        boundsArray.push(bounds);
-
-        //Changing fill color depending on resource type
-        if(resTypes.length <= polygonFillColors.length) {
-            if ($.inArray(json[i].resourceType, resTypes) == (-1)) {
-                resTypes.push(json[i].resourceType);
-                fillColorIndex = resTypes.length - 1;
-                fillColor = polygonFillColors[fillColorIndex];
-            } else {
-                fillColorIndex = $.inArray(json[i].resourceType, resTypes);
-                fillColor = polygonFillColors[fillColorIndex];
+            for (var j = 0; j < points.length; j++) {
+                var myLatLng = new google.maps.LatLng(points[j].latitude, points[j].longitude);
+                polygonPath.push(myLatLng);
+                bounds.extend(myLatLng);
             }
-        } else {
-            fillColor = "#ff0000";
+
+            boundsArray.push(bounds);
+
+            //Changing fill color depending on resource type
+            if (resTypes.length <= polygonFillColors.length) {
+                if ($.inArray(json.polygons[i].resourceType, resTypes) == (-1)) {
+                    resTypes.push(json.polygons[i].resourceType);
+                    fillColorIndex = resTypes.length - 1;
+                    fillColor = polygonFillColors[fillColorIndex];
+                } else {
+                    fillColorIndex = $.inArray(json.polygons[i].resourceType, resTypes);
+                    fillColor = polygonFillColors[fillColorIndex];
+                }
+            } else {
+                fillColor = "#ff0000";
+            }
+
+            var polygon = new google.maps.Polygon({
+                path: polygonPath, // Координаты
+                strokeColor: "#FF0000", // Цвет обводки
+                strokeOpacity: 0.8, // Прозрачность обводки
+                strokeWeight: 2, // Ширина обводки
+                fillColor: fillColor, // Цвет заливки
+                fillOpacity: 0.4, // Прозрачность заливки
+                zIndex: 5,
+                resType: json.polygons[i].resourceType,
+                resDescription: json.polygons[i].resourceDescription,
+                identifier: json.polygons[i].identifier
+            });
+
+            google.maps.event.addListener(polygon, 'click', function (event) {
+                contentString = "<tr>" +
+                    "<td>" + this.resDescription + "</td>" +
+                    "<td>" + this.resType + "</td>" +
+                    "<td><a href='" + baseUrl.toString() + "/registrator/resource/get/" + this.identifier + "'><i>Детальніше</i></a> </td>" +
+                    "</tr>";
+                infowindow.setContent(infoWindowContent + contentString);
+                infowindow.setPosition(event.latLng);
+                infowindow.open(map);
+            });
+
+            polygons.push(polygon);
         }
-
-        var polygon = new google.maps.Polygon({
-            path: polygonPath, // Координаты
-            strokeColor: "#FF0000", // Цвет обводки
-            strokeOpacity: 0.8, // Прозрачность обводки
-            strokeWeight: 2, // Ширина обводки
-            fillColor: fillColor, // Цвет заливки
-            fillOpacity: 0.4, // Прозрачность заливки
-            zIndex: 5,
-            resType: json[i].resourceType,
-            resDescription: json[i].resourceDescription,
-            identifier: json[i].identifier
-        });
-
-        google.maps.event.addListener(polygon, 'click', function (event) {
-            contentString = "<tr>" +
-                "<td>" + this.resDescription + "</td>" +
-                "<td>" + this.resType + "</td>" +
-                "<td><a href='" + baseUrl.toString() + "/registrator/resource/get/" + this.identifier + "'><i>Детальніше</i></a> </td>" +
-                "</tr>";
-            infowindow.setContent(infoWindowContent + contentString);
-            infowindow.setPosition(event.latLng);
-            infowindow.open(map);
-        });
-
-        polygons.push(polygon);
     }
+
+    createPagination(json.countPolygons, page);
 }
 
 function showPolygons (polygonsArray) {
@@ -453,6 +520,42 @@ function clearMap(){
         rectangle.setMap(null);
     });
     rectangles = [];
+
+}
+
+function createPagination (count, page) {
+    var pagination = $('<ul class="pagination"></ul>');
+    var paginationDiv = $('#paginationDiv');
+    var page = page || 0;
+    paginationDiv.html("");
+    if(count > 200) {
+        var pages = Math.floor(count/200) + 1;
+        for (var i = 0; i < pages; i++) {
+            var begin = i*200 +1;
+            var end = (i+1)*200;
+            if (end > count) {
+                end = count;
+            }
+            var paginationLi = $('<li><a class="pageA" href="#" page="'+i+'">'+begin+' - '+end+'</a></li>');
+            if(i == page) {
+                paginationLi.addClass('active');
+            }
+            pagination.append(paginationLi);
+        }
+        paginationDiv.append(pagination);
+    }
+}
+
+function coordinatesCookie(lat, lng) {
+//Expires date for cookie
+    var d = new Date();
+    d.setTime(d.getTime() + 7 * 24 * 60 * 60 * 1000);
+//Deleting of the old cookie
+    document.cookie = "LastMapSearchLat=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
+    document.cookie = "LastMapSearchLng=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
+//Add new cookie
+    document.cookie = "LastMapSearchLat=" + lat + ";expires=" + d.toUTCString();
+    document.cookie = "LastMapSearchLng=" + lng + ";expires=" + d.toUTCString();
 
 }
 
@@ -492,7 +595,7 @@ $(document).on("click", "#searchOnMapButton", function () {
 
     markers.push(marker);
 
-    searchOnMapByPoint(myLatLng, marker);
+    searchOnMapByPoint(marker);
 });
 
 $(document).on("click", "#searchOnMapButton_area", function () {
@@ -621,47 +724,7 @@ $(document).on("change", "#resourcesTypeSelect", function () {
 });
 
 $(document).on("click", "#search", function () {
-
-    var json = new Object();
-    json.discreteParamsIds = [];
-    json.discreteParamsCompares = [];
-    json.discreteParamsValues = [];
-    json.linearParamsIds = [];
-    json.linearParamsValues = [];
-    json.resourceTypeId = $("#resourcesTypeSelect").val();
-
-    $("#dark_bg").show();
-
-    $(".discreteParameter").each(function () {
-        json.discreteParamsIds.push($(this).attr("param_id"));
-        json.discreteParamsCompares.push($(this).find(".compare").val());
-        json.discreteParamsValues.push($(this).find(".value").val());
-    });
-
-    $(".linearParameter").each(function () {
-        json.linearParamsIds.push($(this).attr("param_id"));
-        json.linearParamsValues.push($(this).find(".value").val());
-    });
-
-    $.ajax({
-        type: "POST",
-        url: baseUrl.toString() + "/registrator/resource/resourceSearch",
-        data: JSON.stringify(json),
-        contentType: 'application/json; charset=utf-8',
-        timeout: 60000,
-        dataType: 'json',
-        success: function(data){
-            createDataTable(data);
-            createPolygons(data);
-            $("#dark_bg").hide();
-        },
-        error: function () {
-            $("#dark_bg").hide();
-            bootbox.alert(jQuery.i18n.prop('msg.error'));
-        }
-    });
-
-
+    searchByParameters();
 });
 
 $(document).on("click", "#showAllResources", function(){
@@ -704,6 +767,22 @@ $(document).on("click", "#datatable tbody tr", function(){
         polygons[polygonId].setMap(map);
         map.fitBounds(boundsArray[polygonId]);
     }
+});
+
+$(document).on("click", "#paginationDiv .pageA", function () {
+    var page = $(this).attr("page");
+//alert ("Hi!");
+    //console.log("rectangle: " + rectangles.length);
+    if(markers.length > 0) {
+        searchOnMapByPoint(markers[0],page);
+    }
+    else if (rectangles.length > 0) {
+        searchOnMapByArea(rectangles[0], page);
+    }
+    else {
+        searchByParameters(page);
+    }
+
 });
 
 google.maps.event.addDomListener(window, 'load', initialize);

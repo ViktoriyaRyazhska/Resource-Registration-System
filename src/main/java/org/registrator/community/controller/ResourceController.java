@@ -8,15 +8,13 @@ import java.util.Set;
 
 import javax.validation.Valid;
 
+import org.registrator.community.dto.json.SearchResultJson;
+import org.registrator.community.dto.ParameterSearchResultDTO;
 import org.registrator.community.dto.ResourceDTO;
 import org.registrator.community.dto.UserDTO;
-import org.registrator.community.dto.JSON.PolygonJSON;
-import org.registrator.community.dto.JSON.ResourseSearchJson;
-import org.registrator.community.entity.DiscreteParameter;
-import org.registrator.community.entity.LinearParameter;
-import org.registrator.community.entity.Resource;
-import org.registrator.community.entity.ResourceType;
-import org.registrator.community.entity.User;
+import org.registrator.community.dto.json.PolygonJson;
+import org.registrator.community.dto.json.ResourceSearchJson;
+import org.registrator.community.entity.*;
 import org.registrator.community.service.DiscreteParameterService;
 import org.registrator.community.service.LinearParameterService;
 import org.registrator.community.service.ResourceDeleteService;
@@ -172,21 +170,6 @@ public class ResourceController {
     }
 
     /**
-     * Send values to resource type select at the page Resource search by
-     * parameters
-     * 
-     * @param model
-     * @return
-     */
-    @PreAuthorize("hasRole('ROLE_REGISTRATOR') or hasRole('ROLE_USER')")
-    @RequestMapping(value = "/showAllResources", method = RequestMethod.GET)
-    public String showAllResources(Model model) {
-        List<ResourceType> resourceTypes = resourceTypeService.findAll();
-        model.addAttribute("resourceTypes", resourceTypes);
-        return "showAllResources";
-    }
-
-    /**
      * Depending on chosen resource type store all parameters and send them to
      * view at the page Resource search by parameters
      * 
@@ -211,27 +194,32 @@ public class ResourceController {
      * Depending on received parameters create List of resourceDTO and send them
      * to view
      * 
-     * @param json
-     *            - search parameters in JSON format
+     * @param json - search parameters in JSON format
      * @param model
      * @return
      */
+
     @ResponseBody
     @PreAuthorize("hasRole('ROLE_REGISTRATOR') or hasRole('ROLE_USER')")
     @RequestMapping(value = "/resourceSearch", method = RequestMethod.POST)
-    public String resourceSearch(@RequestBody ResourseSearchJson json, Model model) {
-
-        Set<String> identifiers = resourceService.getAllByParameters(json);
-        List<PolygonJSON> polygons = new ArrayList<>();
+    public String resourceSearch(@RequestBody ResourceSearchJson json, Model model) {
+        SearchResultJson result = new SearchResultJson();
+        ParameterSearchResultDTO searchResult = resourceService.getAllByParameters(json);
+        long countResults = searchResult.getCount();
+        List<Resource> resources = searchResult.getResources();
+        List<PolygonJson> polygons = new ArrayList<>();
 
         int countPolygons = 0;
-        for (String identifier : identifiers) {
-            polygons.addAll(resourceService.createPolygonJSON(identifier, countPolygons));
+        for (Resource resource : resources) {
+            polygons.addAll(resourceService.createPolygonJSON(resource, countPolygons));
             countPolygons = polygons.size();
         }
 
+        result.setPolygons(polygons);
+        result.setCountPolygons(countResults);
+
         Gson gson = new Gson();
-        return gson.toJson(polygons);
+        return gson.toJson(result);
     }
 
     @ResponseBody
@@ -261,22 +249,30 @@ public class ResourceController {
      * @return JSON with information about polygons which can be located between
      *         received coordinates
      */
+
     @ResponseBody
     @RequestMapping(value = "/getResourcesByAreaLimits", method = RequestMethod.POST)
     public String showAllResourcesByAreaLimits(@RequestParam("minLat") Double minLat,
             @RequestParam("maxLat") Double maxLat, @RequestParam("minLng") Double minLng,
-            @RequestParam("maxLng") Double maxLng, @RequestParam("resType") String resType, Model model) {
-        Set<String> identifiers = resourceService.getAllByAreaLimits(minLat, maxLat, minLng, maxLng, resType);
-        List<PolygonJSON> polygons = new ArrayList<>();
+            @RequestParam("maxLng") Double maxLng, @RequestParam("resType") String resType,
+            @RequestParam("page") Integer page, Model model) {
+        SearchResultJson result = new SearchResultJson();
+        Integer countResults = resourceService.countAllByAreaLimits(minLat, maxLat, minLng, maxLng);
 
         int countPolygons = 0;
-        for (String identifier : identifiers) {
-            polygons.addAll(resourceService.createPolygonJSON(identifier, countPolygons));
+        Set<Resource> resources = resourceService.getAllByAreaLimits(minLat, maxLat, minLng, maxLng, resType, page);
+        List<PolygonJson> polygons = new ArrayList<>();
+
+        for (Resource resource : resources) {
+            polygons.addAll(resourceService.createPolygonJSON(resource, countPolygons));
             countPolygons = polygons.size();
         }
 
+        result.setPolygons(polygons);
+        result.setCountPolygons(countResults);
+
         Gson gson = new Gson();
-        return gson.toJson(polygons);
+        return gson.toJson(result);
     }
 
     /**
@@ -294,18 +290,24 @@ public class ResourceController {
     @ResponseBody
     @RequestMapping(value = "/getResourcesByPoint", method = RequestMethod.POST)
     public String showAllResourcesByAreaLimits(@RequestParam("lat") Double lat, @RequestParam("lng") Double lng,
-            Model model) {
-        Set<String> identifiers = resourceService.getAllByPoint(lat, lng);
-        List<PolygonJSON> polygons = new ArrayList<>();
+                                               @RequestParam("page") Integer page, Model model) {
+        SearchResultJson result = new SearchResultJson();
+        Integer countResults = resourceService.countAllByPoint(lat, lng);
+
+        Set<Resource> resources = resourceService.getAllByPoint(lat, lng, page);
+        List<PolygonJson> polygons = new ArrayList<>();
 
         int countPolygons = 0;
-        for (String identifier : identifiers) {
-            polygons.addAll(resourceService.createPolygonJSON(identifier, countPolygons));
+        for (Resource resource: resources) {
+            polygons.addAll(resourceService.createPolygonJSON(resource, countPolygons));
             countPolygons = polygons.size();
         }
 
+        result.setPolygons(polygons);
+        result.setCountPolygons(countResults);
+
         Gson gson = new Gson();
-        return gson.toJson(polygons);
+        return gson.toJson(result);
     }
 
     /**
@@ -353,11 +355,11 @@ public class ResourceController {
     public String showAllResources(@RequestParam("resType") Integer resType) {
         ResourceType resourceType = resourceTypeService.findById(resType);
         List<Resource> resources = resourceService.findByType(resourceType);
-        List<PolygonJSON> polygons = new ArrayList<>();
+        List<PolygonJson> polygons = new ArrayList<>();
 
         int countPolygons = 0;
         for (Resource resource : resources) {
-            polygons.addAll(resourceService.createPolygonJSON(resource.getIdentifier(), countPolygons));
+            polygons.addAll(resourceService.createPolygonJSON(resource, countPolygons));
             countPolygons = polygons.size();
         }
 

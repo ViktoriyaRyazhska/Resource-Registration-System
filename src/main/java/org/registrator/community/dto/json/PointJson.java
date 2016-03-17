@@ -1,9 +1,9 @@
-package org.registrator.community.dto.JSON;
+package org.registrator.community.dto.json;
 
 /**
  * Created by Oleksiy on 02.01.2016.
  */
-public class PointJSON {
+public class PointJson {
     private Double latitude;
     private Double longitude;
     private Integer point_order;

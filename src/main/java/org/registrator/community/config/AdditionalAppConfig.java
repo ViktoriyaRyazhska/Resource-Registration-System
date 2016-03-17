@@ -16,7 +16,7 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.ui.velocity.VelocityEngineFactoryBean;
 
 @Configuration
-@ComponentScan({"org.registrator.community.components"})
+@ComponentScan({"org.registrator.community.components", "org.registrator.community.dao"})
 @PropertySource(value = "classpath:mail.properties")
 public class AdditionalAppConfig {
 	

@@ -35,7 +35,7 @@ public class CronService {
 	 * 
 	 * @return void
 	 */
-	@Scheduled(fixedDelay = 10000)
+//	@Scheduled(fixedDelay = 10000)
 	@Transactional
 	public void checkAllFailAttempts() {
 		try {

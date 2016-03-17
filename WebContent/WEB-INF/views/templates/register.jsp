@@ -18,7 +18,7 @@ text-align: center;
 
 <div id="register_container">
 	<form:form action=""
-		class="form-horizontal" role="form" modelAttribute="registrationForm"
+		class="form-horizontal" role="form" modelAttribute="userRegistrationDTO"
 		method="POST" name="registrationForm">
 		<div class="form-group col-sm-12">
 			<div class="personal_header col-lg-4">
@@ -88,66 +88,66 @@ text-align: center;
 			</div>
 			<div class="address_header col-lg-4">
 				<h4><spring:message code="label.user.addressinfo" /></h4> <label
-					class="col-lg-4 control-label" for="city"><spring:message
+					class="col-lg-4 control-label"><spring:message
 						code="label.user.city" /></label>
 				<div class="col-lg-8">
-					<input name="city" type="text" class="form-control login" id="city"
-						value="${registrationForm.city}" />
-					<form:errors path="city" class="error" />
+					<input name="address.city" type="text" class="form-control login" id="city"
+						value="${registrationForm.address.city}" />
+					<form:errors path="address.city" class="error" />
 					<br>
 				</div>
 
 				<label class="col-lg-4 control-label" for="region"><spring:message
 						code="label.user.region" /></label>
 				<div class="col-lg-8">
-					<input name="region" type="text" class="form-control login"
-						id="region" value="${registrationForm.region}" />
-					<form:errors path="region" class="error" />
+					<input name="address.region" type="text" class="form-control login"
+						id="region" value="${registrationForm.address.region}" />
+					<form:errors path="address.region" class="error" />
 					<br>
 				</div>
 
 				<label class="col-lg-4 control-label" for="district"><spring:message
 						code="label.user.district" /></label>
 				<div class="col-lg-8">
-					<input name="district" type="text" class="form-control login"
-						id="district" value="${registrationForm.district}" />
-					<form:errors path="district" class="error" />
+					<input name="address.district" type="text" class="form-control login"
+						id="district" value="${registrationForm.address.district}" />
+					<form:errors path="address.district" class="error" />
 					<br>
 				</div>
 
 				<label class="col-lg-4 control-label" for="street"><spring:message
 						code="label.user.street" /></label>
 				<div class="col-lg-8">
-					<input name="street" type="text" class="form-control login"
-						id="street" value="${registrationForm.street}" />
-					<form:errors path="street" class="error" />
+					<input name="address.street" type="text" class="form-control login"
+						id="street" value="${registrationForm.address.street}" />
+					<form:errors path="address.street" class="error" />
 					<br>
 				</div>
 
 				<label class="col-lg-4 control-label" for="building"><spring:message
 						code="label.user.building" /></label>
 				<div class="col-lg-8">
-					<input name="building" type="text" class="form-control login"
-						id="building" value="${registrationForm.building}" />
-					<form:errors path="building" class="error" />
+					<input name="address.building" type="text" class="form-control login"
+						id="building" value="${registrationForm.address.building}" />
+					<form:errors path="address.building" class="error" />
 					<br>
 				</div>
 
 				<label class="col-lg-4 control-label" for="flat"><spring:message
 						code="label.user.flat" /></label>
 				<div class="col-lg-8">
-					<input name="flat" type="text" class="form-control login" id="flat"
-						value="${registrationForm.flat}" />
-					<form:errors path="flat" class="error" />
+					<input name="address.flat" type="text" class="form-control login" id="flat"
+						value="${registrationForm.address.flat}" />
+					<form:errors path="address.flat" class="error" />
 					<br>
 				</div>
 
 				<label class="col-lg-4 control-label" for="postcode"><spring:message
 						code="label.user.postcode" /></label>
 				<div class="col-lg-8">
-					<input name="postcode" type="text" class="form-control login"
-						id="postcode" value="${registrationForm.postcode}" />
-					<form:errors path="postcode" class="error" />
+					<input name="address.postcode" type="text" class="form-control login"
+						id="postcode" value="${registrationForm.address.postcode}" />
+					<form:errors path="address.postcode" class="error" />
 					<br>
 				</div>
 			</div>
@@ -156,26 +156,26 @@ text-align: center;
 					class="col-lg-4 control-label" for="passport_seria"><spring:message
 						code="label.user.seria" /></label>
 				<div class="col-lg-8">
-					<input name="seria" type="text" class="form-control login"
-						id="passport_seria" value="${registrationForm.seria}" />
-					<form:errors path="seria" class="error" />
+					<input name="passport.seria" type="text" class="form-control login"
+						id="passport_seria" value="${registrationForm.passport.seria}" />
+					<form:errors path="passport.seria" class="error" />
 					<br>
 				</div>
 				<label class="col-lg-4 control-label" for="passport_number"><spring:message
 						code="label.user.number" /></label>
 				<div class="col-lg-8">
-					<input name="number" type="text" class="form-control login"
-						id="passport_number" value="${registrationForm.number}" />
-					<form:errors path="number" class="error" />
+					<input name="passport.number" type="text" class="form-control login"
+						id="passport_number" value="${registrationForm.passport.number}" />
+					<form:errors path="passport.number" class="error" />
 					<br>
 				</div>
 				<label class="col-lg-4 control-label" for="published_by_data"><spring:message
 						code="label.user.published" /></label>
 				<div class="col-lg-8">
-					<input name="publishedByData" type="text"
+					<input name="passport.published_by_data" type="text"
 						class="form-control login" id="published_by_data"
-						value="${registrationForm.publishedByData}" />
-					<form:errors path="publishedByData" class="error" />
+						value="${registrationForm.passport.published_by_data}" />
+					<form:errors path="passport.published_by_data" class="error" />
 					<br>
 				</div>
 				<h4><spring:message

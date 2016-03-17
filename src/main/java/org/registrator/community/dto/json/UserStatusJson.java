@@ -1,15 +1,15 @@
-package org.registrator.community.dto.JSON;
+package org.registrator.community.dto.json;
 
-public class UserStatusDTOJSON {
+public class UserStatusJson {
 	private String login;
 	private String status;
 
-	public UserStatusDTOJSON(String login, String status) {
+	public UserStatusJson(String login, String status) {
 		this.login = login;
 		this.status = status;
 	}
 
-	public UserStatusDTOJSON() {
+	public UserStatusJson() {
 	}
 
 	public String getLogin() {

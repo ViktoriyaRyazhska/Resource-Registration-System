@@ -7,8 +7,8 @@ import javax.validation.Valid;
 import org.registrator.community.components.AdminSettings;
 import org.registrator.community.components.TableSettingsFactory;
 import org.registrator.community.dto.UserDTO;
-import org.registrator.community.dto.JSON.ResourceNumberDTOJSON;
-import org.registrator.community.dto.JSON.UserStatusDTOJSON;
+import org.registrator.community.dto.json.ResourceNumberJson;
+import org.registrator.community.dto.json.UserStatusJson;
 import org.registrator.community.dto.search.TableSearchRequestDTO;
 import org.registrator.community.dto.search.TableSearchResponseDTO;
 import org.registrator.community.entity.Role;
@@ -138,7 +138,7 @@ public class UsersController {
 	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_COMMISSIONER')")
 	@ResponseBody
 	@RequestMapping(value = "/get-all-inactive-users", method = RequestMethod.POST)
-	public String changeStatus(@RequestBody UserStatusDTOJSON userStatusDto) {
+	public String changeStatus(@RequestBody UserStatusJson userStatusDto) {
 		logger.info("begin");
 		userService.changeUserStatus(userStatusDto);
 		logger.info("end");
@@ -152,7 +152,7 @@ public class UsersController {
 	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_COMMISSIONER')")
 	@ResponseBody
 	@RequestMapping(value = "/edit-registrated-user/modal-window", method = RequestMethod.POST)
-	public ResponseEntity<String> showModalWindow(@Valid @RequestBody ResourceNumberDTOJSON resourceNumberDtoJson,
+	public ResponseEntity<String> showModalWindow(@Valid @RequestBody ResourceNumberJson resourceNumberDtoJson,
 			BindingResult result) {
 		logger.info("begin");
 		resourceNumberValidator.validate(resourceNumberDtoJson, result);

@@ -6,16 +6,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.registrator.community.dao.AreaRepository;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import org.registrator.community.dao.InquiryRepository;
 import org.registrator.community.dao.PolygonRepository;
-import org.registrator.community.dto.ExtractDTO;
-import org.registrator.community.dto.HeaderDTO;
+import org.registrator.community.dto.*;
 import org.registrator.community.dto.HeaderDTO.HeaderContent;
-import org.registrator.community.dto.InputDTO;
-import org.registrator.community.dto.MandatToExtractDTO;
 import org.registrator.community.entity.Address;
-import org.registrator.community.entity.Area;
 import org.registrator.community.entity.Inquiry;
 import org.registrator.community.entity.Polygon;
 import org.registrator.community.entity.Resource;
@@ -61,9 +58,6 @@ public class PrintServiceImpl implements PrintService {
 
 	@Autowired
 	PolygonRepository polygonRepository;
-
-	@Autowired
-	AreaRepository areaRepository;
 
 	@Autowired
 	ResourceDiscreteValueService resourceDiscrete;
@@ -382,16 +376,17 @@ public class PrintServiceImpl implements PrintService {
 				}
 			}
 
-			System.out.println("Descrite values" + discreteValues);
 			String dateInquireYear = String.valueOf(inquireDate.getYear());
 			char parsedDateInquire[] = dateInquireYear.toCharArray();
 			dateInquireYear = "" + parsedDateInquire[1] + parsedDateInquire[2];
 
 			for (Polygon p : polygon) {
-				List<Area> area = areaRepository.findByPolygon(p);
-				for (Area a : area) {
-					totalCoordinates.add(a.getLongitude());
-					totalCoordinates.add(a.getLatitude());
+				Gson gson = new Gson();
+				List<PointDTO> pointDTOs = gson.fromJson(p.getCoordinates(), new TypeToken<List<PointDTO>>(){}.getType());
+
+				for (PointDTO a : pointDTOs) {
+					totalCoordinates.add(a.getLng());
+					totalCoordinates.add(a.getLat());
 				}
 			}
 
@@ -879,13 +874,15 @@ public class PrintServiceImpl implements PrintService {
 			char parsedDateInquire[] = dateInquireYear.toCharArray();
 			dateInquireYear = "" + parsedDateInquire[1] + parsedDateInquire[2];
 
-			for (Polygon p : polygon) {
-				List<Area> area = areaRepository.findByPolygon(p);
-				for (Area a : area) {
-					totalCoordinates.add(a.getLongitude());
-					totalCoordinates.add(a.getLatitude());
-				}
-			}
+            for (Polygon p : polygon) {
+                Gson gson = new Gson();
+                List<PointDTO> pointDTOs = gson.fromJson(p.getCoordinates(), new TypeToken<List<PointDTO>>() {}.getType());
+
+                for (PointDTO a : pointDTOs) {
+                    totalCoordinates.add(a.getLng());
+                    totalCoordinates.add(a.getLat());
+                }
+            }
 
 			extract = new InputDTO();
 			extract.setFirstNameOfUser(user.getFirstName());

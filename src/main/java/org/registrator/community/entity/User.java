@@ -64,29 +64,29 @@ public class User implements Serializable {
     @Enumerated(EnumType.STRING)
     private UserStatus status;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @JsonManagedReference
     private List<Address> address = new ArrayList<Address>();
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @JsonManagedReference
     private List<PassportInfo> passport = new ArrayList<PassportInfo>();
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @JsonManagedReference
     private List<WillDocument> willDocument = new ArrayList<WillDocument>();
     
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @JsonManagedReference
     private List<OtherDocuments> otherDocuments = new ArrayList<OtherDocuments>();
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade={CascadeType.ALL})
+    @ManyToMany(fetch = FetchType.LAZY, cascade={CascadeType.ALL})
     @JoinTable(name="registrator_owner",
         joinColumns={@JoinColumn(name="owner_id")},
         inverseJoinColumns={@JoinColumn(name="registrator_id")})
     private Set<User> registrators = new HashSet<User>();
  
-    @ManyToMany(fetch = FetchType.EAGER, mappedBy="registrators")
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy="registrators")
     private Set<User> owners = new HashSet<User>();
     
     @Column(name = "phonenumber", nullable = true)

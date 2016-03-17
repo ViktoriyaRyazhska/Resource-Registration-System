@@ -1,9 +1,9 @@
-package org.registrator.community.dto.JSON;
+package org.registrator.community.dto.json;
 
 /**
  * Created by Oleksiy on 23.12.2015.
  */
-public class DiscreteParametersJSON {
+public class DiscreteParametersJson {
     private Integer discreteParameterId;
     private Integer resourceTypeId;
     private String description;

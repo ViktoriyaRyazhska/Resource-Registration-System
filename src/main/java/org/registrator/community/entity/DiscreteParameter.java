@@ -13,7 +13,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "discrete_parameters")
-public class DiscreteParameter  implements Serializable{
+public class DiscreteParameter  implements ResourceParameter, Serializable{
 
     @Override
 	public String toString() {

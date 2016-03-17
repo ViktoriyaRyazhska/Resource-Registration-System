@@ -18,7 +18,7 @@
             <h4><spring:message code="label.search.byParameter"/></h4>
         </span>
     </div>
-    <div id="searchByPointDiv" class="col-sm-12 searchDiv">
+    <div id="searchByPointDiv" class="col-md-12 searchDiv">
         <p>
             <spring:message code="label.search.byCoordinate.massage"/>:
         </p>
@@ -55,7 +55,7 @@
                     code="label.menu.search"/></button>
         </div>
     </div>
-    <div id="searchByAreaDiv" class="col-sm-12 searchDiv">
+    <div id="searchByAreaDiv" class="col-md-12 searchDiv">
         <p>
             <spring:message code="label.search.byRegion.massage"/>:
         </p>
@@ -121,7 +121,7 @@
                     code="label.menu.search"/></button>
         </div>
     </div>
-    <div id="searchByParameterDiv" class="col-sm-12 searchDiv">
+    <div id="searchByParameterDiv" class="col-md-12 searchDiv">
         <c:if test="${not empty resourceTypes}">
             <div style="padding-bottom: 15px;">
                 <label class=""><spring:message code="label.resource.selectType" />:</label>
@@ -136,7 +136,8 @@
     </div>
 </div>
 <div class="container" id="searchResult"></div>
-<div id="resTypeFilter" class="col-sm-12"></div>
+<div id="paginationDiv" class="col-md-12"></div>
+<div id="resTypeFilter" class="col-md-12"></div>
 <div id="map_canvas" class="container" style="height: 700px;"></div>
 
 <%--Search fild for Google Map--%>

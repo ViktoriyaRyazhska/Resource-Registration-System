@@ -29,7 +29,7 @@
 		<!-- - - - - - - - - - - -->
 		<org.springframework.version>4.1.6.RELEASE</org.springframework.version>
 		<spring-data-jpa.version>1.9.0.RELEASE</spring-data-jpa.version>
-		<bytecode.javassist.version>3.12.1.GA</bytecode.javassist.version>
+		<bytecode.javassist.version>3.20.0-GA</bytecode.javassist.version>
 		<jackson-version>2.4.4</jackson-version>
 		<org.spring.security.version>4.0.2.RELEASE</org.spring.security.version>
 		<!-- - - - - - - - - - - -->
@@ -38,6 +38,7 @@
 		<maven.compiler.plugin.version>3.3</maven.compiler.plugin.version>
 		<maven.surefire.plugin.version>2.19</maven.surefire.plugin.version>
 		<maven.war.plugin.version>2.6</maven.war.plugin.version>
+		<org.powermock.version>1.6.4</org.powermock.version>
 	</properties>
 	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 	<dependencies>
@@ -59,6 +60,18 @@
             <version>4.12</version>
             <scope>test</scope>
         </dependency>
+		<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-api-mockito</artifactId>
+			<version>${org.powermock.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-module-testng</artifactId>
+			<version>${org.powermock.version}</version>
+			<scope>test</scope>
+		</dependency>
 		<!-- - - - Logger - - - -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -87,6 +100,12 @@
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<version>${postgresql.connector.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-simple</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<!-- - - - HSQLDB - - - -->
 		<dependency>
@@ -198,7 +217,7 @@
 		</dependency>
 		<!-- - - - ByteCodeAssist - - - -->
 		<dependency>
-			<groupId>javassist</groupId>
+			<groupId>org.javassist</groupId>
 			<artifactId>javassist</artifactId>
 			<version>${bytecode.javassist.version}</version>
 		</dependency>
@@ -343,100 +362,140 @@
 			<version>2.0.2.RELEASE</version>
 		</dependency>
 
+		<!-- Query DSL-->
+		<dependency>
+			<groupId>com.mysema.querydsl</groupId>
+			<artifactId>querydsl-apt</artifactId>
+			<version>3.7.1</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>com.mysema.querydsl</groupId>
+			<artifactId>querydsl-jpa</artifactId>
+			<version>3.7.1</version>
+		</dependency>
+
 	</dependencies>
 	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 <profiles>
     <profile>
-      <id>local</id>
-		<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-resources-plugin</artifactId>
-				<version>${maven.resources.plugin.version}</version>
-				<configuration>
-					<encoding>UTF-8</encoding>
-				</configuration>
-			</plugin>
+        <id>local</id>
+        <activation>
+            <activeByDefault>true</activeByDefault>
+        </activation>
+        <build>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>${maven.resources.plugin.version}</version>
+                    <configuration>
+                        <encoding>UTF-8</encoding>
+                    </configuration>
+                </plugin>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>${maven.compiler.plugin.version}</version>
-				<configuration>
-					<source>${jdk.compiler.version}</source>
-					<target>${jdk.compiler.version}</target>
-					<encoding>UTF-8</encoding>
-				</configuration>
-			</plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven.compiler.plugin.version}</version>
+                    <configuration>
+                        <source>${jdk.compiler.version}</source>
+                        <target>${jdk.compiler.version}</target>
+                        <encoding>UTF-8</encoding>
+                    </configuration>
+                </plugin>
 
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.7.4.201502262128</version>
-                <!--<version>0.7.5.201505241946</version>-->
+                <plugin>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <version>0.7.4.201502262128</version>
+                    <!--<version>0.7.5.201505241946</version>-->
 
-                <executions>
-                    <execution>
-                        <id>pre-unit-test</id>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                        <configuration>
-                            <destFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</destFile>
-                            <propertyName>surefireArgLine</propertyName>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>post-unit-test</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
-                        <configuration>
-                            <dataFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</dataFile>
-                            <outputDirectory>${project.reporting.outputDirectory}/jacoco-ut</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+                    <executions>
+                        <execution>
+                            <id>pre-unit-test</id>
+                            <phase>test</phase>
+                            <goals>
+                                <goal>prepare-agent</goal>
+                            </goals>
+                            <configuration>
+                                <destFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</destFile>
+                                <propertyName>surefireArgLine</propertyName>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>post-unit-test</id>
+                            <phase>test</phase>
+                            <goals>
+                                <goal>report</goal>
+                            </goals>
+                            <configuration>
+                                <dataFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</dataFile>
+                                <outputDirectory>${project.reporting.outputDirectory}/jacoco-ut</outputDirectory>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>${maven.surefire.plugin.version}</version>
-                <configuration>
-                    <skipTests>false</skipTests>
-                    <argLine>${surefireArgLine}</argLine>
-                </configuration>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${maven.surefire.plugin.version}</version>
+                    <configuration>
+                        <skipTests>false</skipTests>
+						<runOrder>reversealphabetical</runOrder>
+                        <argLine>${surefireArgLine}</argLine>
+                    </configuration>
 
-            </plugin>
+                </plugin>
 
+                <plugin>
+                    <groupId>com.heroku.sdk</groupId>
+                    <artifactId>heroku-maven-plugin</artifactId>
+                    <configuration>
+                        <jdkVersion>1.8</jdkVersion>
+                        <appName>ronr</appName>
+                        <warFile>target/resources.war</warFile>
+                        <processTypes>
+                            <web>java $JAVA_OPTS -jar target/dependency/webapp-runner.jar
+                                ${WEBAPP_RUNNER_OPTS:-"--expand-war"} --port $PORT ./target/resources.war
+                            </web>
+                        </processTypes>
+                    </configuration>
+                </plugin>
 
-	    <plugin>
-	      <groupId>com.heroku.sdk</groupId>
-	      <artifactId>heroku-maven-plugin</artifactId>
-	      <configuration>
-		<jdkVersion>1.8</jdkVersion>
-		<appName>ronr</appName>
-		<warFile>target/resources.war</warFile>
-	        <processTypes>
-	          <web>java $JAVA_OPTS -jar target/dependency/webapp-runner.jar ${WEBAPP_RUNNER_OPTS:-"--expand-war"} --port $PORT ./target/resources.war</web>
-	        </processTypes>
-	      </configuration>
-	    </plugin>
+                <plugin>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <version>${maven.war.plugin.version}</version>
+                    <configuration>
+                        <warSourceDirectory>WebContent</warSourceDirectory>
+                        <failOnMissingWebXml>false</failOnMissingWebXml>
+                        <warName>resources</warName>
+                    </configuration>
+                </plugin>
 
-            <plugin>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>${maven.war.plugin.version}</version>
-                <configuration>
-                    <warSourceDirectory>WebContent</warSourceDirectory>
-                    <failOnMissingWebXml>false</failOnMissingWebXml>
-                    <warName>resources</warName>
-                </configuration>
-            </plugin>
-        </plugins>
-    	</build>
+                <plugin>
+                    <groupId>com.mysema.maven</groupId>
+                    <artifactId>apt-maven-plugin</artifactId>
+                    <version>1.0.9</version>
+                    <executions>
+                        <execution>
+                        		<phase>generate-sources</phase>
+                            <goals>
+                                <goal>process</goal>
+                                <goal>test-process</goal>
+                            </goals>
+                            <configuration>
+                                <outputDirectory>target/generated-sources/java</outputDirectory>
+                                <processor>com.mysema.query.apt.jpa.JPAAnnotationProcessor</processor>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+
+            </plugins>
+        </build>
     </profile>
 
     <profile>
@@ -517,12 +576,13 @@
                 <version>${maven.surefire.plugin.version}</version>
                 <configuration>
                     <skipTests>false</skipTests>
+					<runOrder>reversealphabetical</runOrder>
                     <argLine>${surefireArgLine}</argLine>
                 </configuration>
 
             </plugin>
 
-		<plugin>
+			<plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-dependency-plugin</artifactId>
             <version>2.3</version>
@@ -544,7 +604,6 @@
             </executions>
 		</plugin>
 
-
             <plugin>
                 <artifactId>maven-war-plugin</artifactId>
                 <version>${maven.war.plugin.version}</version>
@@ -554,6 +613,24 @@
                     <warName>resources</warName>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>com.mysema.maven</groupId>
+                <artifactId>apt-maven-plugin</artifactId>
+                <version>1.0.9</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>process</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>target/generated-sources/java</outputDirectory>
+                            <processor>com.mysema.query.apt.jpa.JPAAnnotationProcessor</processor>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     	</build>
     </profile>

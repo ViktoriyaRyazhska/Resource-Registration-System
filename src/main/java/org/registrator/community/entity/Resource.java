@@ -19,7 +19,7 @@ public class Resource implements Serializable {
     @GeneratedValue
     private Integer resourcesId;
     
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "resource_type_id", nullable = false)
     private ResourceType type;
 
@@ -29,7 +29,7 @@ public class Resource implements Serializable {
     @Column(name = "description")
     private String description;
 
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "registrator_id", nullable = false)
     private User registrator;
     
@@ -40,7 +40,7 @@ public class Resource implements Serializable {
     @Enumerated(EnumType.STRING)
     private ResourceStatus status;
 
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "tome_id", nullable = false)
     private Tome tome;
     

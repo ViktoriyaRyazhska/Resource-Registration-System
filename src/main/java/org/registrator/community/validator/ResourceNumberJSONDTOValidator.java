@@ -5,7 +5,7 @@ import java.util.List;
 import org.registrator.community.dao.ResourceNumberRepository;
 import org.registrator.community.dao.TomeRepository;
 import org.registrator.community.dao.UserRepository;
-import org.registrator.community.dto.JSON.ResourceNumberDTOJSON;
+import org.registrator.community.dto.json.ResourceNumberJson;
 import org.registrator.community.entity.ResourceNumber;
 import org.registrator.community.entity.Tome;
 import org.registrator.community.entity.User;
@@ -28,13 +28,13 @@ public class ResourceNumberJSONDTOValidator implements Validator {
 
 	@Override
 	public boolean supports(Class<?> clazz) {
-		return clazz.equals(ResourceNumberDTOJSON.class);
+		return clazz.equals(ResourceNumberJson.class);
 	}
 
 	@Override
 	public void validate(Object object, Errors errors) {
-		ResourceNumberDTOJSON resourceNumberDTOJSON = (ResourceNumberDTOJSON) object;
-		User user = userRepository.findUserByLogin(resourceNumberDTOJSON.getLogin());
+		ResourceNumberJson resourceNumberJson = (ResourceNumberJson) object;
+		User user = userRepository.findUserByLogin(resourceNumberJson.getLogin());
 		ResourceNumber resourceNumber = resourceNumberRepository.findResourceNumberByUser(user);
 		Tome tome = tomeRepository.findTomeByRegistrator(user);
 		List<ResourceNumber> registratorNumberList = resourceNumberRepository.findAll();
@@ -44,7 +44,7 @@ public class ResourceNumberJSONDTOValidator implements Validator {
 		}
 
 		for (ResourceNumber registratorNumber : registratorNumberList) {
-			if (registratorNumber.getRegistratorNumber().equals(resourceNumberDTOJSON.getRegistrator_number())) {
+			if (registratorNumber.getRegistratorNumber().equals(resourceNumberJson.getRegistrator_number())) {
 				errors.rejectValue("registrator_number", "msg.registation.registratornumber.unique");
 			}
 		}
@@ -54,7 +54,7 @@ public class ResourceNumberJSONDTOValidator implements Validator {
 		}
 		
 		for (Tome tomeNumber : tomeList) {
-			if (resourceNumberDTOJSON.getIdentifier().equals(tomeNumber.getIdentifier())) {
+			if (resourceNumberJson.getIdentifier().equals(tomeNumber.getIdentifier())) {
 				errors.rejectValue("identifier", "msg.registation.tomenumber.unique");
 			}
 		}

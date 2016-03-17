@@ -119,11 +119,6 @@
 			value="/WEB-INF/views/templates/showResource.jsp" />
 	</definition>
 
-	<definition name="showAllResources" extends="homepage">
-		<put-attribute name="body" type="template"
-			value="/WEB-INF/views/showAllResources.jsp" />
-	</definition>
-
 	<definition name="editWindow" extends="homepage">
 		<put-attribute name="body" type="template"
 			value="/WEB-INF/views/templates/editWindow.jsp" />

@@ -296,12 +296,12 @@
 							номер об'єкту</label>
 						<div class="col-lg-8">
 							<input id="resourceNumber" class="form-control input-md"
-								type="text" name="resourceNumberDTOJSON.resource_number"
-								value="${userDto.resourceNumberDTOJSON.resource_number}"
+								type="text" name="resourceNumberJson.resource_number"
+								value="${userDto.resourceNumberJson.resource_number}"
 								readonly>
 						</div>
 						<div class="control-group error">
-							<form:errors path="resourceNumberDTOJSON.resource_number"
+							<form:errors path="resourceNumberJson.resource_number"
 								cssClass="error" style="color:black" />
 						</div>
 					</div>
@@ -310,11 +310,11 @@
 							реєстратора</label>
 						<div class="col-lg-8">
 							<input id="registratorNumber" class="form-control input-md"
-								type="text" name="resourceNumberDTOJSON.registrator_number"
-								value="${userDto.resourceNumberDTOJSON.registrator_number}"
+								type="text" name="resourceNumberJson.registrator_number"
+								value="${userDto.resourceNumberJson.registrator_number}"
 								readonly>
 							<div class="control-group error">
-								<form:errors path="resourceNumberDTOJSON.registrator_number"
+								<form:errors path="resourceNumberJson.registrator_number"
 									cssClass="error" style="color:black" />
 							</div>
 						</div>
@@ -324,10 +324,10 @@
 							тому</label>
 						<div class="col-lg-8">
 							<input id="identifierNumber" class="form-control input-md"
-								type="text" name="resourceNumberDTOJSON.identifier"
-								value="${userDto.resourceNumberDTOJSON.identifier}" readonly>
+								type="text" name="resourceNumberJson.identifier"
+								value="${userDto.resourceNumberJson.identifier}" readonly>
 							<div class="control-group error">
-								<form:errors path="resourceNumberDTOJSON.identifier"
+								<form:errors path="resourceNumberJson.identifier"
 									cssClass="error" style="color:black" />
 							</div>
 						</div>
@@ -335,7 +335,7 @@
 					<div class="form-group">
 						<div class="col-lg-8">
 							<input id="key" class="form-control input-md" type="text"
-								name="resourceNumberDTOJSON.login" value="0"
+								name="resourceNumberJson.login" value="0"
 								style="display: none">
 						</div>
 					</div>
