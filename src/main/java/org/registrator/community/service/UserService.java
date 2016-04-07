@@ -57,10 +57,6 @@ public interface UserService {
 
     public void resetAllFailAttempts();
 
-    public String batchRoleChange(RoleTypeJson batch);
-
-    public String batchCommunityChange(CommunityParamJson batch);
-
 
     /**
      * Checks if user is authenticated in application
