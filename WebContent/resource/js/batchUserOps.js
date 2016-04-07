@@ -211,7 +211,7 @@ jQuery(document).ready(function($) {
                 return false;
             },
             error : function(xhr, status, error) {
-                bootbox.alert("<h3>Error performing Password reset operation</h3>" + xhr.responseText);
+                bootbox.alert("<h3>"+jQuery.i18n.prop("msg.batchops.ajaxError")+"</h3>" + xhr.responseText);
                 $("#dark_bg").hide();
                 return "";
             }
