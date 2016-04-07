@@ -5,6 +5,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.*;
@@ -32,16 +33,16 @@ import java.util.Date;
 @PrepareForTest(PasswordRecoveryServiceImpl.class)
 public class PasswordRecoveryServiceTest extends PowerMockTestCase {
 
-	@InjectMocks
-	private PasswordRecoveryService passwordRecoveryService = new PasswordRecoveryServiceImpl();
-	@Mock
-	private UserRepository userRepository;
-	@Mock
-	private MailService mailService;
-	@Mock
-	private VerificationTokenService verificationTokenService;
-	@Mock
-	private PasswordEncoder userPasswordEncoder;
+    @InjectMocks
+    private PasswordRecoveryService passwordRecoveryService = new PasswordRecoveryServiceImpl();
+    @Mock
+    private UserRepository userRepository;
+    @Mock
+    private MailService mailService;
+    @Mock
+    private VerificationTokenService verificationTokenService;
+    @Mock
+    private PasswordEncoder userPasswordEncoder;
 
     private User user;
     private VerificationToken verificationToken;

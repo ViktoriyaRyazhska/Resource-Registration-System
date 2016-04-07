@@ -36,8 +36,8 @@ public class PasswordResetServiceImpl implements PasswordResetService{
         logger.info("Recieved package: " + batch);
         List<User> userList = new ArrayList<User>();
 
-        for (String logins : batch.getLogin().split(",")) {
-            User user = userService.findUserByLogin(logins);
+        for (String login : batch.getLogin().split(",")) {
+            User user = userService.findUserByLogin(login);
             if (user != null) {
                 userList.add(user);
                 logger.info("found user: {" + user.getUserId() + ":"

@@ -10,6 +10,7 @@ import org.registrator.community.service.impl.MailServiceImpl;
 import org.slf4j.Logger;
 
 import static org.mockito.Mockito.*;
+
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -31,36 +32,36 @@ public class MailServiceTest extends PowerMockTestCase {
     private String token = "token";
     private String url = "url";
 
-	@InjectMocks
-	private MailService mailService = new MailServiceImpl();
+    @InjectMocks
+    private MailService mailService = new MailServiceImpl();
 
-	@Spy
-	private JavaMailSender mailSender = new JavaMailSenderImpl();
+    @Spy
+    private JavaMailSender mailSender = new JavaMailSenderImpl();
 
     @Mock
     private VelocityEngine velocityEngine;
-	
-	@BeforeMethod
-	public void beforeMethod() throws IllegalAccessException {
-		MockitoAnnotations.initMocks(this);
+
+    @BeforeMethod
+    public void beforeMethod() throws IllegalAccessException {
+        MockitoAnnotations.initMocks(this);
 
         // inject logger into tested service
         logger = LoggerFactory.getLogger("");
         MemberModifier.field(MailServiceImpl.class, "logger").set(mailService, logger);
 
-	}
+    }
 
-	@Test
-	public void sendRecoveryPasswordMailTestInvokesMailSender () throws Exception {
+    @Test
+    public void sendRecoveryPasswordMailTestInvokesMailSender() throws Exception {
         PowerMockito.whenNew(MimeMessageHelper.class)
                 .withAnyArguments()
                 .thenReturn(mock(MimeMessageHelper.class, RETURNS_MOCKS));
         mailService.sendRecoveryPasswordMail(recepientEmail, recepientName, token, url);
-		verify(mailSender).send(any(MimeMessagePreparator.class));
-	}
+        verify(mailSender).send(any(MimeMessagePreparator.class));
+    }
 
     @Test
-    public void sendResetedPasswordMailTestInvokesMailSender () throws Exception {
+    public void sendResetedPasswordMailTestInvokesMailSender() throws Exception {
         PowerMockito.whenNew(MimeMessageHelper.class)
                 .withAnyArguments()
                 .thenReturn(mock(MimeMessageHelper.class, RETURNS_MOCKS));
@@ -69,12 +70,12 @@ public class MailServiceTest extends PowerMockTestCase {
     }
 
     @Test
-    public void sendComfirmEMailTestInvokesMailSender () throws Exception {
+    public void sendComfirmEMailTestInvokesMailSender() throws Exception {
         PowerMockito.whenNew(MimeMessageHelper.class)
                 .withAnyArguments()
                 .thenReturn(mock(MimeMessageHelper.class, RETURNS_MOCKS));
         mailService.sendComfirmEMail(recepientEmail, recepientName, token, url);
         verify(mailSender).send(any(MimeMessagePreparator.class));
     }
-	
+
 }
