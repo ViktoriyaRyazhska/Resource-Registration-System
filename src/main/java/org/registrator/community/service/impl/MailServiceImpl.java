@@ -66,7 +66,7 @@ public class MailServiceImpl implements MailService{
         	mailSender.send(preparator);
         }
         catch(MailException e){
-        	logger.error("Send mail exception to"+recepientEmail);
+            logger.error("Send mail exception to {}", recepientEmail);
         }
 	}
 
@@ -92,7 +92,7 @@ public class MailServiceImpl implements MailService{
         	mailSender.send(preparator);
         }
         catch(MailException e){
-        	logger.error("Send mail exception to"+recepientEmail);
+        	logger.error("Send mail exception to {}", recepientEmail);
         } 
 	}
 
@@ -118,7 +118,7 @@ public class MailServiceImpl implements MailService{
             mailSender.send(preparator);
         }
         catch(MailException e){
-            logger.error("Send mail exception to"+recepientEmail);
+            logger.error("Send mail exception to {}", recepientEmail);
         }
     }
 

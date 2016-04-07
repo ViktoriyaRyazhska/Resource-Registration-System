@@ -52,7 +52,6 @@ public class PasswordResetServiceTest {
         batch.setLogin("firstLogin,secondLogin,thirdLogin"); //TODO check correctness of method in case of multiply users
         user = new User(login, "password", new Role(RoleType.USER,"description"), "firstName", "lastName",
                 "middleName", "email", "ACTIVE");
-        user.setUserId(0);
     }
 
     @Test
