@@ -5,7 +5,7 @@ import org.registrator.community.dto.UserRegistrationDTO;
 import org.registrator.community.entity.TerritorialCommunity;
 import org.registrator.community.enumeration.RegistrationMethod;
 import org.registrator.community.service.CommunityService;
-import org.registrator.community.service.EmailConfirmService;
+import org.registrator.community.service.NotConfirmedUsersSerice;
 import org.registrator.community.service.SettingsService;
 import org.registrator.community.service.UserService;
 import org.registrator.community.validator.UserDataValidator;
@@ -39,7 +39,7 @@ public class RegisterController {
     private CommunityService communityService;
     
     @Autowired
-    private EmailConfirmService emailConfirmService;
+    private NotConfirmedUsersSerice emailConfirmService;
     
     @Autowired
     UserDataValidator validator;

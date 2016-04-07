@@ -57,7 +57,6 @@ public interface UserService {
 
     public void resetAllFailAttempts();
 
-    public String deleteNotConfirmedUsers(String logins);
 
     /**
      * Checks if user is authenticated in application

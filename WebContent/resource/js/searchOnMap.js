@@ -728,7 +728,7 @@ $(document).on("click", "#showAllResources", function() {
 
   $.ajax({
     type : "POST",
-    url : "/registrator/resource/showAllResources",
+    url : baseUrl.toString() + "/registrator/resource/showAllResources",
     data : {
       "resType" : resType
     },

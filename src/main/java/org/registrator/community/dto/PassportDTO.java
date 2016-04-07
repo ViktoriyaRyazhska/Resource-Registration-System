@@ -8,10 +8,10 @@ public class PassportDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Pattern(regexp = "[А-ЯІЇЄ]{2}", message = "{msg.registration.onlytwoletters}")
+    @Pattern(regexp = "^[А-ЯІЇЄ]{2}$|^$", message = "{msg.registration.onlytwoletters}")
     private String seria;
 
-    @Pattern(regexp = "[0-9]{6}", message = "{msg.registration.only6digits}")
+    @Pattern(regexp = "^[0-9]{6}$|^$", message = "{msg.registration.only6digits}")
     private String number;
 
     private String published_by_data;

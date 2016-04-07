@@ -100,7 +100,7 @@ jQuery(document).ready(function($) {
             },
 
             error : function(xhr, status, error) {
-                bootbox.alert("<h3>Error performing Role change operation</h3>" + xhr.responseText);
+                bootbox.alert("<h3>"+jQuery.i18n.prop("msg.batchops.ajaxError")+"</h3>" + xhr.responseText);
                 return "";
             }
         });
@@ -146,7 +146,7 @@ jQuery(document).ready(function($) {
                     tc_name = data.name;
                 },
                 error : function(xhr, status, error) {
-                    bootbox.alert("<h3>Error getting the Community list. Please contact the developer.</h3>" + xhr.responseText);
+                    bootbox.alert("<h3>"+jQuery.i18n.prop("msg.batchops.ajaxError")+"</h3>" + xhr.responseText);
                     return "";
                 }
             });
@@ -155,7 +155,7 @@ jQuery(document).ready(function($) {
 
     $('.submit', communityModal).click(function() {
         if (tc_id == null || tc_id == -1) {
-            bootbox.alert("TC cant be empty");
+            bootbox.alert(jQuery.i18n.prop("msg.batchops.emptyTC"));
             return;
         }
 
@@ -186,7 +186,7 @@ jQuery(document).ready(function($) {
                 return false;
             },
             error : function(xhr, status, error) {
-                bootbox.alert("<h3>Error performing the Community change operation</h3>" + xhr.responseText);
+                bootbox.alert("<h3>"+jQuery.i18n.prop("msg.batchops.ajaxError")+"</h3>" + xhr.responseText);
                 return "";
             }
         });
@@ -236,11 +236,12 @@ jQuery(document).ready(function($) {
             mimeType : 'application/json',
             success : function(data) {
                 bootbox.alert(jQuery.i18n.prop(data));
-                return false;
+                table.ajax.reload();
+                //return false;
             },
             error : function(xhr, status, error) {
                 bootbox.alert("<h3>"+jQuery.i18n.prop("msg.error")+"</h3>" + xhr.responseText);
-                return "";
+                //return "";
             }
         });
     }

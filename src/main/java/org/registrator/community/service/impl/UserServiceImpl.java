@@ -341,51 +341,7 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
-    /**
-     * Method, which delete user only if user status = NOTCOMFIRMED
-     *
-     * @return List<UserDTO>
-     */
-    @Transactional
-    @Override
-    public String deleteNotConfirmedUsers(String logins) {
-        
-        List<PassportInfo> passportInfoList = new ArrayList<PassportInfo>();
-        List<Address> addressList = new ArrayList<Address>();
-        List<String> users = new ArrayList<String>();
-
-        Collections.addAll(users, logins.split(","));
-        logger.info("Loking for users with logins: "+logins);
-        List<User> userList = userRepository.findUsersByLoginList(users);
-        if (userList.isEmpty()){
-            logger.info("no such users found in database");
-            return "No such users found";
-        }
-        for (User user: userList){
-            if (user.getStatus() == UserStatus.NOTCOMFIRMED) {
-                passportInfoList.addAll(user.getPassport());
-                addressList.addAll(user.getAddress());
-            }else{
-                logger.info("Try to delete users wich are not in status NOTCOMFIRMED");
-                return "only NOTCOMFIRMED alowed to delete";
-                }
-        }
-        
-        logger.info("users found");
-        logger.info("start delete operations");
-        
-        passportRepository.delete(passportInfoList);
-        logger.info("pasports succesfuly deleted");
-        
-        addressRepository.delete(addressList);
-        logger.info("addresses succesfuly deleted");
-        
-        userRepository.delete(userList);
-        logger.info("users succesfuly deleted");
-        
-        return "sucsesfuly deleted";
-    }
-
+ 
     @Transactional
     @Override
     public boolean login(String username, String password) {

@@ -1,6 +1,7 @@
 package org.registrator.community.service.impl;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import org.registrator.community.dao.VerificationTokenRepository;
@@ -82,5 +83,10 @@ public class VerificationTokenServiceImpl implements VerificationTokenService{
 		verificationTokenRepository.delete(verificationToken);
 	}
 	
-	
+	@Override
+	public List<VerificationToken> findVerificationTokensByLoginsAndTokenType(List<String> loginList, TokenType type){
+        return verificationTokenRepository.findVerificationTokensByLoginsAndTokenType(loginList, type);
+        
+	    
+	}
 }

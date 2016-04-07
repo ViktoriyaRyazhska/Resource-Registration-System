@@ -99,9 +99,7 @@ public class UsersController {
     public String editRegistratedUser(@Valid @ModelAttribute("userDTO") UserDTO userDto,
             BindingResult result, Model model, RedirectAttributes redirectAttributes) {
         ResourceNumberJson resNumJson = userDto.getResourceNumberJson();
-        if (resNumJson != null) {
-            resourceNumberValidator.validate(resNumJson, result);
-        }
+        resourceNumberValidator.validate(resNumJson, result);
 
         if (result.hasErrors()) {
             return fillInEditWindow(userDto.getLogin(), model, true);
@@ -204,7 +202,7 @@ public class UsersController {
         }else{
             userService.setUsersRole(roleTypeJson);
             logger.info("end");
-            return UIMessages.CHANGES_ACCEPTED.toString();
+            return UIMessages.CHANGES_ACCEPTED.getMessage();
         }
     }
     
@@ -225,7 +223,7 @@ public class UsersController {
         }else{
             userService.setUsersCommun(communityParamJson);
             logger.info("end");
-            return UIMessages.CHANGES_ACCEPTED.toString();
+            return UIMessages.CHANGES_ACCEPTED.getMessage();
         }
     }
 

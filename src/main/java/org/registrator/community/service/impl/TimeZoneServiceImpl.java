@@ -31,9 +31,6 @@ public class TimeZoneServiceImpl implements TimeZoneService {
 
     @Override
     public List<TimeZoneDTO> findByCity(String searchValue, Locale locale) throws ExternalApiCallException {
-        if ("ua".equals(locale.getLanguage())) {
-            locale = Locale.forLanguageTag("uk");
-        }
         CityPositionSearch cityPositionSearch = new CityPositionSearchOSM(searchValue, locale);
         List<CityPosition> points = cityPositionSearch.findCities();
         List<TimeZoneDTO> result = new ArrayList<>();

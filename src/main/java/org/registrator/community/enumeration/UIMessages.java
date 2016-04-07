@@ -12,6 +12,9 @@ public enum UIMessages {
     }
     private final String value;
     
+    public String getMessage(){
+        return value;
+    }
     @Override
     public String toString(){
         return value;

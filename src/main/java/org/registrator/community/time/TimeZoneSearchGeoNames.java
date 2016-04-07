@@ -11,7 +11,8 @@ import java.util.TimeZone;
  * Implementation of time zone search by position based on web-service timezonedb.com
  */
 public class TimeZoneSearchGeoNames implements TimeZoneSearch {
-    private static final String TIME_ZONE_API = "http://api.geonames.org/timezoneJSON?lat=%s&lng=%s&username=demo";
+    private static final String TIME_ZONE_API =
+            "http://api.geonames.org/timezoneJSON?lat=%s&lng=%s&username=koklobok";
     private final CityPosition cityPosition;
 
     public TimeZoneSearchGeoNames(CityPosition cityPosition) {
@@ -20,7 +21,8 @@ public class TimeZoneSearchGeoNames implements TimeZoneSearch {
 
     @Override
     public TimeZone findTimeZoneByPosition() throws ExternalApiCallException {
-        String hostname = String.format(TIME_ZONE_API, cityPosition.getLat(), cityPosition.getLon());
+        String hostname =
+                String.format(TIME_ZONE_API, cityPosition.getLat(), cityPosition.getLon());
         ObjectMapper mapper = new ObjectMapper();
         TimeDbResponse response;
         try {
@@ -28,8 +30,9 @@ public class TimeZoneSearchGeoNames implements TimeZoneSearch {
         } catch (IOException e) {
             throw new ExternalApiCallException("Error when calling external API", e);
         }
-        if (response.getStatus() != null ){
-            throw new ExternalApiCallException("Call to geonames.org failed, reason: " + response.getStatus());
+        if (response.getStatus() != null) {
+            throw new ExternalApiCallException(
+                    "Call to geonames.org failed, reason: " + response.getStatus());
         }
 
         return TimeZone.getTimeZone(response.getTimezoneId());
@@ -172,6 +175,11 @@ public class TimeZoneSearchGeoNames implements TimeZoneSearch {
 
             public void setValue(int value) {
                 this.value = value;
+            }
+
+            @Override
+            public String toString() {
+                return message;
             }
         }
     }
