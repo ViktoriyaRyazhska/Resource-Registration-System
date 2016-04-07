@@ -340,11 +340,11 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
-    /**
+   /* *//**
      * Method, which delete user only if user status = NOTCOMFIRMED
      *
      * @return List<UserDTO>
-     */
+     *//*
     @Transactional
     @Override
     public String deleteNotConfirmedUsers(String logins) {
@@ -383,7 +383,7 @@ public class UserServiceImpl implements UserService {
         logger.info("users succesfuly deleted");
         
         return "sucsesfuly deleted";
-    }
+    }*/
 
     @Transactional
     @Override
