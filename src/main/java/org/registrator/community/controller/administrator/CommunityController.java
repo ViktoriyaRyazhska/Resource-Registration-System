@@ -38,7 +38,7 @@ public class CommunityController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/show-all-communities", method = RequestMethod.GET)
     public String showCommunity(Model model) {
-        List<TerritorialCommunity> listOfTerritorialCommunity = communityService.findAll();
+        List<TerritorialCommunity> listOfTerritorialCommunity = communityService.findAllByAsc();
         model.addAttribute("listOfTerritorialCommunity", listOfTerritorialCommunity);
         return "showAllCommunity";
     }
