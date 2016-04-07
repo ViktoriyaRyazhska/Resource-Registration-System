@@ -3,7 +3,7 @@ jQuery(document).ready(function($) {
     $("#dark_bg").show();
     $.ajax({
       type : "GET",
-      url : "/reset_password",
+      url : baseUrl.toString() + "/reset_password",
       success : function(data) {
         bootbox.alert(jQuery.i18n.prop(data));
         $("#dark_bg").hide();

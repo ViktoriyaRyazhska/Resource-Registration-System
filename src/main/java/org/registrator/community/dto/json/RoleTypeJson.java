@@ -1,7 +1,11 @@
 package org.registrator.community.dto.json;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 public class RoleTypeJson {
+    @NotEmpty
     private String login;
+    @NotEmpty
     private String role;
 
     public RoleTypeJson(String login, String role) {

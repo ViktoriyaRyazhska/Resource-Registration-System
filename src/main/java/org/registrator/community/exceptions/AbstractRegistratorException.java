@@ -12,6 +12,22 @@ import java.util.Locale;
  */
 public abstract class AbstractRegistratorException extends Exception  {
 
+    public AbstractRegistratorException() {
+        super();
+    }
+    
+    public AbstractRegistratorException(String message) {
+        super(message);
+    }
+
+    public AbstractRegistratorException(Throwable cause) {
+        super(cause);
+    }
+
+    public AbstractRegistratorException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
     protected String getLocalizedMessageKey() {
         return "";
     }
@@ -25,7 +41,7 @@ public abstract class AbstractRegistratorException extends Exception  {
 
         String messageKey = getLocalizedMessageKey();
         if ((messageKey == null) || (messageKey.isEmpty())) {
-            return "";
+            return super.getLocalizedMessage();
         }
 
         MessageSource messageSource = SpringApplicationContext.getMessageSource();

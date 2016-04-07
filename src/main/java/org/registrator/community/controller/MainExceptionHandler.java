@@ -1,6 +1,9 @@
 package org.registrator.community.controller;
 
-import org.registrator.community.exceptions.AbstractRegistratorException;
+import javax.servlet.http.HttpServletRequest;
+
+import org.registrator.community.enumeration.UIMessages;
+import org.registrator.community.exceptions.BadInputDataException;
 import org.registrator.community.exceptions.ResourceEntityNotFound;
 import org.registrator.community.utils.HttpUtils;
 import org.slf4j.Logger;
@@ -8,9 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * Exception handler for application
@@ -30,12 +32,23 @@ public class MainExceptionHandler {
         mav.setViewName("resourceEntityNotFound");
         return mav;
     }
-
+    
+    @ExceptionHandler(BadInputDataException.class)
+    @ResponseBody
+    public String handleCustomException(BadInputDataException ex) {
+          return UIMessages.WRONG_INPUT.toString();
+    }
 
     @ExceptionHandler(AccessDeniedException.class)
     public String handleAccessDenied(HttpServletRequest request, Exception exception) {
         logger.error("Request: " + HttpUtils.getFullRequestURL(request) + " access denied!", exception);
         return "accessDenied";
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ModelAndView handleRuntimeExceptions(HttpServletRequest request, RuntimeException exception) {
+
+        return handleUncaughtExceptions(request, exception);
     }
 
     @ExceptionHandler(Exception.class)

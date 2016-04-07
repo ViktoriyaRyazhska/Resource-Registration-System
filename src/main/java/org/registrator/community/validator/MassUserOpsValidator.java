@@ -10,6 +10,7 @@ import org.registrator.community.dto.json.RoleTypeJson;
 import org.registrator.community.entity.TerritorialCommunity;
 import org.registrator.community.entity.User;
 import org.registrator.community.enumeration.RoleType;
+import org.registrator.community.enumeration.UIMessages;
 import org.registrator.community.service.CommunityService;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,87 +33,88 @@ public class MassUserOpsValidator implements Validator {
     private Logger logger;
 
     private List<User> userList = new ArrayList<User>();
-    private static final String WRONG_INPUT = "msg.batchops.wrongInput",
-            IS_ADMIN = "msg.batchops.cantChangeAdmins",
-            CANT_CHANGE_SELF = "msg.batchops.cantChangeOwnState",
-            DIFFIRENT_TCS = "msg.batchops.moreThenOneTC";
+    private List<Class<?>> supportedClasses = new ArrayList<Class<?>>();
 
     @Override
     public boolean supports(Class<?> clazz) {
-        boolean supports = false;
-        supports = (clazz.equals(CommunityParamJson.class) || clazz.equals(RoleTypeJson.class))
-                ? true : false;
-        return supports;
+        supportedClasses.add(CommunityParamJson.class);
+        supportedClasses.add(RoleTypeJson.class);
+        return supportedClasses.contains(clazz);
     }
 
     @Override
     public void validate(Object target, Errors errors) {
         if (target instanceof CommunityParamJson) {
-            CommunityParamJson communityParamBatch = (CommunityParamJson) target;
-
-            if (communityParamBatch.getLogin() == null
-                    || communityParamBatch.getCommunityId() == null) {
-                logger.warn("Empty RoleTypeJson batch file");
-                errors.reject(WRONG_INPUT);
-                return;
-            }
-
-            if (!checkIfUsersExist(communityParamBatch.getLogin())) {
-                errors.reject(WRONG_INPUT);
-                return;
-            }
-
-            if (!checkIfIsSelf()) {
-                errors.reject(CANT_CHANGE_SELF);
-                return;
-            }
-
-            if (!checkIfIsAdmin()) {
-                errors.reject(IS_ADMIN);
-                return;
-            }
-
-            if (!checkIfCommunityExists(communityParamBatch.getCommunityId())) {
-                errors.reject(WRONG_INPUT);
-                return;
-            }
-
+            CommunityParamJson taskInfo = (CommunityParamJson) target;
+            validateCommunJson(taskInfo, errors);
         } else if (target instanceof RoleTypeJson) {
-            RoleTypeJson roleTypeParamBatch = (RoleTypeJson) target;
-
-            if (roleTypeParamBatch.getLogin() == null || roleTypeParamBatch.getRole() == null) {
-                logger.warn("Empty RoleTypeJson batch file");
-                errors.reject(WRONG_INPUT);
-                return;
-            }
-
-            if (!checkIfUsersExist(roleTypeParamBatch.getLogin())) {
-                errors.reject(WRONG_INPUT);
-                return;
-            }
-
-            if (!checkIfIsSelf()) {
-                errors.reject(CANT_CHANGE_SELF);
-                return;
-            }
-
-            if (!checkIfIsAdmin()) {
-                errors.reject(IS_ADMIN);
-                return;
-            }
-
-            if (!checkIfIsFromSameCommunity()) {
-                errors.reject(DIFFIRENT_TCS);
-                return;
-            }
-
-            if (!checkIfRoleExists(roleTypeParamBatch.getRole())) {
-                errors.reject(WRONG_INPUT);
-                return;
-            }
+            RoleTypeJson taskInfo = (RoleTypeJson) target;
+            validateRoleTypeJson(taskInfo, errors);
         }
     }
 
+    private void validateRoleTypeJson(RoleTypeJson task, Errors errors){
+        if (task.getLogin() == null || task.getRole() == null) {
+            logger.warn("Empty RoleTypeJson batch file");
+            errors.reject(UIMessages.WRONG_INPUT.getMessage());
+            return;
+        }
+
+        if (!checkIfUsersExist(task.getLogin())) {
+            errors.reject(UIMessages.WRONG_INPUT.getMessage());
+            return;
+        }
+
+        if (!checkIfIsSelf()) {
+            errors.reject(UIMessages.CANT_CHANGE_SELF.getMessage());
+            return;
+        }
+
+        if (!checkIfIsAdmin()) {
+            errors.reject(UIMessages.IS_ADMIN.getMessage());
+            return;
+        }
+
+        if (!checkIfIsFromSameCommunity()) {
+            errors.reject(UIMessages.DIFFIRENT_TCS.getMessage());
+            return;
+        }
+
+        if (!checkIfRoleExists(task.getRole())) {
+            errors.reject(UIMessages.WRONG_INPUT.getMessage());
+            return;
+        }
+    }
+    
+    private void validateCommunJson(CommunityParamJson task, Errors errors){
+        if (task.getLogin() == null
+                || task.getCommunityId() == null) {
+            logger.warn("Empty RoleTypeJson batch file");
+            errors.reject(UIMessages.WRONG_INPUT.getMessage());
+            return;
+        }
+
+        if (!checkIfUsersExist(task.getLogin())) {
+            errors.reject(UIMessages.WRONG_INPUT.getMessage());
+            return;
+        }
+
+        if (!checkIfIsSelf()) {
+            errors.reject(UIMessages.CANT_CHANGE_SELF.getMessage());
+            return;
+        }
+
+        if (!checkIfIsAdmin()) {
+            errors.reject(UIMessages.IS_ADMIN.getMessage());
+            return;
+        }
+
+        if (!checkIfCommunityExists(task.getCommunityId())) {
+            errors.reject(UIMessages.WRONG_INPUT.getMessage());
+            return;
+        }
+    }
+    
     private boolean checkIfUsersExist(String userLogins) {
         List<String> givenUsers = new ArrayList<String>();
         Collections.addAll(givenUsers, userLogins.split(","));

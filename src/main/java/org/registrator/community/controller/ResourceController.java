@@ -388,10 +388,4 @@ public class ResourceController {
         return "redirect:/registrator/resource/searchOnMap";
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    private static class ResponseBadRequest extends RuntimeException {
-
-    }
-
-
 }

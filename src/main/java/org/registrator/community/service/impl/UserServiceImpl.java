@@ -32,6 +32,7 @@ import org.registrator.community.entity.User;
 import org.registrator.community.entity.WillDocument;
 import org.registrator.community.enumeration.RoleType;
 import org.registrator.community.enumeration.UserStatus;
+import org.registrator.community.exceptions.BadInputDataException;
 import org.registrator.community.service.CommunityService;
 import org.registrator.community.service.UserService;
 import org.slf4j.Logger;
@@ -340,51 +341,7 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
-   /* *//**
-     * Method, which delete user only if user status = NOTCOMFIRMED
-     *
-     * @return List<UserDTO>
-     *//*
-    @Transactional
-    @Override
-    public String deleteNotConfirmedUsers(String logins) {
-        
-        List<PassportInfo> passportInfoList = new ArrayList<PassportInfo>();
-        List<Address> addressList = new ArrayList<Address>();
-        List<String> users = new ArrayList<String>();
-
-        Collections.addAll(users, logins.split(","));
-        logger.info("Loking for users with logins: "+logins);
-        List<User> userList = userRepository.findUsersByLoginList(users);
-        if (userList.isEmpty()){
-            logger.info("no such users found in database");
-            return "No such users found";
-        }
-        for (User user: userList){
-            if (user.getStatus() == UserStatus.NOTCOMFIRMED) {
-                passportInfoList.addAll(user.getPassport());
-                addressList.addAll(user.getAddress());
-            }else{
-                logger.info("Try to delete users wich are not in status NOTCOMFIRMED");
-                return "only NOTCOMFIRMED alowed to delete";
-                }
-        }
-        
-        logger.info("users found");
-        logger.info("start delete operations");
-        
-        passportRepository.delete(passportInfoList);
-        logger.info("pasports succesfuly deleted");
-        
-        addressRepository.delete(addressList);
-        logger.info("addresses succesfuly deleted");
-        
-        userRepository.delete(userList);
-        logger.info("users succesfuly deleted");
-        
-        return "sucsesfuly deleted";
-    }*/
-
+ 
     @Transactional
     @Override
     public boolean login(String username, String password) {
@@ -637,7 +594,7 @@ public class UserServiceImpl implements UserService {
         if (tome != null && resourceNumber != null && userDto.getResourceNumberJson() != null) {
             ResourceNumberJson resourceNumberJson = userDto.getResourceNumberJson();
             if (resourceNumberJson.getRegistrator_number() == null || resourceNumberJson.getResource_number() == null) {
-                logger.error("Bad ResourceNumberJson data");
+                logger.warn("Bad ResourceNumberJson data");
                 return;
             }
 
@@ -651,14 +608,13 @@ public class UserServiceImpl implements UserService {
             resourceNumberRepository.save(resourceNumber);
         } else {
             List<User> userList = Collections.singletonList(user);
-            batchCreateTomeAndResourceNumber(userList);
+            createTomesAndResourceNumbers(userList);
         }
     }
-
+       
     @Transactional
     @Override
-    public void batchCreateTomeAndResourceNumber(List<User> users) {
-        if (users.isEmpty())return;
+    public void createTomesAndResourceNumbers(List<User> users) {
 
         List<Tome> tomeList = tomeRepository.findAll();
         Integer tomeNumber = 0;
@@ -799,27 +755,25 @@ public class UserServiceImpl implements UserService {
      * Method to provide batch operation over users to perform "from the list" mass role
      * assignment.
      *
-     * @param batch RoleTypeJson - holds JSON data of type {users logins(comma separator), role type
+     * @param taskInfo RoleTypeJson - holds JSON data of type {users logins(comma separator), role type
      *              and info, needed to setup RoleType.REGISTRATOR}
-     * @return String message, which is passed to the controller to return a decent HTTP status with
-     * info.
      * @author ATsyhanenko
      */
     @Transactional
     @Override
-    public String batchRoleChange(RoleTypeJson batch) {
-        logger.info("Recieved package: " + batch);
-        if (batch.getLogin() == null || batch.getRole() == null) {
-            logger.warn("Empty RoleTypeJson batch file");
-            return "msg.batchops.wrongInput";
-        }
+    public void setUsersRole(RoleTypeJson taskInfo) {
+        logger.info("Recieved package: " + taskInfo);
 
+        if(taskInfo.getLogin() == null || taskInfo.getRole() == null){
+            throw new BadInputDataException();
+        }
+        
         List<String> givenUsers = new ArrayList<String>();
-        Collections.addAll(givenUsers, batch.getLogin().split(","));
+        Collections.addAll(givenUsers, taskInfo.getLogin().split(","));
 
         List<User> userList = userRepository.findUsersByLoginList(givenUsers);
 
-        Role role = checkRole(batch.getRole());
+        Role role = checkRole(taskInfo.getRole());
         logger.info("Selected role: " + role);
         logger.info("Performing Change Role operations");
 
@@ -829,10 +783,8 @@ public class UserServiceImpl implements UserService {
         }
 
         if (role.getType() == RoleType.REGISTRATOR) {
-            batchCreateTomeAndResourceNumber(userList);
+            createTomesAndResourceNumbers(userList);
         }
-
-        return "msg.batchops.changesaccepted";
     }
 
     /* Batch Community change */
@@ -841,34 +793,30 @@ public class UserServiceImpl implements UserService {
      * Method to provide batch operation over users to perform "from the list" mass comunity
      * assignment.
      *
-     * @param batch CommunityParamJson - holds JSON data of type {users logins(comma separator),
+     * @param taskInfo CommunityParamJson - holds JSON data of type {users logins(comma separator),
      *              communityId}
-     * @return String message, which is passed to the controller to return a decent HTTP status with
-     * info.
      * @author ATsyhanenko
      */
     @Transactional
     @Override
-    public String batchCommunityChange(CommunityParamJson batch) {
-        logger.info("Recieved package: " + batch);
-
-        if (batch.getLogin() == null || batch.getCommunityId() == null) {
-            logger.warn("Empty CommunityParamJson batch file");
-            return "msg.batchops.wrongInput";
+    public void setUsersCommun(CommunityParamJson taskInfo) {
+        logger.info("Recieved package: " + taskInfo);
+        
+        if(taskInfo.getCommunityId() == null || taskInfo.getLogin() == null){
+            throw new BadInputDataException();
         }
 
         List<String> givenUsers = new ArrayList<String>();
-        Collections.addAll(givenUsers, batch.getLogin().split(","));
+        Collections.addAll(givenUsers, taskInfo.getLogin().split(","));
 
         List<User> userList = userRepository.findUsersByLoginList(givenUsers);
 
-        Integer commumityId = Integer.parseInt(batch.getCommunityId());
+        Integer commumityId = Integer.parseInt(taskInfo.getCommunityId());
         TerritorialCommunity community = communityService.findById(commumityId);
-        if (community == null) {
-            logger.warn("Incorrect community id");
-            return "msg.batchops.wrongInput";
+        if(community == null){
+            throw new BadInputDataException();
         }
-        
+
         logger.info("Selected Community: " + community.getName());
 
         Role role = checkRole("USER");
@@ -877,8 +825,6 @@ public class UserServiceImpl implements UserService {
             user.setRole(role);
             user.setTerritorialCommunity(community);
         }
-
-        return "msg.batchops.changesaccepted";
     }
 
 

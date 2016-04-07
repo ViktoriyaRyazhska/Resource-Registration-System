@@ -14,7 +14,7 @@ public interface ResourceFindByParams {
     /**
      * Search of resources by parameters. All parameters comparisons are combined with AND logical operation
      * @param parameters resource parameters and values for searching
-     * @return List fo found resources
+     * @return List of found resources
      */
     List<Resource> findByParams(ResourceSearchJson parameters);
 }

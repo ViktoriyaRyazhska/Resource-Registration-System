@@ -7,6 +7,7 @@ public class ResourceEntityNotFound extends AbstractRegistratorException {
     private String identifier;
 
     public ResourceEntityNotFound(String identifier) {
+        super();
         this.identifier = identifier;
     }
 

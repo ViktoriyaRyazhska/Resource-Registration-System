@@ -32,6 +32,7 @@ public class ResourceNumberJSONDTOValidator implements Validator {
 
     @Override
     public void validate(Object object, Errors errors) {
+        if(object == null)return;
         ResourceNumberJson resourceNumberJson = (ResourceNumberJson) object;
 
         User user = userRepository.findUserByLogin(resourceNumberJson.getLogin());

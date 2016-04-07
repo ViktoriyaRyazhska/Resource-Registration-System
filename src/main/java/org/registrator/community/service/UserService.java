@@ -46,8 +46,6 @@ public interface UserService {
     List<UserDTO> getUserBySearchTag(String searchTag);
 
     User findUserByEmail(String email);
-    
-    void batchCreateTomeAndResourceNumber(List<User> users);
 
     void createTomeAndRecourceNumber(UserDTO userDto);
 
@@ -63,13 +61,18 @@ public interface UserService {
 
     public String batchCommunityChange(CommunityParamJson batch);
 
-  /*  public String deleteNotConfirmedUsers(String logins);*/
 
     /**
      * Checks if user is authenticated in application
      * @return true if current user is authenticated, false otherwise
      */
     boolean isAuthenticated();
+
+    void setUsersCommun(CommunityParamJson taskInfo);
+
+    void setUsersRole(RoleTypeJson taskInfo);
+
+    void createTomesAndResourceNumbers(List<User> users);
 
     /**
      * @return current logged user, if user is not logged in then null is returned
