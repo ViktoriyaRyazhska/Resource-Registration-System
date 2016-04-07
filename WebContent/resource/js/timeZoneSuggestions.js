@@ -7,7 +7,7 @@ jQuery(document).ready(function ($) {
     });
 
     $('#time_id').autocomplete({
-        serviceUrl: '/timeZones',
+        serviceUrl: baseUrl.toString() + '/timeZones',
         paramName: "value",
         delimiter: ",",
         minChars: 2,
