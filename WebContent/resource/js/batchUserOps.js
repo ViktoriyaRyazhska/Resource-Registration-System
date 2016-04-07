@@ -96,7 +96,7 @@ jQuery(document).ready(function($) {
                     field.text(jQuery.i18n.prop("msg.role." + role));
                     $(element).removeClass('selected');
                 })
-                return false;
+                //return false;
             },
 
             error : function(xhr, status, error) {
@@ -227,21 +227,22 @@ jQuery(document).ready(function($) {
                 "logins" : selected.toString()
             };
         
+        $("#dark_bg").show();
         $.ajax({
             type : "POST",
-            url : "get-all-users/delete-notcomfirmrd-user",
+            url : "get-all-users/notcomfirmrd-user",
             dataType : "text",
             data : JSON.stringify(json),
             contentType : 'application/json; charset=utf-8',
             mimeType : 'application/json',
             success : function(data) {
-                bootbox.alert(jQuery.i18n.prop(data));
+                $("#dark_bg").hide();
                 table.ajax.reload();
-                //return false;
+                bootbox.alert(jQuery.i18n.prop(data));
             },
             error : function(xhr, status, error) {
+                $("#dark_bg").hide();
                 bootbox.alert("<h3>"+jQuery.i18n.prop("msg.error")+"</h3>" + xhr.responseText);
-                //return "";
             }
         });
     }

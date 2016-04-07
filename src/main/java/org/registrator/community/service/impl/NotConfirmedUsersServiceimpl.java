@@ -79,11 +79,11 @@ public class NotConfirmedUsersServiceimpl implements NotConfirmedUsersSerice {
                 mailService.sendComfirmEMail(user.getEmail(), user.getFirstName(),verifacationToken.getToken(),verifacationToken.getBaseLink());
             }else{
                 logger.warn("no verifacationToken found");
-                return "not ok";
+                return "msg.notconfirmedusers.unsucsesfullysent";
             }
 
         }
-        return "ok";              
+        return "msg.notconfirmedusers.sucsesfullysent";              
     }
 	
 	
@@ -101,12 +101,16 @@ public class NotConfirmedUsersServiceimpl implements NotConfirmedUsersSerice {
 	    Collections.addAll(loginList, logins.split(","));
 	    logger.debug("Loking for users with logins: "+logins);
         List<User> userList = userRepository.findUsersByLoginList(loginList);
+        if (userList.isEmpty()){
+            logger.warn("no such users found");
+            return "msg.notconfirmedusers.nosuchusersfound";
+        }
         logger.debug("users found");
         
         for (User user: userList){
             if (user.getStatus() != UserStatus.NOTCOMFIRMED) {
                 logger.debug("Try to delete users wich are not in status NOTCOMFIRMED");
-                return "only NOTCOMFIRMED alowed to delete";
+                return "msg.notconfirmedusers.onlynotconf";
             }
         }
         
@@ -117,13 +121,13 @@ public class NotConfirmedUsersServiceimpl implements NotConfirmedUsersSerice {
 	    
 	    if (roleType!=RoleType.ADMIN && roleType!=RoleType.COMMISSIONER){
 	        logger.warn("try to perform action by forbitten user:"+ roleType);
-	        return "only admin or commisioner allowed to perform this operation";
+	        return "msg.notconfirmedusers.onlyadminorcommisioner";
 	    }else if(roleType == RoleType.COMMISSIONER){
 	        logger.debug("check whether users over which operation is performing  belongs to the same community");
 	        for (User user: userList){
 	            if(user.getTerritorialCommunity()!=loggetUser.getTerritorialCommunity()){
 	                logger.debug("");
-	                return "Commisioner try to perform action with users from other community";
+	                return "msg.notconfirmedusers.commistryothercommunity";
 	            }
 	        }
 	    }
@@ -171,11 +175,11 @@ public class NotConfirmedUsersServiceimpl implements NotConfirmedUsersSerice {
         userRepository.delete(userList);
         logger.info("users succesfuly deleted");
         
-        return "sucsesfuly deleted";
+        return "msg.notconfirmedusers.sucsesfulydeleted";
     }
     
     @Transactional
-    protected void deleteListVerificationToken(List<String> loginList){
+    void deleteListVerificationToken(List<String> loginList){
         
         
         logger.debug("Looking for verifacationTokens with logins: "+ loginList);
