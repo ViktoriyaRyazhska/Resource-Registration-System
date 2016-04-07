@@ -39,8 +39,10 @@
  <ul class="dropdown-menu multi-level" role="menu"
   aria-labelledby="dropdownMenu">
 
-  <li><a href="#" class="notcomfirmrd-user" id = "DELETE">Видалити</a></li>
-  <li><a href="#" class="notcomfirmrd-user" id = "SENDEMAILAGAIN">Надіслати email щераз</a></li>
+  <li><a href="#" class="notcomfirmrd-user" id = "DELETE"><spring:message
+     code="label.modal.delete" /></a></li>
+  <li><a href="#" class="notcomfirmrd-user" id = "SENDEMAILAGAIN"><spring:message
+     code="label.modal.sendEmailAgain" /></a></li>
  </ul>
  </c:if>
  

@@ -29,15 +29,14 @@ public class NotConfirmedUsersController {
     @RequestMapping(value = {"/manualregistration/confirm_email/{hash}", "/register/confirm_email/{hash}"}, method = RequestMethod.GET)
     public String getConfirmEmailPage(@PathVariable("hash") String hash, Model model) {
         if (verificationTokenService.isExistValidVerificationToken(hash)) {
-            emailConfirmService.confirmEmail(hash);
-            model.addAttribute("msg", true);
+            model.addAttribute("msg", emailConfirmService.confirmEmail(hash));
         }
         return "confirm_email";
     }
     
     
     @PreAuthorize("hasRole('ROLE_ADMIN')or hasRole('ROLE_COMMISSIONER')")
-    @RequestMapping(value = "/administrator/users/get-all-users/delete-notcomfirmrd-user", method = RequestMethod.POST)
+    @RequestMapping(value = "/administrator/users/get-all-users/notcomfirmrd-user", method = RequestMethod.POST)
     public @ResponseBody String actionsWithNotConfirmedUsers(@RequestBody UsersDataNotConfJson usersDataNotConfJson) {
         logger.info("Recieve JSON: "+ usersDataNotConfJson);
         return emailConfirmService.actionsWithNotConfirmedUsers(usersDataNotConfJson);
