@@ -1,8 +1,7 @@
 package org.registrator.community.controller;
 
-import org.registrator.community.dto.json.PasswordResetJson;
 import org.registrator.community.dto.json.UsersDataNotConfJson;
-import org.registrator.community.service.EmailConfirmService;
+import org.registrator.community.service.NotConfirmedUsersSerice;
 import org.registrator.community.service.VerificationTokenService;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-public class EmailConfirmController {
+public class NotConfirmedUsersController {
 
 
     @Autowired
@@ -24,7 +23,7 @@ public class EmailConfirmController {
     @Autowired
     private VerificationTokenService verificationTokenService;
     @Autowired
-    EmailConfirmService emailConfirmService;
+    NotConfirmedUsersSerice emailConfirmService;
 
     @PreAuthorize("hasRole('ROLE_ANONYMOUS') or hasRole('ROLE_ADMIN') or hasRole('ROLE_COMMISSIONER')")
     @RequestMapping(value = {"/manualregistration/confirm_email/{hash}", "/register/confirm_email/{hash}"}, method = RequestMethod.GET)

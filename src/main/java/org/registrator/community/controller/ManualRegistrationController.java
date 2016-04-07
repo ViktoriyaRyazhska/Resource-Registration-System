@@ -9,7 +9,7 @@ import javax.validation.Valid;
 import org.registrator.community.dto.UserRegistrationDTO;
 import org.registrator.community.entity.TerritorialCommunity;
 import org.registrator.community.service.CommunityService;
-import org.registrator.community.service.EmailConfirmService;
+import org.registrator.community.service.NotConfirmedUsersSerice;
 import org.registrator.community.service.UserService;
 import org.registrator.community.validator.UserDataValidator;
 import org.slf4j.Logger;
@@ -32,7 +32,7 @@ public class ManualRegistrationController {
     @Autowired
     private CommunityService communityService;
     @Autowired
-    private EmailConfirmService emailConfirmService;
+    private NotConfirmedUsersSerice emailConfirmService;
     
     @Autowired
     UserDataValidator validator;
@@ -77,6 +77,6 @@ public class ManualRegistrationController {
         emailConfirmService.sendConfirmEmailFirstTime(registrationForm.getLogin(), baseLink);
 
         logger.info("Successfully registered new commissioner/user: " + registrationForm.getLogin());
-        return "redirect:/administrator/users/get-all-inactive-users";
+        return "redirect:/administrator/users/get-all-users?statusType=notcomfirmed";
     }
 }

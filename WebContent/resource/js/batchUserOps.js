@@ -236,11 +236,12 @@ jQuery(document).ready(function($) {
             mimeType : 'application/json',
             success : function(data) {
                 bootbox.alert(jQuery.i18n.prop(data));
-                return false;
+                table.ajax.reload();
+                //return false;
             },
             error : function(xhr, status, error) {
                 bootbox.alert("<h3>"+jQuery.i18n.prop("msg.error")+"</h3>" + xhr.responseText);
-                return "";
+                //return "";
             }
         });
     }

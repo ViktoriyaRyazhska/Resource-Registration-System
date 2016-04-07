@@ -1,8 +1,11 @@
 package org.registrator.community.service;
 
-import org.registrator.community.dto.json.UsersDataNotConfJson;
+import java.util.List;
 
-public interface EmailConfirmService {
+import org.registrator.community.dto.json.UsersDataNotConfJson;
+import org.registrator.community.entity.User;
+
+public interface NotConfirmedUsersSerice {
 
 	public void sendConfirmEmailFirstTime(String userEmail, String baseLink);
 
@@ -10,7 +13,9 @@ public interface EmailConfirmService {
 
 	public String actionsWithNotConfirmedUsers(UsersDataNotConfJson usersDataNotConfJson);
 	
-	public String sendConfirmEmailAgain(String login);
+	public String sendConfirmEmailAgain(List<User> userList);
+
+    String deleteNotConfirmedUsers(List<User> userList);
 
 
 }
