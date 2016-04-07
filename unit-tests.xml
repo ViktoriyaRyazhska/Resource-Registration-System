@@ -15,7 +15,9 @@
             <class name="org.registrator.community.service.InquiryServiceTest"/>
             <class name="org.registrator.community.service.LimitLoginAuthenticationProviderTest"/>
 			<class name="org.registrator.community.service.LinearParameterServiceTest"/>
+            <class name="org.registrator.community.service.MailServiceTest"/>
             <class name="org.registrator.community.service.PasswordChangeServiceTest"/>
+            <class name="org.registrator.community.service.PasswordRecoveryServiceTest"/>
             <class name="org.registrator.community.service.PasswordResetServiceTest"/>
 			<class name="org.registrator.community.service.PrintServiceTest"/>
 			<class name="org.registrator.community.service.ResourceDeleteServiceTest"/>
@@ -25,6 +27,7 @@
 			<class name="org.registrator.community.service.ResourceTypeServiceOldTest"/>
             <class name="org.registrator.community.service.ResourceTypeServiceTest"/>
 			<class name="org.registrator.community.service.RoleServiceTest"/>
+            <class name="org.registrator.community.service.TimeZoneServiceTest"/>
 			<class name="org.registrator.community.service.UserServiceTest"/>
             <class name="org.registrator.community.service.VerificationTokenServiceTest"/>
 		</classes>

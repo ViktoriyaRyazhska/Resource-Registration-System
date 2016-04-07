@@ -4,7 +4,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.api.support.membermodification.MemberModifier;
-import org.registrator.community.dao.UserRepository;
 import org.registrator.community.dto.json.PasswordResetJson;
 import org.registrator.community.entity.Role;
 import org.registrator.community.entity.User;
@@ -28,7 +27,7 @@ public class PasswordResetServiceTest {
     private PasswordResetService passwordChangeService = new PasswordResetServiceImpl();
 
     @Mock
-    private UserRepository userRepository;
+    private UserService userService;
 
     @Mock
     private MailService mailService;
@@ -53,34 +52,61 @@ public class PasswordResetServiceTest {
         batch.setLogin("firstLogin,secondLogin,thirdLogin"); //TODO check correctness of method in case of multiply users
         user = new User(login, "password", new Role(RoleType.USER,"description"), "firstName", "lastName",
                 "middleName", "email", "ACTIVE");
-        user.setUserId(0);
     }
 
     @Test
-    public void resetPasswordForUsersTestInvokesBeansWithCorrectParams() throws Exception {
+    public void batcnPasswordResetTestInvokesBeansWithCorrectParams() throws Exception {
 
-        when(userRepository.findUserByLogin(login)).thenReturn(user);
+        when(userService.findUserByLogin(login)).thenReturn(user);
 
         passwordChangeService.batchPasswordReset(batch);
 
-        verify(userRepository).findUserByLogin(login);
+        verify(userService).findUserByLogin(login);
         verify(mailService).sendResetedPasswordMail(anyString(), anyString(), anyString(), anyString());
         verify(userPasswordEncoder).encode(anyString());
-        verify(userRepository).save(user);
+        verify(userService).updateUser(user);
 
     }
 
     @Test
-    public void resetPasswordForUsersTestWrongInput() throws Exception {
+    public void batcnPasswordResetTestWrongInput() throws Exception {
 
-        when(userRepository.findUserByLogin(login)).thenReturn(null);
+        when(userService.findUserByLogin(login)).thenReturn(null);
 
         passwordChangeService.batchPasswordReset(batch);
 
-        verify(userRepository).findUserByLogin(login);
+        verify(userService).findUserByLogin(login);
         verify(mailService, never()).sendResetedPasswordMail(anyString(), anyString(), anyString(), anyString());
         verify(userPasswordEncoder, never()).encode(anyString());
-        verify(userRepository, never()).save(user);
+        verify(userService, never()).updateUser(user);
+
+    }
+
+    @Test
+    public void passwordResetTestInvokesBeansWithCorrectParams() throws Exception {
+
+        when(userService.getLoggedUser()).thenReturn(user);
+
+        passwordChangeService.passwordReset();
+
+        verify(userService).getLoggedUser();
+        verify(mailService).sendResetedPasswordMail(anyString(), anyString(), anyString(), anyString());
+        verify(userPasswordEncoder).encode(anyString());
+        verify(userService).updateUser(user);
+
+    }
+
+    @Test
+    public void passwordResetTestUnauthorizedUser() throws Exception {
+
+        when(userService.getLoggedUser()).thenReturn(null);
+
+        passwordChangeService.passwordReset();
+
+        verify(userService).getLoggedUser();
+        verify(mailService, never()).sendResetedPasswordMail(anyString(), anyString(), anyString(), anyString());
+        verify(userPasswordEncoder, never()).encode(anyString());
+        verify(userService, never()).updateUser(user);
 
     }
 
