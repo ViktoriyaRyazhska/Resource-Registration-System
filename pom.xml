@@ -495,7 +495,7 @@
           <plugin>
             <groupId>com.heroku.sdk</groupId>
             <artifactId>heroku-maven-plugin</artifactId>
-            <version>{maven.heroku.plugin.version</version>
+            <version>${maven.heroku.plugin.version}</version>
             <configuration>
               <jdkVersion>1.8</jdkVersion>
               <appName>ronr</appName>
