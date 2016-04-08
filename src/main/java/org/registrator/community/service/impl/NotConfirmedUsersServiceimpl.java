@@ -5,20 +5,18 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import org.registrator.community.dao.AddressRepository;
-import org.registrator.community.dao.PassportRepository;
-import org.registrator.community.dao.UserRepository;
 import org.registrator.community.dao.VerificationTokenRepository;
 import org.registrator.community.dto.json.UsersDataNotConfJson;
 import org.registrator.community.entity.Address;
 import org.registrator.community.entity.PassportInfo;
-import org.registrator.community.entity.Role;
 import org.registrator.community.entity.User;
 import org.registrator.community.entity.VerificationToken;
 import org.registrator.community.enumeration.RoleType;
 import org.registrator.community.enumeration.TokenType;
 import org.registrator.community.enumeration.UserStatus;
 import org.registrator.community.service.NotConfirmedUsersSerice;
+import org.registrator.community.service.PassportService;
+import org.registrator.community.service.AddressService;
 import org.registrator.community.service.MailService;
 import org.registrator.community.service.UserService;
 import org.registrator.community.service.VerificationTokenService;
@@ -40,13 +38,10 @@ public class NotConfirmedUsersServiceimpl implements NotConfirmedUsersSerice {
 	private MailService mailService;
 	
 	@Autowired
-    private UserRepository userRepository;
+	private PassportService passportService;
 	
 	@Autowired
-	private PassportRepository passportRepository;
-	
-	@Autowired
-	private AddressRepository addressRepository;
+	private AddressService addressService;
 
 	@Autowired
 	private VerificationTokenService verificationTokenService;
@@ -54,10 +49,7 @@ public class NotConfirmedUsersServiceimpl implements NotConfirmedUsersSerice {
 	@Autowired
     private VerificationTokenRepository verificationTokenRepository;
 	
-	
-	
-	/*@Autowired
-	private PasswordEncoder  userPasswordEncoder;*/
+
 	
 	@Override
 	public void sendConfirmEmailFirstTime(String login, String baseLink) {
@@ -100,7 +92,7 @@ public class NotConfirmedUsersServiceimpl implements NotConfirmedUsersSerice {
 	    String logins = usersDataNotConfJson.getLogins();
 	    Collections.addAll(loginList, logins.split(","));
 	    logger.debug("Loking for users with logins: "+logins);
-        List<User> userList = userRepository.findUsersByLoginList(loginList);
+        List<User> userList = userService.findUsersByLoginList(loginList);
         if (userList.isEmpty()){
             logger.warn("no such users found");
             return "msg.notconfirmedusers.nosuchusersfound";
@@ -166,13 +158,13 @@ public class NotConfirmedUsersServiceimpl implements NotConfirmedUsersSerice {
         
         logger.info("start delete operations");
         
-        passportRepository.delete(passportInfoList);
+        passportService.delete(passportInfoList);
         logger.info("pasports succesfuly deleted");
         
-        addressRepository.delete(addressList);
+        addressService.delete(addressList);
         logger.info("addresses succesfuly deleted");
         
-        userRepository.delete(userList);
+        userService.delete(userList);
         logger.info("users succesfuly deleted");
         
         return "msg.notconfirmedusers.sucsesfullydeleted";
