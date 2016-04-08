@@ -175,7 +175,7 @@ public class NotConfirmedUsersServiceimpl implements NotConfirmedUsersSerice {
         userRepository.delete(userList);
         logger.info("users succesfuly deleted");
         
-        return "msg.notconfirmedusers.sucsesfulydeleted";
+        return "msg.notconfirmedusers.sucsesfullydeleted";
     }
     
     @Transactional
