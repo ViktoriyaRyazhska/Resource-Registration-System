@@ -56,6 +56,10 @@ public interface UserService {
     public User findUserByLogin(String login);
 
     public void resetAllFailAttempts();
+    
+    void delete(List<User> userList);
+    
+    List<User> findUsersByLoginList(List<String> loginList);
 
 
     /**

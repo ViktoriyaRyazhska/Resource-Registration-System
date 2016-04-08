@@ -733,6 +733,11 @@ public class UserServiceImpl implements UserService {
     public User findUserByLogin(String login) {
         return userRepository.findUserByLogin(login);
     }
+    
+    @Override
+    public List<User> findUsersByLoginList(List<String> loginList){
+        return userRepository.findUsersByLoginList(loginList);
+    }
 
     @Transactional
     @Override
@@ -825,6 +830,11 @@ public class UserServiceImpl implements UserService {
             user.setRole(role);
             user.setTerritorialCommunity(community);
         }
+    }
+    
+    @Override
+    public void delete(List<User> userList){
+        userRepository.delete(userList);
     }
 
 
