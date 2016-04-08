@@ -6,8 +6,13 @@ jQuery(document).ready(function ($) {
         }
     });
 
+    var lang = $("#changeLanguage").val();
+    if (lang === "ua") {
+        lang = "uk";
+    }
+
     $('#time_id').autocomplete({
-        serviceUrl: baseUrl.toString() + '/timeZones',
+        serviceUrl: baseUrl.toString() + '/timeZones?lang=' + lang,
         paramName: "value",
         delimiter: ",",
         minChars: 2,
@@ -19,7 +24,7 @@ jQuery(document).ready(function ($) {
         },
         transformResult: function (response) {
             return {
-                suggestions: $.map($.parseJSON(response), function (item) {
+                suggestions: $.map($.parseJSON(response).data, function (item) {
                     return {
                         value: item.description,
                         data: item.id

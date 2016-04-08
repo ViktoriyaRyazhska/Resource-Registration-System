@@ -1,17 +1,18 @@
 package org.registrator.community.service;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.testng.Assert.assertEquals;
+
+import java.util.Collections;
+import java.util.List;
+
 import org.registrator.community.dto.TimeZoneDTO;
 import org.registrator.community.service.impl.TimeZoneServiceImpl;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.testng.Assert.assertEquals;
 
 /**
  *
@@ -54,7 +55,7 @@ public class TimeZoneServiceTest {
 
     @Test
     public void findByCity() throws Exception {
-        List<TimeZoneDTO> actual = timeZoneService.findByCity("Льв", Locale.forLanguageTag("uk"));
+        List<TimeZoneDTO> actual = timeZoneService.findByCity("Льв", "uk");
         assertThat(actual.size(), greaterThanOrEqualTo(1));
         TimeZoneDTO expectedValue = TimeZoneDTO.from("Europe/Kiev");
         assertThat(actual, containsInAnyOrder(expectedValue));

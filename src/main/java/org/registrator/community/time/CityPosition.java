@@ -38,9 +38,6 @@ public class CityPosition {
 
     public void addName(String localeCode, String name) {
         localeNames.put(localeCode, name);
-        if ("ua".equals(localeCode)) {
-            localeNames.put("uk", name);
-        }
     }
 
     public String getName(String localeCode) {

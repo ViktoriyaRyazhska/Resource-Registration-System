@@ -30,22 +30,22 @@ public class TimeZoneServiceImpl implements TimeZoneService {
     }
 
     @Override
-    public List<TimeZoneDTO> findByCity(String searchValue, Locale locale) throws ExternalApiCallException {
-        CityPositionSearch cityPositionSearch = new CityPositionSearchOSM(searchValue, locale);
+    public List<TimeZoneDTO> findByCity(String searchValue, String language) throws ExternalApiCallException {
+        CityPositionSearch cityPositionSearch = new CityPositionSearchOSM(searchValue, language);
         List<CityPosition> points = cityPositionSearch.findCities();
         List<TimeZoneDTO> result = new ArrayList<>();
 
         for (CityPosition cityPosition: points ) {
             TimeZoneSearch timeZoneSearch = new TimeZoneSearchGeoNames(cityPosition);
             TimeZone timeZone = timeZoneSearch.findTimeZoneByPosition();
-            String desctiption = cityPosition.getName(locale.getLanguage()) + "(" + timeZone.getID() + ")";
+            String desctiption = cityPosition.getName(language) + "(" + timeZone.getID() + ")";
             result.add(new TimeZoneDTO(timeZone.getID(), timeZone.getID(), desctiption));
         }
         return result;
     }
 
     @Override
-    public List<TimeZoneDTO> findByNameOrCity(String searchValue, Locale locale) throws ExternalApiCallException {
+    public List<TimeZoneDTO> findByNameOrCity(String searchValue, String language) throws ExternalApiCallException {
 
         LOGGER.info(String.format("Time zone search by value '%s'", searchValue));
 
@@ -54,6 +54,6 @@ public class TimeZoneServiceImpl implements TimeZoneService {
             return result;
         }
 
-        return findByCity(searchValue, locale);
+        return findByCity(searchValue, language);
     }
 }

@@ -28,7 +28,7 @@ public class TimeZoneSearchGeoNames implements TimeZoneSearch {
         try {
             response = mapper.readValue(new URL(hostname), TimeDbResponse.class);
         } catch (IOException e) {
-            throw new ExternalApiCallException("Error when calling external API", e);
+            throw new ExternalApiCallException("Error when calling geonames.org API", e);
         }
         if (response.getStatus() != null) {
             throw new ExternalApiCallException(
