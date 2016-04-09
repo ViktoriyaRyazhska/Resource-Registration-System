@@ -1,10 +1,9 @@
 package org.registrator.community.service;
 
+import java.util.List;
+
 import org.registrator.community.dto.TimeZoneDTO;
 import org.registrator.community.exceptions.ExternalApiCallException;
-
-import java.util.List;
-import java.util.Locale;
 
 /**
  * Service to provide search of time zone
@@ -26,7 +25,7 @@ public interface TimeZoneService {
      * @param searchValue name of the city
      * @return list of suitable time zones
      */
-    List<TimeZoneDTO> findByCity(String searchValue, Locale locale) throws ExternalApiCallException;
+    List<TimeZoneDTO> findByCity(String searchValue, String language) throws ExternalApiCallException;
 
     /**
      * Find the list of suitable time zones by name or by city
@@ -35,5 +34,5 @@ public interface TimeZoneService {
      *                    name of the city must be in current locale of the user
      * @return list of suitable time zones
      */
-    List<TimeZoneDTO> findByNameOrCity(String searchValue, Locale locale) throws ExternalApiCallException;
+    List<TimeZoneDTO> findByNameOrCity(String searchValue, String language) throws ExternalApiCallException;
 }

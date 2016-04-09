@@ -6,6 +6,11 @@
 <div class="container">
   <form:form id="сhangeReg" method="post" modelAttribute="settings"
     action="settings">
+    <c:if test="${settings.success}">
+      <div class="alert alert-success">
+        <span><spring:message code="label.admin.settings.save"/></span>
+      </div>
+    </c:if>
     <h4>
       <spring:message code="label.admin.settings.method" />
     </h4>
@@ -13,20 +18,20 @@
       <spring:message code="label.admin.settings.chooseoption" />
     </p>
     <div class="radio">
-      <label><input type="radio" name="optradio"
+      <label><input type="radio" name="registrationMethod"
         value="PERSONAL"
-        <c:if test="${ REGISTRATION_METHOD  == 'PERSONAL'}"> checked="checked" </c:if> />
+        <c:if test="${settings.registrationMethod  == 'PERSONAL'}"> checked="checked" </c:if> />
         <spring:message code="label.admin.settings.personal" /> </label>
     </div>
 
     <div class="radio">
-      <label><input type="radio" name="optradio" value="MANUAL"
-        <c:if test="${ REGISTRATION_METHOD  == 'MANUAL'}">checked="checked"</c:if> />
+      <label><input type="radio" name="registrationMethod" value="MANUAL"
+        <c:if test="${ settings.registrationMethod  == 'MANUAL'}">checked="checked"</c:if> />
         <spring:message code="label.admin.settings.manual" /> </label>
     </div>
     <div class="radio">
-      <label><input type="radio" name="optradio" value="MIXED"
-        <c:if test="${ REGISTRATION_METHOD  == 'MIXED'}"> checked="checked" </c:if> />
+      <label><input type="radio" name="registrationMethod" value="MIXED"
+        <c:if test="${ settings.registrationMethod  == 'MIXED'}"> checked="checked" </c:if> />
         <spring:message code="label.admin.settings.mixed" /> </label>
     </div>
     <div class="container">
@@ -41,7 +46,13 @@
       <div class="row control-group">
         <div class="col-md-3">
           <input id = "time_id" class="form-control col-md-4" name="timeZone"
-                 value="${TIME_ZONE}">
+                 value="${settings.timeZone}">
+          <%--<form:errors path="timeZone" cssClass="error"--%>
+                       <%--style="color:red" />--%>
+          <c:if test="${settings.error}">
+            <span class="error" style="color:red"><spring:message code="msg.settings.timeZone.error"/></span>
+          </c:if>
+          </div>
         </div>
       </div>
 
@@ -59,6 +70,6 @@
 <link rel="stylesheet" type="text/css"
       href="<c:url value='/resource/css/suggestion.css'/>">
 
-<script src="<c:url value='/resource/js/adminSettings.js'/>"></script>
+<%--<script src="<c:url value='/resource/js/adminSettings.js'/>"></script>--%>
 <script src="<c:url value='/resource/js/lib/jquery.autocomplete.min.js'/>"></script>
 <script src="<c:url value='/resource/js/timeZoneSuggestions.js'/>"></script>

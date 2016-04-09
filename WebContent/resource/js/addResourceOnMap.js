@@ -134,17 +134,6 @@ function initialize() {
     map.fitBounds(bounds);
   });
 
-  //google.maps.event.addListener(drawingManager, 'overlaycomplete', function (event) {
-  //    drawingManager.setDrawingMode(null);
-  //    var polygon = event.overlay;
-  //    var vertices = polygon.getPath();
-  //    newPolygons.push(polygon);
-  //
-  //    for (var i = 0; i < vertices.getLength(); i++) {
-  //        bounds.extend(vertices.getAt(i));
-  //    }
-  //
-  //});
 
 }
 
@@ -457,23 +446,8 @@ $("#cp-wrap").on("click", "a", function() {
             activePolygon.setEditable(false);
             PS.save();
 
-            try {
-
-              //TODO Refactor this
-              var perimeterParam = $("div[data-calculated='PERIMETER']");
-              if (perimeterParam.length > 0) {
-                var id = perimeterParam[0].attributes.getNamedItem("data-calculatedId").value;
-                $("input[name='resourceDiscrete[" + id + "].valueDiscretes[" + (newPolygons.length - 1) + "].value']").val(perimeter);
-              }
-
-              perimeterParam = $("div[data-calculated='AREA']");
-              if (perimeterParam.length > 0) {
-                var id = perimeterParam[0].attributes.getNamedItem("data-calculatedId").value;
-                $("input[name='resourceDiscrete[" + id + "].valueDiscretes[" + (newPolygons.length - 1) + "].value']").val(area);
-              }
-            } finally {
-            }
-            ;
+            putParameter("PERIMETER", perimeter);
+            putParameter("AREA", area);
 
             activePolygon = null;
             $(this).closest(".toggle").removeClass("active");
@@ -497,6 +471,18 @@ $("#cp-wrap").on("click", "a", function() {
   }
 
 });
+
+function putParameter(name, value) {
+  var param = $("div[data-calculated="+ name + "]");
+
+  if (param.length > 0) {
+    var id = param[0].attributes.getNamedItem("data-calculatedId").value;
+    for (var i = 0; newPolygons.length - param.length  > i; i++) {
+      addDiscreteValue(id, "", "");
+    }
+    $("input[name='resourceDiscrete[" + id + "].valueDiscretes[" + (newPolygons.length - 1) + "].value']").val(value);
+  }
+}
 
 $(document).on("click", "#mapManual", function() {
   var spoiler = $(this).siblings(".spoiler");

@@ -58,7 +58,7 @@ public class MainExceptionHandler {
         ModelAndView mav = new ModelAndView();
         mav.addObject("exception", exception);
         mav.addObject("url", request.getRequestURL());
-        mav.setViewName("redirect:/error");
+        mav.setViewName("error");
         return mav;
     }
 
