@@ -18,7 +18,8 @@ public class ResourceDTO {
     private String resourceType;
     
     @NotEmpty(message = "{msg.notEmptyField}")
-    @Pattern(regexp ="^[\\d]{3}:[\\d]{2}:[\\d]{2}:[\\d]{3}:[\\d]{5}:[\\d]{4}$", message = "{msg.resource.identifier.patternMissmatch}")
+    @Pattern(regexp ="^[\\d]{3}:[\\d]{2}:[\\d]{2}:[\\d]{3}:[\\d]{5}(/[\\d]+)?:[\\d]{4}$",
+            message = "{msg.resource.identifier.patternMissmatch}")
     private String identifier;
 
     @NotEmpty(message = "{msg.notEmptyField}")

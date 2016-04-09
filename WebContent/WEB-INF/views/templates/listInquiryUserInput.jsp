@@ -40,7 +40,7 @@
           <td>${inquiryUser.registratorName}</td>
           <td hidden="true">${inquiryUser.inquiryType}</td>
           <td><a
-            href="<c:url value='/registrator/resource/get/${inquiryUser.resourceIdentifier}' />">
+            href="<c:url value='/registrator/resource/get?id=${inquiryUser.resourceIdentifier}' />">
               ${inquiryUser.resourceIdentifier} </a></td>
           <td>${inquiryUser.resourceStatus}</td>
           <td>

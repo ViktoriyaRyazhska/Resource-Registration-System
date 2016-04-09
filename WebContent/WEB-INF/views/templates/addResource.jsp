@@ -6,12 +6,6 @@
 <%--/* Optional theme */--%>
 <%--@import url('//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css');--%>
 
-<style>
-.polygonId {
-  display: none;
-}
-</style>
-
 <c:set var="newresource" value="${resource}" scope="session" />
 <c:set var="firstPoint"
   value="${resource.resourceArea.poligons[0].points[0].latitudeDegrees}" />
@@ -62,7 +56,7 @@
       </div>
     </div>
 
-    <input class="polygonId" name="resourceId"
+    <input class="hidden" name="resourceId"
       value="${resource.resourceId}">
 
     <!-- select resource type -->
@@ -229,7 +223,7 @@
               <c:set value="${polygonStatus.count -1}"
                 var="polygonIndex" />
               <div id="polygon_${polygonIndex+1}">
-                <input class="polygonId"
+                <input class="hidden"
                   name="resourceArea.poligons[${polygonIndex}].polygonId"
                   value="${polygon.polygonId}">
                 <h4>
@@ -449,7 +443,10 @@
     </div>
 
 
-
+    <br>
+    <br>
+    <br>
+    <br>
     <div class="button">
       <input id="submitForm" type="submit" class="btn btn-success"
         value=<spring:message code="label.save"/>>

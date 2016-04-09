@@ -6,10 +6,6 @@ jQuery(document).ready(function ($) {
         }
     });
 
-    var lang = $("#changeLanguage").val();
-    if (lang === "ua") {
-        lang = "uk";
-    }
 
     $('#time_id').autocomplete({
         serviceUrl: baseUrl.toString() + '/timeZones?lang=' + lang,

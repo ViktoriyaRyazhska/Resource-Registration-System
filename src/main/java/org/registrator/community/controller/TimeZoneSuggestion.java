@@ -29,13 +29,13 @@ public class TimeZoneSuggestion {
      * Find the list of suitable time zones by name or by city
      *
      * @param searchValue either name of the time zone or city name to look up for time zone
-     *                    name of the city must be in current locale of the user
      * @return list of suitable time zones
      */
 
     @RequestMapping(value = "/timeZones", method = RequestMethod.GET)
     public ResponseEntity<TimeZoneResponse> getTimeZonesSuggestions(@RequestParam("value") String searchValue,
-                                                                    @RequestParam("lang") String language) throws ExternalApiCallException {
+                                                                    @RequestParam(value = "lang", defaultValue = "uk") String language) 
+                                                                            throws ExternalApiCallException {
         List<TimeZoneDTO> timeZones = timeZoneService.findByNameOrCity(searchValue, language);
         TimeZoneResponse data = new TimeZoneResponse(timeZones);
         HttpStatus httpStatus = HttpStatus.OK;

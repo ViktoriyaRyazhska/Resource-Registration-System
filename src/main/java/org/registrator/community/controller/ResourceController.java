@@ -94,13 +94,13 @@ public class ResourceController {
 
     @PreAuthorize("hasRole('ROLE_REGISTRATOR')")
     @RequestMapping(value = "edit", method = RequestMethod.GET)
-    public String addResourceForm(@RequestParam(value = "id") String identifier,
+    public String editResourceForm(@RequestParam(value = "id") String identifier,
                                   Model model) throws ResourceEntityNotFound {
         ResourceDTO resourceDTO = resourceService.findByIdentifier(identifier);
         if (!resourceService.userCanEditResource(resourceDTO)) {
             model.addAttribute("noEdit", true);
-            model.addAttribute("identifier", resourceDTO.getIdentifier());
-            return "redirect:get/{identifier}";
+            model.addAttribute("id", resourceDTO.getIdentifier());
+            return "redirect:get?id={id}";
         }
 
         List<ResourceType> listOfResourceType = resourceTypeService.findAll();
@@ -138,8 +138,8 @@ public class ResourceController {
 
         resourceDTO = resourceService.saveResource(resourceDTO, registrator);
         logger.debug("Resource was successfully saved");
-        model.addAttribute("identifier", resourceDTO.getIdentifier());
-        return "redirect:get/{identifier}";
+        model.addAttribute("id", resourceDTO.getIdentifier());
+        return "redirect:get?id={id}";
 
     }
 
@@ -150,8 +150,8 @@ public class ResourceController {
      * @param model
      * @return
      */
-    @RequestMapping(value = "/get/{identifier}", method = RequestMethod.GET)
-    public String getResourceByIdentifier(@PathVariable("identifier") String identifier,
+    @RequestMapping(value = "/get", method = RequestMethod.GET)
+    public String getResourceByIdentifier(@RequestParam(value = "id") String identifier,
                                           @RequestParam(value = "noEdit", defaultValue = "false") boolean noEdit,
                                           Model model)
             throws ResourceEntityNotFound {
