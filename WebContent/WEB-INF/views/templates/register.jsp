@@ -15,6 +15,16 @@ span.error {
 h4 {
   text-align: center;
 }
+
+.registration_buttons {
+  margin: 0 auto;
+  text-align: center;
+  padding: 0 30px;
+}
+
+.registration_buttons>.btn {
+    margin: 2px 0;
+}
 </style>
 
 <div id="register_container">
@@ -239,14 +249,18 @@ h4 {
         </div>
       </div>
     </div>
-    <p>
+    <div class="registration_buttons">
       <button class="btn btn-success" type="submit" id="submit">
         <spring:message code="label.send" />
       </button>
-      <button class="btn btn-success" type="reset">
+      <button class="btn btn-warning" type="reset">
         <spring:message code="label.clearall" />
       </button>
-    </p>
+      <button class="btn btn-primary" type="reset"
+        onclick="window.location.href='login'">
+        <spring:message code="label.modal.cancel" />
+      </button>
+    </div>
   </form:form>
   <spring:message code="label.msg.required" />
 </div>
