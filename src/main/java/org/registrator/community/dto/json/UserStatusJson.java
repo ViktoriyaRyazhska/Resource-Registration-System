@@ -1,7 +1,16 @@
 package org.registrator.community.dto.json;
 
+import javax.validation.constraints.Pattern;
+
+import org.hibernate.validator.constraints.NotEmpty;
+
 public class UserStatusJson {
+	@NotEmpty
+	@Pattern(regexp = "^[a-zA-Z,]+$")
     private String login;
+	
+    @NotEmpty
+    @Pattern(regexp = "BLOCK|ACTIVE|INACTIVE|NOTCOMFIRMED")
     private String status;
 
     public UserStatusJson(String login, String status) {
@@ -9,7 +18,7 @@ public class UserStatusJson {
         this.status = status;
     }
 
-    public UserStatusJson() {
+	public UserStatusJson() {
     }
 
     public String getLogin() {
@@ -28,4 +37,8 @@ public class UserStatusJson {
         this.status = status;
     }
 
+    @Override
+	public String toString() {
+		return "UserStatusJson [login=" + login + ", status=" + status + "]";
+	}
 }

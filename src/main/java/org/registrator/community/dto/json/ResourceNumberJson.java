@@ -24,11 +24,11 @@ public class ResourceNumberJson {
         this.login = login;
     }
 
-    public String getRegistrator_number() {
+    public String getRegistratorNumber() {
         return registrator_number;
     }
 
-    public void setRegistrator_number(String registrator_number) {
+    public void setRegistratorNumber(String registrator_number) {
         this.registrator_number = registrator_number;
     }
 
@@ -40,11 +40,11 @@ public class ResourceNumberJson {
         this.identifier = identifier;
     }
 
-    public String getResource_number() {
+    public String getResourceNumber() {
         return resource_number;
     }
 
-    public void setResource_number(String resource_number) {
+    public void setResourceNumber(String resource_number) {
         this.resource_number = resource_number;
     }
 
