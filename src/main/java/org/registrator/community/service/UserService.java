@@ -78,4 +78,6 @@ public interface UserService {
      * @return current logged user, if user is not logged in then null is returned
      */
     User getLoggedUser();
+
+	void changeUserStatuses(UserStatusJson userStatusJson);
 }

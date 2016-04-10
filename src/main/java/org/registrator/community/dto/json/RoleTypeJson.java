@@ -12,9 +12,7 @@ public class RoleTypeJson {
         this.login = login;
         this.role = role;
     }
-    public RoleTypeJson(){
-
-    }
+    public RoleTypeJson(){}
 
     public String getLogin() {
         return login;

@@ -38,6 +38,9 @@ import org.registrator.community.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -118,6 +121,35 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
+    @Transactional
+    @Override
+    public void changeUserStatuses(UserStatusJson taskInfo){
+    	logger.debug("begin");
+        logger.debug("Recieved package: " + taskInfo);
+    	if(taskInfo.getLogin() == null || taskInfo.getStatus() == null){
+    		logger.warn("Empty userStatusJson");
+    		throw new BadInputDataException();
+    	}
+		List<String> givenUsers = new ArrayList<String>();
+		Collections.addAll(givenUsers, taskInfo.getLogin().split(","));
+
+		List<User> userList = userRepository.findUsersByLoginList(givenUsers);
+		
+		UserStatus status = null;
+		try{
+			String givenStatus = taskInfo.getStatus();
+			status = UserStatus.valueOf(givenStatus);
+		}catch(IllegalArgumentException e){
+			logger.warn("Bad argument given: "+taskInfo.getStatus());
+			throw new BadInputDataException();
+		}
+		for(User user : userList){
+			user.setStatus(status);
+		}
+		userRepository.save(userList);
+    	
+    	logger.debug("end");
+    }
     /**
      * Method, which retruns all registrated users
      *
@@ -309,8 +341,8 @@ public class UserServiceImpl implements UserService {
                     resourceNumber.getRegistratorNumber(), tome.getIdentifier());
         } else {
             resourceNumberJson = new ResourceNumberJson();
-            resourceNumberJson.setResource_number("0");
-            resourceNumberJson.setRegistrator_number("0");
+            resourceNumberJson.setResourceNumber("0");
+            resourceNumberJson.setRegistratorNumber("0");
             resourceNumberJson.setIdentifier("0");
         }
         UserDTO userdto = new UserDTO(user.getFirstName(), user.getLastName(), user.getMiddleName(),
@@ -546,8 +578,8 @@ public class UserServiceImpl implements UserService {
         } else {
             resourceNumberJson = new ResourceNumberJson();
             resourceNumberJson = new ResourceNumberJson();
-            resourceNumberJson.setResource_number("0");
-            resourceNumberJson.setRegistrator_number("0");
+            resourceNumberJson.setResourceNumber("0");
+            resourceNumberJson.setRegistratorNumber("0");
             resourceNumberJson.setIdentifier("0");
         }
         UserDTO userdto = new UserDTO(user.getFirstName(), user.getLastName(), user.getMiddleName(),
@@ -587,20 +619,21 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public void createTomeAndRecourceNumber(UserDTO userDto) {
+    	logger.debug("Begin");
         User user = userRepository.findUserByLogin(userDto.getLogin());
         Tome tome = tomeRepository.findTomeByRegistrator(user);
         ResourceNumber resourceNumber = resourceNumberRepository.findResourceNumberByUser(user);
 
         if (tome != null && resourceNumber != null && userDto.getResourceNumberJson() != null) {
             ResourceNumberJson resourceNumberJson = userDto.getResourceNumberJson();
-            if (resourceNumberJson.getRegistrator_number() == null || resourceNumberJson.getResource_number() == null) {
+            if (resourceNumberJson.getRegistratorNumber() == null || resourceNumberJson.getResourceNumber() == null) {
                 logger.warn("Bad ResourceNumberJson data");
                 return;
             }
 
             ResourceNumberDTO resourseNumberDto = new ResourceNumberDTO(
-                    Integer.parseInt(resourceNumberJson.getResource_number()),
-                    resourceNumberJson.getRegistrator_number());
+                    Integer.parseInt(resourceNumberJson.getResourceNumber()),
+                    resourceNumberJson.getRegistratorNumber());
 
             resourceNumber.setRegistratorNumber(resourseNumberDto.getRegistratorNumber());
             resourceNumber.setNumber(resourseNumberDto.getNumber());
@@ -610,27 +643,42 @@ public class UserServiceImpl implements UserService {
             List<User> userList = Collections.singletonList(user);
             createTomesAndResourceNumbers(userList);
         }
+        logger.debug("End");
     }
        
     @Transactional
     @Override
     public void createTomesAndResourceNumbers(List<User> users) {
+    	if(users.isEmpty()){
+    		logger.warn("Recieved empty user list");
+    		throw new BadInputDataException();
+    	}
+    	
+    	int pageNumber = 0;
+    	int elementsForPage = 1;
+    	String orderField = "identifier";
+    	PageRequest page = new PageRequest(pageNumber,elementsForPage, Sort.Direction.DESC, orderField);
+        Page<Tome> tomeListPage = tomeRepository.findAll(page);
+        List<Tome> tomeList = tomeListPage.getContent();
 
-        List<Tome> tomeList = tomeRepository.findAll();
-        Integer tomeNumber = 0;
-        if (!tomeList.isEmpty()) {
-            Tome tempTome = tomeList.get(tomeList.size() - 1);
+        int tomeNumber = 0;
+        if (tomeList != null && !tomeList.isEmpty()) {
+            Tome tempTome = tomeList.get(0);
             String lastTomeNum = tempTome.getIdentifier();
-            tomeNumber = Integer.parseInt(lastTomeNum);
+            try{
+            	tomeNumber = Integer.parseInt(lastTomeNum);
+            }catch(NumberFormatException e){
+            	logger.warn("Found a bad tome identifier \""+lastTomeNum+"\". Tome identifiers can only contain decimal values");
+            }
         }
 
         List<ResourceNumber> resourceNumberList = resourceNumberRepository
                 .findResourceNumbersByCommunity(users.get(0).getTerritorialCommunity());
-        Integer registratorNumber = 0;
-        Integer registratorStartIncrement = 1;
+        int registratorNumber = 0;
+        int registratorStartIncrement = 1;
         for (ResourceNumber res : resourceNumberList) {
             try{
-                Integer tmpNumber = Integer.parseInt(res.getRegistratorNumber());
+                int tmpNumber = Integer.parseInt(res.getRegistratorNumber());
                 registratorNumber = (tmpNumber > registratorNumber) ? tmpNumber : registratorNumber;
             }catch(NumberFormatException e){
                 logger.warn("Resource number of user \""+res.getUser().getLogin()+"\" is in a incorrect format: "+res.getRegistratorNumber()+". Only decimals allowed.");
@@ -641,7 +689,7 @@ public class UserServiceImpl implements UserService {
             Tome userTome = tomeRepository.findTomeByRegistrator(user);
             if (userTome == null) {
                 tomeNumber++;
-                String newTomeId = tomeNumber.toString();
+                String newTomeId = String.valueOf(tomeNumber);
                 Tome newUserTome = new Tome(user, newTomeId);
                 tomeRepository.save(newUserTome);
             }
@@ -650,8 +698,8 @@ public class UserServiceImpl implements UserService {
 
             if (userResourceNumber == null) {
                 registratorNumber++;
-                ResourceNumber newResourceNumber = new ResourceNumber(registratorStartIncrement,
-                        registratorNumber.toString(), user);
+                String newRegistratorNumber = String.valueOf(registratorNumber);
+                ResourceNumber newResourceNumber = new ResourceNumber(registratorStartIncrement,newRegistratorNumber, user);
                 resourceNumberRepository.save(newResourceNumber);
             } else {
                 String foundRegistratorNumber = userResourceNumber.getRegistratorNumber();
@@ -669,7 +717,8 @@ public class UserServiceImpl implements UserService {
                         && !registratorWithSameNumber.getUser().equals(userResourceNumber.getUser())) {
 
                     registratorNumber++;
-                    userResourceNumber.setRegistratorNumber(registratorNumber.toString());
+                    String newRegistratorNumber = String.valueOf(registratorNumber);
+                    userResourceNumber.setRegistratorNumber(newRegistratorNumber);
                     resourceNumberRepository.save(userResourceNumber);
                 }
             }
@@ -767,9 +816,10 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public void setUsersRole(RoleTypeJson taskInfo) {
-        logger.info("Recieved package: " + taskInfo);
+        logger.debug("Recieved package: " + taskInfo);
 
         if(taskInfo.getLogin() == null || taskInfo.getRole() == null){
+        	logger.warn("Recieved bad RoleTypeJson");
             throw new BadInputDataException();
         }
         
@@ -779,8 +829,8 @@ public class UserServiceImpl implements UserService {
         List<User> userList = userRepository.findUsersByLoginList(givenUsers);
 
         Role role = checkRole(taskInfo.getRole());
-        logger.info("Selected role: " + role);
-        logger.info("Performing Change Role operations");
+        logger.debug("Selected role: " + role);
+        logger.debug("Performing Change Role operations");
 
         for (User user : userList) {
             user.setRole(role);
@@ -788,8 +838,10 @@ public class UserServiceImpl implements UserService {
         }
 
         if (role.getType() == RoleType.REGISTRATOR) {
+        	logger.debug("Role is Registrator. Performing createTomes method");
             createTomesAndResourceNumbers(userList);
         }
+        logger.debug("End");
     }
 
     /* Batch Community change */
@@ -805,9 +857,10 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public void setUsersCommun(CommunityParamJson taskInfo) {
-        logger.info("Recieved package: " + taskInfo);
+        logger.debug("Recieved package: " + taskInfo);
         
         if(taskInfo.getCommunityId() == null || taskInfo.getLogin() == null){
+        	logger.warn("Recieved bad CommunityParamJson");
             throw new BadInputDataException();
         }
 
@@ -822,7 +875,7 @@ public class UserServiceImpl implements UserService {
             throw new BadInputDataException();
         }
 
-        logger.info("Selected Community: " + community.getName());
+        logger.debug("Selected Community: " + community.getName());
 
         Role role = checkRole("USER");
 
@@ -830,6 +883,7 @@ public class UserServiceImpl implements UserService {
             user.setRole(role);
             user.setTerritorialCommunity(community);
         }
+        logger.debug("End");
     }
     
     @Override
