@@ -14,7 +14,7 @@ import org.registrator.community.entity.VerificationToken;
 import org.registrator.community.enumeration.RoleType;
 import org.registrator.community.enumeration.TokenType;
 import org.registrator.community.enumeration.UserStatus;
-import org.registrator.community.service.NotConfirmedUsersSerice;
+import org.registrator.community.service.NotConfirmedUsersService;
 import org.registrator.community.service.PassportService;
 import org.registrator.community.service.AddressService;
 import org.registrator.community.service.MailService;
@@ -26,7 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class NotConfirmedUsersServiceimpl implements NotConfirmedUsersSerice {
+public class NotConfirmedUsersServiceimpl implements NotConfirmedUsersService {
 	
     @Autowired
     private Logger logger;
@@ -57,6 +57,8 @@ public class NotConfirmedUsersServiceimpl implements NotConfirmedUsersSerice {
 		if(user != null){
 			VerificationToken verifacationToken = verificationTokenService.saveEmailConfirmationToken(user.getLogin(), user.getEmail(), new Date(), baseLink);
 			mailService.sendComfirmEMail(user.getEmail(), user.getFirstName(),verifacationToken.getToken(),baseLink);
+			logger.info("send confirm email to " + user.getEmail());
+			
 		}	
 	}
 	
@@ -118,18 +120,17 @@ public class NotConfirmedUsersServiceimpl implements NotConfirmedUsersSerice {
 	        logger.debug("check whether users over which operation is performing  belongs to the same community");
 	        for (User user: userList){
 	            if(user.getTerritorialCommunity()!=loggetUser.getTerritorialCommunity()){
-	                logger.debug("");
+	                logger.debug("commisioner try to delete users from other community");
 	                return "msg.notconfirmedusers.commistryothercommunity";
 	            }
 	        }
 	    }
  
         switch(usersDataNotConfJson.getActions()){
-        case DELETE:{
+        case DELETE:
             logger.info("Run Action DELETE");
             deleteListVerificationToken(loginList);
             return deleteNotConfirmedUsers(userList);
-        }
         case SENDEMAILAGAIN:
             logger.info("Run Action SENDEMAILAGAIN");
             return sendConfirmEmailAgain(userList);
@@ -183,9 +184,9 @@ public class NotConfirmedUsersServiceimpl implements NotConfirmedUsersSerice {
         }
 
         if (!verifacationTokenList.isEmpty()){
-            logger.debug("start delete operations");
+            logger.info("start delete operations");
             verificationTokenRepository.delete(verifacationTokenList);
-            logger.debug("VerificationTokens successfully deleted");
+            logger.info("VerificationTokens successfully deleted");
         }        
         
     }
@@ -195,12 +196,19 @@ public class NotConfirmedUsersServiceimpl implements NotConfirmedUsersSerice {
 	public Boolean confirmEmail(String token){
 		
 			VerificationToken verToken = verificationTokenService.findVerificationTokenByTokenAndTokenType(token, TokenType.CONFIRM_EMAIL);
-			if (verToken == null) return false;
+			if (verToken == null) {
+			    logger.warn("no such VerificationToken found in database");
+			    return false;
+			}
 			User user = userService.findUserByEmail(verToken.getUserEmail());
-			if (user == null) return false;
+			if (user == null){
+			    logger.warn("no such User found in database");
+			    return false;
+			} 
 			user.setStatus(UserStatus.INACTIVE);
 			userService.updateUser(user);
 			verificationTokenService.deleteVerificationToken(verToken);
+			logger.info("user succesfuly confirmed " + user.getLogin());
 			return true;
 
 	}

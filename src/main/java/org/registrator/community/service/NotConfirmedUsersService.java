@@ -5,7 +5,7 @@ import java.util.List;
 import org.registrator.community.dto.json.UsersDataNotConfJson;
 import org.registrator.community.entity.User;
 
-public interface NotConfirmedUsersSerice {
+public interface NotConfirmedUsersService {
 
 	public void sendConfirmEmailFirstTime(String userEmail, String baseLink);
 
