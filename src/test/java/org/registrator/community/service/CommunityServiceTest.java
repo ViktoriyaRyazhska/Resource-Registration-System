@@ -54,6 +54,7 @@ public class CommunityServiceTest {
         tc = new TerritorialCommunity();
         tc.setName(NAME);
 		tc.setTerritorialCommunityId(ID);
+		tc.setRegistrationNumber(REGISTRATION_NUMBER);
     }
 	
 	
@@ -64,6 +65,7 @@ public class CommunityServiceTest {
 		TerritorialCommunity actualTC = communityService.findAll().get(0);
 		Assert.assertEquals(actualTC.getName(), NAME);
 		Assert.assertEquals(actualTC.getTerritorialCommunityId(), ID);
+		Assert.assertEquals(actualTC.getRegistrationNumber(), REGISTRATION_NUMBER);
 	}
 	
 	@Test
@@ -71,6 +73,7 @@ public class CommunityServiceTest {
 		Mockito.when(communityRepository.findByName(NAME)).thenReturn(tc);
 		Assert.assertEquals(communityService.findByName(NAME).getName(), NAME);
 		Assert.assertEquals(communityService.findByName(NAME).getTerritorialCommunityId(), ID);
+		Assert.assertEquals(communityService.findByName(NAME).getRegistrationNumber(), REGISTRATION_NUMBER);
 	}
 	
 	@Test
@@ -78,6 +81,7 @@ public class CommunityServiceTest {
 		Mockito.when(communityRepository.saveAndFlush(tc)).thenReturn(tc);
 		Assert.assertEquals(communityService.addCommunity(tc).getName(), NAME);
 		Assert.assertEquals(communityService.addCommunity(tc).getTerritorialCommunityId(), ID);
+		Assert.assertEquals(communityService.addCommunity(tc).getRegistrationNumber(), REGISTRATION_NUMBER);
 	}
 	
 	@Test
@@ -86,6 +90,7 @@ public class CommunityServiceTest {
 		//Mockito.doReturn(tc).when(communityRepository).findOne(ID);
 		Assert.assertEquals(communityService.findById(ID).getName(), NAME);
 		Assert.assertEquals(communityService.findById(ID).getTerritorialCommunityId(), ID);
+		Assert.assertEquals(communityService.findById(ID).getRegistrationNumber(), REGISTRATION_NUMBER);
 	}
 	
 	@Test
@@ -104,6 +109,7 @@ public class CommunityServiceTest {
 		TerritorialCommunity actualTC = communityService.findAllByAsc().get(0);
 		Assert.assertEquals(actualTC.getName(), NAME);
 		Assert.assertEquals(actualTC.getTerritorialCommunityId(), ID);
+		Assert.assertEquals(actualTC.getRegistrationNumber(), REGISTRATION_NUMBER);
 	}
 	
 	@Test
