@@ -28,7 +28,7 @@ h4 {
 </style>
 
 <div id="register_container">
-  <form:form action="" class="form-horizontal" role="form"
+  <form:form id="registrationForm" action="" class="form-horizontal" role="form"
     modelAttribute="userRegistrationDTO" method="POST"
     name="registrationForm">
     <div class="form-group col-sm-12">
@@ -253,7 +253,7 @@ h4 {
       <button class="btn btn-success" type="submit" id="submit">
         <spring:message code="label.send" />
       </button>
-      <button class="btn btn-warning" type="reset">
+      <button class="btn btn-warning reset" type="reset">
         <spring:message code="label.clearall" />
       </button>
       <button class="btn btn-primary" type="reset"
@@ -268,6 +268,8 @@ h4 {
   src="<c:url value='/resource/js/registration/checkUserName.js'/>"></script>
 <script
   src="<c:url value='/resource/js/lib/jquery-ui.datepscker.min.js'/>"></script>
+<script
+  src="<c:url value='/resource/js/registration/clearform.js'/>"></script>
 <link rel="stylesheet"
   href="https://code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css">
 
