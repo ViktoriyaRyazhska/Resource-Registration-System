@@ -9,7 +9,7 @@ import javax.validation.Valid;
 import org.registrator.community.dto.UserRegistrationDTO;
 import org.registrator.community.entity.TerritorialCommunity;
 import org.registrator.community.service.CommunityService;
-import org.registrator.community.service.NotConfirmedUsersSerice;
+import org.registrator.community.service.NotConfirmedUsersService;
 import org.registrator.community.service.UserService;
 import org.registrator.community.validator.UserDataValidator;
 import org.slf4j.Logger;
@@ -32,7 +32,7 @@ public class ManualRegistrationController {
     @Autowired
     private CommunityService communityService;
     @Autowired
-    private NotConfirmedUsersSerice emailConfirmService;
+    private NotConfirmedUsersService emailConfirmService;
     
     @Autowired
     UserDataValidator validator;
