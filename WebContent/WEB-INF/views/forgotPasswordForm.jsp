@@ -46,11 +46,13 @@
         class="forgot-password align-left"> <spring:message
             code="label.signIn" />
       </a>
-      </span> <span style="float: right"> <a
-        href="${pageContext.request.contextPath}/registration"
-        class="forgot-password align-right"> <spring:message
-            code="label.register" />
-      </a>
+      </span> <span style="float: right"> 
+      <c:if test="${registrationMethod eq ('PERSONAL') || registrationMethod eq ('MIXED')}">
+          <a href="${pageContext.request.contextPath}/register"
+            class="forgot-password align-right"> <spring:message
+              code="label.register" />
+          </a>
+        </c:if>
       </span>
     </div>
   </fieldset>

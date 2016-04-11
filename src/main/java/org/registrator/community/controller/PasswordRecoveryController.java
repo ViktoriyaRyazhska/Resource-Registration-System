@@ -1,9 +1,11 @@
 package org.registrator.community.controller;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.registrator.community.dto.PasswordRecoveryDTO;
 import org.registrator.community.service.PasswordRecoveryService;
+import org.registrator.community.service.SettingsService;
 import org.registrator.community.service.VerificationTokenService;
 import org.registrator.community.validator.PasswordRecoveryValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,11 +31,15 @@ public class PasswordRecoveryController {
     
     @Autowired
     private PasswordRecoveryValidator passwordRecoveryValidator;
+    
+    @Autowired
+    private SettingsService settingsService;
 
 
     @PreAuthorize("hasRole('ROLE_ANONYMOUS')")
     @RequestMapping(value = "/forgot_password", method = RequestMethod.GET)
-    public String getForgotPasswordPage() {
+    public String getForgotPasswordPage(HttpSession session) {
+        session.setAttribute("registrationMethod", settingsService.getRegistrationMethod());
         return "forgot_password";
     }
     
