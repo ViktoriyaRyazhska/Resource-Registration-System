@@ -1,6 +1,7 @@
 package org.registrator.community.controller;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.registrator.community.enumeration.UIMessages;
 import org.registrator.community.exceptions.BadInputDataException;
@@ -12,13 +13,14 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
  * Exception handler for application
  */
 @ControllerAdvice
-public class MainExceptionHandler {
+public class MainExceptionHandler implements HandlerExceptionResolver {
     @Autowired
     private Logger logger;
 
@@ -43,6 +45,11 @@ public class MainExceptionHandler {
     public String handleAccessDenied(HttpServletRequest request, Exception exception) {
         logger.error("Request: " + HttpUtils.getFullRequestURL(request) + " access denied!", exception);
         return "accessDenied";
+    }
+
+    @Override
+    public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
+        return handleUncaughtExceptions(request, ex);
     }
 
     @ExceptionHandler(RuntimeException.class)

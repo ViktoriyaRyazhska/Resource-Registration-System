@@ -193,13 +193,7 @@ public class UsersController {
         User user = userService.getLoggedUser();
         if (user.getRole().getType() == RoleType.COMMISSIONER) {
             TableSetting tableSetting = tableSettingsFactory.getTableSetting(dataTableRequest.getTableName());
-            Integer key = null;
-            for (Map.Entry<Integer, TableColumnSetting> entry : tableSetting.getColumns().entrySet()) {
-                if (entry.getValue().getData().equalsIgnoreCase("territorialCommunity_name")) {
-                    key = entry.getKey();
-                    break;
-                }
-            }
+            Integer key = tableSetting.findColumn("territorialCommunity_name");
             if (key != null) {
                 Search search = dataTableRequest.getColumns().get(key).getSearch();
                 search.setValue(user.getTerritorialCommunity().getName());
