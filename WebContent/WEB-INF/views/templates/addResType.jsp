@@ -19,8 +19,8 @@
         code="label.restype.title" />:</label>
     <div class="col-sm-2">
       <input class="form-control" name="typeName" value="${typeName}"
-        placeholder=<spring:message
-                    code="label.restupe.enterName" />
+        placeholder="<spring:message
+                    code="label.restupe.enterName" />"
         required>
     </div>
 

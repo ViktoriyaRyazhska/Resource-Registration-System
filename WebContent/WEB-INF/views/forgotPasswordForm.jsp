@@ -30,8 +30,7 @@
           </h5>
           <input class="form-control" id="email" name="email"
             type="text"
-            placeholder=<spring:message
-	                    code="label.user.email" />
+            placeholder="<spring:message code="label.user.email" />" 
             size="30" autocomplete="on" autofocus="autofocus" required>
 
         </div>
