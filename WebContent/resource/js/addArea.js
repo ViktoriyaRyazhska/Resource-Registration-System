@@ -56,10 +56,7 @@ $(document).ready(function() {
 
   $.post("getParameters", {
     "resourceTypeName" : $("#resourcesTypeSelect").val()
-  }, function(data) {
-    $("#typeParameters").html(data);
-
-  });
+  }, getParameters);
 
   $("#editNumber").click(function() {
     $('#identifier').removeAttr('readonly');
@@ -78,10 +75,7 @@ $(document).ready(function() {
     $("#typeParameters").html("")
     $.post("getParameters", {
       "resourceTypeName" : $("#resourcesTypeSelect").val()
-    }, function(data) {
-      $("#typeParameters").html(data);
-
-    });
+    }, getParameters);
   });
 
   $("#datepicker").datepicker({
@@ -99,14 +93,19 @@ $(document).ready(function() {
     addNewPoint(num, 0, 0, 0.0, 0, 0, 0.0);
   });
 
-  //$('#btnDelAreaPoint').click(function() {
-  //	var num = $('.clonedAreaInput').length;
-  //	$('#areaInput' + num).remove();
-  //	if (num == 2) {
-  //		$('#btnDelAreaPoint').attr('disabled', 'disabled');
-  //   }
-  //});
-  //
-  //$('.deleteButton').attr('disabled', 'disabled');
 
 });
+
+
+function getParameters(data) {
+  $("#typeParameters").html(data);
+  var calcParams = $('#calculatedParamsList');
+  var calcParamsHtml = calcParams.html();
+  calcParams.html('');
+  $('#calculatedParams').html(calcParamsHtml);
+  if ((calcParamsHtml == undefined) || (!/\S/.test(calcParamsHtml))) {
+    $('#calculatedParamsTab').addClass('hidden');
+  } else {
+    $('#calculatedParamsTab').removeClass('hidden');
+  }
+}

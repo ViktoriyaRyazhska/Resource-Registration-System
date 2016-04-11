@@ -61,6 +61,8 @@ function initialize() {
     //hidePOI: true,
     onChange : function() {
       addPointsFromMap();
+      putParameter("PERIMETER", perimeter);
+      putParameter("AREA", area);
     }
   });
 
