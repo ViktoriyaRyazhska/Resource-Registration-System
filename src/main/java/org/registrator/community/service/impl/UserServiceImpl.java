@@ -271,7 +271,7 @@ public class UserServiceImpl implements UserService {
         List<UserDTO> userDtoList = new ArrayList<UserDTO>();
         User thisUser = getLoggedUser();
         List<User> userList;
-        if (thisUser.getRole().getType() == RoleType.COMMISSIONER) {
+        if ((thisUser != null) && (thisUser.getRole().getType() == RoleType.COMMISSIONER)) {
             userList = userRepository.findByTerritorialCommunity(thisUser.getTerritorialCommunity());
         } else {
             userList = userRepository.findAll();
