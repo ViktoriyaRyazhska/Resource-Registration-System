@@ -184,6 +184,14 @@ public class User implements Serializable {
     public User() {
 
     }
+    
+    
+
+    public User(String login, String email) {
+        super();
+        this.login = login;
+        this.email = email;
+    }
 
     public User(String login, String password, Role role, String firstName, String lastName, String middleName,
             String email, String status) {

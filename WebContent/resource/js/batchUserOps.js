@@ -6,6 +6,7 @@ jQuery(document).ready(function($) {
     var role;
 
     var communityModal = $("#userCommunitySelectModal");
+    var okMessage = "msg.batchops.changesaccepted";
 
     $('#example').on('click', 'tr', function() {
         $(this).toggleClass('selected');
@@ -49,6 +50,20 @@ jQuery(document).ready(function($) {
         
         action_notcomfirmrduser( $(this).attr('id'));
     });
+    
+    $('.unblock').click(function(){
+    	if (!gather_data()){
+            return;
+        }
+        changeStatus("ACTIVE");
+    })
+    
+     $('.block').click(function(){
+    	if (!gather_data()){
+            return;
+        }
+        changeStatus("BLOCK");
+    })
         
     /* **************************** */
     function gather_data() {
@@ -68,6 +83,10 @@ jQuery(document).ready(function($) {
         }
     }
 
+    function showErrorMsg(xhr, status, error){
+    	bootbox.alert("<h4 style='color:red;display:table;text-align:center;'>"+jQuery.i18n.prop("msg.batchops.ajaxError")+"</h4>" + jQuery.i18n.prop(xhr.responseText));
+        return "";
+    } 
     /* **************************** */
     function confirm_rolechange() {
         submit_rolechange();
@@ -100,11 +119,40 @@ jQuery(document).ready(function($) {
             },
 
             error : function(xhr, status, error) {
-                bootbox.alert("<h3>"+jQuery.i18n.prop("msg.batchops.ajaxError")+"</h3>" + xhr.responseText);
-                return "";
+            	showErrorMsg(xhr, status, error);
             }
         });
 
+    }
+    /* **************************** */
+    function changeStatus(status){
+    	var json = {
+    			"login" : selected.toString(),
+    			"status" : status
+    	}
+    	$.ajax({
+    		type:"POST",
+    		url:"batch-status-change",
+    		data: JSON.stringify(json),
+    		dataType : "text",
+    		contentType : 'application/json; charset=utf-8',
+            mimeType : 'application/json',
+            success : function(data) {
+                var list = table.rows('.selected').nodes();
+                bootbox.alert(jQuery.i18n.prop(data));
+                
+                $.each(list, function(index, element) {
+                	table.row(element).remove().draw();
+                })
+                
+                //return false;
+            },
+
+            error : function(xhr, status, error) {
+            	showErrorMsg(xhr, status, error);
+            }
+    		
+    	})
     }
     /* **************************** */
     function start_community_search() {
@@ -146,8 +194,7 @@ jQuery(document).ready(function($) {
                     tc_name = data.name;
                 },
                 error : function(xhr, status, error) {
-                    bootbox.alert("<h3>"+jQuery.i18n.prop("msg.batchops.ajaxError")+"</h3>" + xhr.responseText);
-                    return "";
+                	showErrorMsg(xhr, status, error);
                 }
             });
         }
@@ -182,12 +229,12 @@ jQuery(document).ready(function($) {
                     field.text(jQuery.i18n.prop("msg.role.USER"));
                     $(element).removeClass('selected');
                 })
+
                 communityModal.modal('hide');
                 return false;
             },
             error : function(xhr, status, error) {
-                bootbox.alert("<h3>"+jQuery.i18n.prop("msg.batchops.ajaxError")+"</h3>" + xhr.responseText);
-                return "";
+            	showErrorMsg(xhr, status, error);
             }
         });
     });

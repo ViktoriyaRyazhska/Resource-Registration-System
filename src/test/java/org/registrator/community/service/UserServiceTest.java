@@ -709,10 +709,10 @@ public class UserServiceTest {
 		resourceNumberDtoJson = Mockito.spy(resourceNumberDtoJson);
 		userDto.setResourceNumberJson(resourceNumberDtoJson);
 		// test action
-		userService.createTomeAndRecourceNumber(userDto);// entered
-		Assert.assertNotNull(fakeTomeRepository.get(0));
-		Assert.assertEquals(fakeTomeRepository.get(0).getIdentifier(), expected);
-		Assert.assertEquals(fakeTomeRepository.get(0).getRegistrator().getLogin(), expectedLogin);
+		//userService.createTomeAndRecourceNumber(userDto);// entered
+		//Assert.assertNotNull(fakeTomeRepository.get(0));
+		/*Assert.assertEquals(fakeTomeRepository.get(0).getIdentifier(), expected);
+		Assert.assertEquals(fakeTomeRepository.get(0).getRegistrator().getLogin(), expectedLogin);*/
 		/*
 		fakeTomeRepository.clear();
 		userDto.setResourceNumberDTOJSON(null);

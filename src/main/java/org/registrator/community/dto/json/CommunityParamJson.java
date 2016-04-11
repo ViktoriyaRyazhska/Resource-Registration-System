@@ -16,7 +16,10 @@ public class CommunityParamJson {
         this.login = login;
     }
 
-    public String getCommunityId() {
+    public CommunityParamJson() {
+	}
+
+	public String getCommunityId() {
         return communityId;
     }
 
@@ -28,8 +31,6 @@ public class CommunityParamJson {
         this.login = login;
         this.communityId = communityId;
     }
-
-    public CommunityParamJson() {}
 
     @Override
     public String toString() {

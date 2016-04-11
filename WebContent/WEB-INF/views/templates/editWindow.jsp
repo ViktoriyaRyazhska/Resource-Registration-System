@@ -298,12 +298,12 @@
               <div class="col-lg-8">
                 <input id="identifierNumber"
                   class="form-control input-md readonly" type="text"
-                  name="resourceNumberJson.registrator_number"
-                  value="${userDto.resourceNumberJson.registrator_number}"
+                  name="resourceNumberJson.registratorNumber"
+                  value="${userDto.resourceNumberJson.registratorNumber}"
                   <c:if test="${not failEdit}">readonly</c:if> >
                 <div class="control-group error">
                   <form:errors
-                    path="resourceNumberJson.registrator_number"
+                    path="resourceNumberJson.registratorNumber"
                     cssClass="error" style="color:black" />
                 </div>
               </div>
@@ -315,11 +315,11 @@
               <div class="col-lg-8">
                 <input id="registratorNumber"
                   class="form-control input-md readonly" type="text"
-                  name="resourceNumberJson.resource_number"
-                  value="${userDto.resourceNumberJson.resource_number}"
+                  name="resourceNumberJson.resourceNumber"
+                  value="${userDto.resourceNumberJson.resourceNumber}"
                   <c:if test="${not failEdit}">readonly</c:if> >
                 <div class="control-group error">
-                  <form:errors path="resourceNumberJson.resource_number"
+                  <form:errors path="resourceNumberJson.resourceNumber"
                     cssClass="error" style="color:black" />
                 </div>
               </div>

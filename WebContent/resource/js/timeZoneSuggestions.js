@@ -8,7 +8,7 @@ jQuery(document).ready(function ($) {
 
 
     $('#time_id').autocomplete({
-        serviceUrl: baseUrl.toString() + '/timeZones?lang=' + lang,
+        serviceUrl: baseUrl.toString() + '/timeZones?lang=' + (lang==="ua"?"uk":lang),
         paramName: "value",
         delimiter: ",",
         minChars: 2,

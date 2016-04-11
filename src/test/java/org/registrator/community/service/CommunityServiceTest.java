@@ -39,7 +39,6 @@ public class CommunityServiceTest {
 	@Mock
 	private UserRepository userRepository;
 	
-	@Mock
 	private Logger logger;
 
 	@BeforeMethod
