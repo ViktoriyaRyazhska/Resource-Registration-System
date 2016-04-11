@@ -172,6 +172,7 @@
     <ul class="nav nav-tabs" id="coordinates">
       <li class="active"><a data-target="#map" data-toggle="tab"><spring:message code="label.resource.map"/></a></li>
       <li><a data-target="#points" data-toggle="tab"><spring:message code="label.resource.points"/></a></li>
+      <li id="calculatedParamsTab" class="hidden" ><a data-target="#calculatedParams" data-toggle="tab"><spring:message code="label.resource.calculatedParams"/></a></li>
     </ul>
     <div class="tab-content">
       <div class="tab-pane active" id="map">
@@ -440,11 +441,8 @@
           <br />
         </div>
       </div>
+      <div class="tab-pane" id="calculatedParams"></div>
     </div>
-
-
-    <br>
-    <br>
     <br>
     <br>
     <div class="button">
