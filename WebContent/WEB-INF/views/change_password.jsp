@@ -30,7 +30,7 @@
               code="label.password" /></label>
           <div class="col-md-4">
             <input id="password" name="password" type="password"
-              placeholder="" class="form-control input-md" required="">
+              placeholder="" class="form-control input-md" required>
             <form:errors path="password" class="error"
               cssStyle="color:red" />
           </div>
@@ -42,7 +42,7 @@
               code="label.newPassword" /></label>
           <div class="col-md-4">
             <input id="newPassword" name="newPassword" type="password"
-              placeholder="" class="form-control input-md" required="">
+              placeholder="" class="form-control input-md" required>
             <form:errors path="newPassword" class="error"
               cssStyle="color:red" />
           </div>
@@ -55,7 +55,7 @@
           <div class="col-md-4">
             <input id="confirmNewPassword" name="confirmNewPassword"
               type="password" placeholder=""
-              class="form-control input-md" required="">
+              class="form-control input-md" required>
             <form:errors path="confirmNewPassword" class="error"
               cssStyle="color:red" />
           </div>
