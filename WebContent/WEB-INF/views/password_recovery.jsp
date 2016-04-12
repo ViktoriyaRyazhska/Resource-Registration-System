@@ -33,8 +33,8 @@
             id="password" name="password" type="password"
             placeholder=<spring:message
 	                    code="label.password" />
-            size="30" autocomplete="on">
-          <form:errors path="password" class="control-label" />
+            size="30" autocomplete="on" required="">
+          <form:errors path="password" class="error" cssStyle="color:red" />
         </div>
 
         <div class="form-group">
@@ -44,11 +44,11 @@
             name="confirmPassword" type="password"
             placeholder=<spring:message
 	                    code="label.password" />
-            size="30" autocomplete="on">
-          <form:errors path="confirmPassword" class="control-label" />
+            size="30" autocomplete="on" required="">
+          <form:errors path="confirmPassword" class="error" cssStyle="color:red" />
         </div>
         <input type="hidden" name="hash" value="${hash}">
-        <form:errors path="hash" class="control-label" />
+        <form:errors path="hash" class="error" cssStyle="color:red" />
         <button type="submit" class="btn btn-primary btn-block">
           <spring:message code="label.changePassword" />
         </button>

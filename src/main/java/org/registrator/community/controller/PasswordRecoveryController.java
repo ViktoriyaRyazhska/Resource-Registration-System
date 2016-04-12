@@ -46,7 +46,7 @@ public class PasswordRecoveryController {
     @PreAuthorize("hasRole('ROLE_ANONYMOUS')")
     @RequestMapping(value = "/forgot_password", method = RequestMethod.POST)
     public String handleForgotPasswordEmail(@RequestParam("email") String email, HttpServletRequest request, Model model) {
-        String baseLink = (request.getRequestURL()).toString().split("forgot_password")[0];
+        String baseLink = (request.getRequestURL()).toString().split("/forgot_password")[0];
         passwordRecoveryService.sendRecoverPasswordEmail(email,baseLink);
         model.addAttribute("msg",true);
         return "forgot_password";
