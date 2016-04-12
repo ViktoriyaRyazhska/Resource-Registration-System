@@ -19,9 +19,9 @@
         <label class="col-md-3">${discreteParameter.description}</label>
         <span class="col-md-2"> <select
           class="form-control compare">
-            <option value="less"><</option>
-            <option value="equal" selected>=</option>
-            <option value="greater">></option>
+            <option value="LESS"><</option>
+            <option value="EQUAL" selected>=</option>
+            <option value="GREATER">></option>
         </select>
         </span> <span class="col-md-6"> <input type="text"
           class="form-control value" />
