@@ -62,6 +62,10 @@ public class VerificationTokenServiceImpl implements VerificationTokenService{
 		return verificationTokenRepository.findVerificationTokenByTokenAndTokenType(token, type);
 	}
 	
+	@Override
+	public void deleteVerificationTokenList(List<VerificationToken> verifacationTokenList){
+	    verificationTokenRepository.delete(verifacationTokenList);
+	}
 	
 	
 	@Override

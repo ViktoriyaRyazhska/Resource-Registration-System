@@ -24,6 +24,8 @@ public interface VerificationTokenService {
 
     VerificationToken findVerificationTokenByLoginAndTokenType(String login, TokenType type);
 
+    void deleteVerificationTokenList(List<VerificationToken> verifacationTokenList);
+    
     List<VerificationToken> findVerificationTokensByLoginsAndTokenType(List<String> loginList, TokenType type);
 
 }
