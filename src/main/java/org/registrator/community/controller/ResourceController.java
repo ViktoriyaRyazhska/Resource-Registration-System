@@ -209,14 +209,13 @@ public class ResourceController {
      * to view
      *
      * @param json  - search parameters in JSON format
-     * @param model
      * @return
      */
 
     @ResponseBody
     @PreAuthorize("hasRole('ROLE_REGISTRATOR') or hasRole('ROLE_USER')")
     @RequestMapping(value = "/resourceSearch", method = RequestMethod.POST)
-    public String resourceSearch(@RequestBody ResourceSearchJson json, Model model) {
+    public SearchResultJson resourceSearch(@RequestBody ResourceSearchJson json) {
         SearchResultJson result = new SearchResultJson();
         ParameterSearchResultDTO searchResult = resourceService.getAllByParameters(json);
         long countResults = searchResult.getCount();
@@ -232,8 +231,7 @@ public class ResourceController {
         result.setPolygons(polygons);
         result.setCountPolygons(countResults);
 
-        Gson gson = new Gson();
-        return gson.toJson(result);
+        return result;
     }
 
     @ResponseBody
