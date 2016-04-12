@@ -29,6 +29,7 @@ public class MailServiceTest extends PowerMockTestCase {
     private Logger logger;
     private String recepientEmail = "recepientEmail";
     private String recepientName = "recepientName";
+    private String recepientLogin = "recepientLogin";
     private String token = "token";
     private String url = "url";
 
@@ -74,7 +75,7 @@ public class MailServiceTest extends PowerMockTestCase {
         PowerMockito.whenNew(MimeMessageHelper.class)
                 .withAnyArguments()
                 .thenReturn(mock(MimeMessageHelper.class, RETURNS_MOCKS));
-        mailService.sendComfirmEMail(recepientEmail, recepientName, token, url);
+        mailService.sendComfirmEMail(recepientEmail, recepientName, recepientLogin, token, url);
         verify(mailSender).send(any(MimeMessagePreparator.class));
     }
 

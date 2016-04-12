@@ -31,7 +31,6 @@ public class MailServiceImpl implements MailService{
 	public static final String RECOVER_PASSWORD_SUBJECT =  "Заявка на відновлення паролю";
 
     public static final String RESET_PASSWORD_LETTER_PATH =  "/velocity/resetPassword.vm";
-
     public static final String RESET_PASSWORD_SUBJECT =  "Ваш пароль скинуто адміном";
 	
 	
@@ -46,7 +45,7 @@ public class MailServiceImpl implements MailService{
 	
 	@Override
 	@Async
-	public void sendComfirmEMail(String recepientEmail, String recepientName, String token, String url) {
+	public void sendComfirmEMail(String recepientEmail, String recepientName, String login, String token, String url) {
 		
 		MimeMessagePreparator preparator = new MimeMessagePreparator() {
             public void prepare(MimeMessage mimeMessage) throws Exception {
@@ -55,6 +54,7 @@ public class MailServiceImpl implements MailService{
                 message.setFrom(new InternetAddress("resources.registrator@gmail.com", "Registrator system"));
                 Map<String, Object> templateVariables = new HashMap<>();
                 templateVariables.put("name", recepientName);
+                templateVariables.put("login", login);
                 templateVariables.put("url", url);
                 templateVariables.put("token", token);
                 String body = mergeTemplateIntoString(velocityEngine, CONFIRM_EMAIL_LETTER_PATH, "UTF-8", templateVariables);

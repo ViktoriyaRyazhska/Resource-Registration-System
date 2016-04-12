@@ -28,6 +28,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.testng.annotations.Test;
 import org.testng.annotations.BeforeMethod;
 
+import java.util.Arrays;
 import java.util.Date;
 
 @PrepareForTest(PasswordRecoveryServiceImpl.class)
@@ -70,7 +71,8 @@ public class PasswordRecoveryServiceTest extends PowerMockTestCase {
         when(verificationTokenService.isExistValidVerificationToken(VALID_TOKEN)).thenReturn(true);
         when(verificationTokenService.findVerificationTokenByTokenAndTokenType(VALID_TOKEN, TokenType.RECOVER_PASSWORD))
                 .thenReturn(verificationToken);
-        when(userRepository.getUserByEmail(verificationToken.getUserEmail())).thenReturn(user);
+        //TODO:
+        when(userRepository.getUserByEmail(verificationToken.getUserEmail())).thenReturn(Arrays.asList(user));
 
         passwordRecoveryService.recoverPasswordByEmailLink(VALID_TOKEN, NEW_PASSWORD);
 
@@ -103,9 +105,9 @@ public class PasswordRecoveryServiceTest extends PowerMockTestCase {
 
     @Test
     public void sendRecoverPasswordEmailTestWithCorrectArguments() throws Exception {
-
+        //TODO:
         whenNew(Date.class).withNoArguments().thenReturn(expiryDate);
-        when(userRepository.getUserByEmail(userEmail)).thenReturn(user);
+        when(userRepository.getUserByEmail(userEmail)).thenReturn(Arrays.asList(user));
         when(verificationTokenService.savePasswordVerificationToken(userEmail, expiryDate)).thenReturn(verificationToken);
 
         passwordRecoveryService.sendRecoverPasswordEmail(userEmail, baseLink);

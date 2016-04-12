@@ -50,7 +50,7 @@ public class NotConfirmedUsersServiceimpl implements NotConfirmedUsersService {
 		User user = userService.findUserByLogin(login);
 		if(user != null){
 			VerificationToken verifacationToken = verificationTokenService.saveEmailConfirmationToken(user.getLogin(), user.getEmail(), new Date(), baseLink);
-			mailService.sendComfirmEMail(user.getEmail(), user.getFirstName(),verifacationToken.getToken(),baseLink);
+			mailService.sendComfirmEMail(user.getEmail(), user.getFirstName(), user.getLogin(), verifacationToken.getToken(),baseLink);
 			logger.info("send confirm email to " + user.getEmail());
 			
 		}	
@@ -64,7 +64,7 @@ public class NotConfirmedUsersServiceimpl implements NotConfirmedUsersService {
             VerificationToken verifacationToken = verificationTokenService.findVerificationTokenByLoginAndTokenType(user.getLogin(), TokenType.CONFIRM_EMAIL);
             if (verifacationToken!=null){
                 logger.info("Send email to "+ user.getEmail());
-                mailService.sendComfirmEMail(user.getEmail(), user.getFirstName(),verifacationToken.getToken(),verifacationToken.getBaseLink());
+                mailService.sendComfirmEMail(user.getEmail(), user.getFirstName(), user.getLogin(), verifacationToken.getToken(),verifacationToken.getBaseLink());
             }else{
                 logger.warn("no verifacationToken found");
                 return "msg.notconfirmedusers.unsucsesfullysent";
@@ -185,22 +185,23 @@ public class NotConfirmedUsersServiceimpl implements NotConfirmedUsersService {
 	@Transactional
 	@Override
 	public Boolean confirmEmail(String token){
-		
-			VerificationToken verToken = verificationTokenService.findVerificationTokenByTokenAndTokenType(token, TokenType.CONFIRM_EMAIL);
-			if (verToken == null) {
-			    logger.warn("no such VerificationToken found in database");
-			    return false;
-			}
-			User user = userService.findUserByEmail(verToken.getUserEmail());
-			if (user == null){
-			    logger.warn("no such User found in database");
-			    return false;
-			} 
-			user.setStatus(UserStatus.INACTIVE);
-			userService.updateUser(user);
-			verificationTokenService.deleteVerificationToken(verToken);
-			logger.info("user succesfuly confirmed " + user.getLogin());
-			return true;
+		//TODO:
+        VerificationToken verToken = verificationTokenService.findVerificationTokenByTokenAndTokenType(token,
+                TokenType.CONFIRM_EMAIL);
+        if (verToken == null) {
+            logger.warn("no such VerificationToken found in database");
+            return false;
+        }
+        User user = userService.findUserByLogin(verToken.getUserLogin());
+        if (user == null) {
+            logger.warn("no such User found in database");
+            return false;
+        }
+        user.setStatus(UserStatus.INACTIVE);
+        userService.updateUser(user);
+        verificationTokenService.deleteVerificationToken(verToken);
+        logger.info("user succesfuly confirmed " + user.getLogin());
+        return true;
 
 	}
 

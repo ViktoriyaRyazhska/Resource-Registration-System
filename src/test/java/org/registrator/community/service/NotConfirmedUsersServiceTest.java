@@ -3,6 +3,7 @@ package org.registrator.community.service;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -106,7 +107,7 @@ public class NotConfirmedUsersServiceTest {
         when(verificationTokenService.saveEmailConfirmationToken(anyString(), anyString(), any(Date.class), anyString())).thenReturn(verificationToken);
         notConfirmedUsersService.sendConfirmEmailFirstTime(LOGIN,BASELINK);
         verify(verificationTokenService).saveEmailConfirmationToken(anyString(), anyString(), any(Date.class), anyString());
-        verify(mailService).sendComfirmEMail(anyString(), anyString(), anyString(), anyString());
+        verify(mailService).sendComfirmEMail(anyString(), anyString(), anyString(), anyString(), anyString());
         
     }
     
@@ -115,7 +116,7 @@ public class NotConfirmedUsersServiceTest {
        
         when(verificationTokenService.findVerificationTokenByLoginAndTokenType(anyString(), eq(TokenType.CONFIRM_EMAIL))).thenReturn(verificationToken);
         notConfirmedUsersService.sendConfirmEmailAgain(userList);
-        verify(mailService, times(2)).sendComfirmEMail(anyString(), anyString(), anyString(), anyString());
+        verify(mailService, times(2)).sendComfirmEMail(anyString(), anyString(), anyString(), anyString(), anyString());
     }
     
     @Test(dependsOnMethods = { "sendConfirmEmailAgain" })
@@ -193,8 +194,8 @@ public class NotConfirmedUsersServiceTest {
         when(verificationTokenService.findVerificationTokenByTokenAndTokenType(anyString(), eq(TokenType.CONFIRM_EMAIL))).thenReturn(verificationToken);
         actual = notConfirmedUsersService.confirmEmail(TOKEN);
         Assert.assertEquals(actual, false);
-        
-        when(userService.findUserByEmail(anyString())).thenReturn(user);
+        //TODO:
+        when(userService.findUserByEmail(anyString())).thenReturn(Arrays.asList(user));
         actual = notConfirmedUsersService.confirmEmail(TOKEN);
         Assert.assertEquals(actual, true);
     }

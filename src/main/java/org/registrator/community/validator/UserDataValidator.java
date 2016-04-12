@@ -34,7 +34,7 @@ public class UserDataValidator implements Validator {
         if(!(registrationForm.getPassword()).equals(registrationForm.getConfirmPassword())){
             errors.rejectValue("confirmPassword", "msg.registration.badconfirmation");
         }
-        if(userRepository.getUserByEmail(registrationForm.getEmail()) != null){
+        if(!userRepository.getUserByEmail(registrationForm.getEmail()).isEmpty()){
             errors.rejectValue("email", "msg.registration.email.exist");
         }
         String emptyPassportField = emptyPassportField(registrationForm);

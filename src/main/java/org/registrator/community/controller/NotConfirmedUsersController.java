@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
@@ -23,11 +24,13 @@ public class NotConfirmedUsersController {
     @Autowired
     private VerificationTokenService verificationTokenService;
     @Autowired
-    NotConfirmedUsersService emailConfirmService;
+    private NotConfirmedUsersService emailConfirmService;
 
     @PreAuthorize("hasRole('ROLE_ANONYMOUS') or hasRole('ROLE_ADMIN') or hasRole('ROLE_COMMISSIONER')")
     @RequestMapping(value = {"/manualregistration/confirm_email/{hash}", "/register/confirm_email/{hash}"}, method = RequestMethod.GET)
     public String getConfirmEmailPage(@PathVariable("hash") String hash, Model model) {
+    //public String getConfirmEmailPage(@PathVariable("hash") String hash, @RequestParam("login") String login, Model model) {
+        //TODO:
         if (verificationTokenService.isExistValidVerificationToken(hash)) {
             model.addAttribute("msg", emailConfirmService.confirmEmail(hash));
         }

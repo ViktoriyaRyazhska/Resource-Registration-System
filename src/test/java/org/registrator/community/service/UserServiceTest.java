@@ -562,9 +562,10 @@ public class UserServiceTest {
 	 */
 	@Test(dataProvider="providerGetUserByEmail")
 	public void findUserByEmail(User expected, String login, boolean isPositive) {
-		User actual = userService.findUserByEmail(login);
+	    //TODO:
+		List<User> actual = userService.findUserByEmail(login);
 		if(isPositive)
-			assertEqualsUsers(actual, expected);
+			assertEqualsUsers(actual.get(0), expected);
 		else
 			Assert.assertEquals(actual, expected);
 	}

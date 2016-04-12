@@ -45,7 +45,7 @@ public interface UserService {
 
     List<UserDTO> getUserBySearchTag(String searchTag);
 
-    User findUserByEmail(String email);
+    List<User> findUserByEmail(String email);
 
     void createTomeAndRecourceNumber(UserDTO userDto);
 

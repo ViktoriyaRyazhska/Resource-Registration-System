@@ -30,9 +30,10 @@ public class PasswordRecoveryServiceImpl implements PasswordRecoveryService {
 
 	@Override
 	public boolean recoverPasswordByEmailLink(String token,String password) {
+	    //TODO:
 		if(verificationTokenService.isExistValidVerificationToken(token)){
 			VerificationToken verificationToken = verificationTokenService.findVerificationTokenByTokenAndTokenType(token, TokenType.RECOVER_PASSWORD);
-				User user = userRepository.getUserByEmail(verificationToken.getUserEmail());
+				User user = userRepository.findUserByLogin(verificationToken.getUserLogin());
 				if(user != null){
 					user.setPassword(userPasswordEncoder.encode(password));
 					userRepository.save(user);
@@ -45,7 +46,8 @@ public class PasswordRecoveryServiceImpl implements PasswordRecoveryService {
 
 	@Override
 	public void sendRecoverPasswordEmail(String userEmail, String baseLink) {
-		User user = userRepository.getUserByEmail(userEmail);
+	    //TODO:
+		User user = userRepository.findUserByLogin(userEmail);
 		if(user != null){
 			VerificationToken verifacationToken = verificationTokenService.savePasswordVerificationToken(userEmail, new Date());
 			mailService.sendRecoveryPasswordMail(userEmail, user.getFirstName(),verifacationToken.getToken(),baseLink);
