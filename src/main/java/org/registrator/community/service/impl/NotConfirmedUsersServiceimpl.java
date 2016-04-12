@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import org.registrator.community.dao.VerificationTokenRepository;
 import org.registrator.community.dto.json.UsersDataNotConfJson;
 import org.registrator.community.entity.Address;
 import org.registrator.community.entity.PassportInfo;
@@ -46,11 +45,6 @@ public class NotConfirmedUsersServiceimpl implements NotConfirmedUsersService {
 	@Autowired
 	private VerificationTokenService verificationTokenService;
 	
-	@Autowired
-    private VerificationTokenRepository verificationTokenRepository;
-	
-
-	
 	@Override
 	public void sendConfirmEmailFirstTime(String login, String baseLink) {
 		User user = userService.findUserByLogin(login);
@@ -85,7 +79,7 @@ public class NotConfirmedUsersServiceimpl implements NotConfirmedUsersService {
 	@Override
 	public String actionsWithNotConfirmedUsers(UsersDataNotConfJson usersDataNotConfJson){
 	    logger.info("Recieved data: " + usersDataNotConfJson);
-	    if (usersDataNotConfJson.getActions()==null || usersDataNotConfJson.getLogins()==null) {
+	    if (usersDataNotConfJson == null || usersDataNotConfJson.getActions()==null || usersDataNotConfJson.getLogins()==null) {
             logger.warn("Empty usersDataNotConfJson file");
             return "msg.batchops.wrongInput";
         }
@@ -172,7 +166,7 @@ public class NotConfirmedUsersServiceimpl implements NotConfirmedUsersService {
     }
     
     @Transactional
-    void deleteListVerificationToken(List<String> loginList){
+    public void deleteListVerificationToken(List<String> loginList){
         
         
         logger.debug("Looking for verifacationTokens with logins: "+ loginList);
@@ -181,11 +175,8 @@ public class NotConfirmedUsersServiceimpl implements NotConfirmedUsersService {
             logger.warn("no such VerificationToken found in database");
         }else{
             logger.debug("VerificationTokens found");
-        }
-
-        if (!verifacationTokenList.isEmpty()){
             logger.info("start delete operations");
-            verificationTokenRepository.delete(verifacationTokenList);
+            verificationTokenService.deleteVerificationTokenList(verifacationTokenList);
             logger.info("VerificationTokens successfully deleted");
         }        
         

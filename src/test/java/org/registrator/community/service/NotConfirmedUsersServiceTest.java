@@ -8,21 +8,29 @@ import java.util.List;
 
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.powermock.api.support.membermodification.MemberModifier;
+import org.registrator.community.dto.json.UsersDataNotConfJson;
 import org.registrator.community.entity.Address;
 import org.registrator.community.entity.PassportInfo;
+import org.registrator.community.entity.Role;
 import org.registrator.community.entity.User;
 import org.registrator.community.entity.VerificationToken;
+import org.registrator.community.enumeration.ActionsWithNotConfUsers;
+import org.registrator.community.enumeration.RoleType;
 import org.registrator.community.enumeration.TokenType;
+import org.registrator.community.enumeration.UserStatus;
 import org.registrator.community.service.impl.NotConfirmedUsersServiceimpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.any;
@@ -40,11 +48,13 @@ public class NotConfirmedUsersServiceTest {
     private final String TOKEN = "testToken";
     private User user = new User();
     private List<User> userList = new ArrayList<User>();
+    private List<String> loginList = new ArrayList<String>();
     private VerificationToken verificationToken = new VerificationToken();
+    private List<VerificationToken> verificationTokenList;
     
     
     @InjectMocks
-    NotConfirmedUsersService notConfirmedUsersService = new NotConfirmedUsersServiceimpl();
+    NotConfirmedUsersServiceimpl notConfirmedUsersService = spy(new NotConfirmedUsersServiceimpl());
    
     @Mock
     private UserService userService;
@@ -72,9 +82,20 @@ public class NotConfirmedUsersServiceTest {
         MemberModifier
             .field(NotConfirmedUsersServiceimpl.class, "logger")
             .set(notConfirmedUsersService, logger);
+        
+
+    }
+    
+    @BeforeClass
+    public void initData(){
         user.setEmail(EMAIL);
         user.setLogin(LOGIN);
-
+        userList.add(new User("login1","email1@ukr.net",UserStatus.INACTIVE));
+        userList.add(new User("login2","email2@ukr.net",UserStatus.NOTCOMFIRMED));
+        loginList.add("login1");
+        loginList.add("login2");
+        verificationTokenList = new ArrayList<VerificationToken>();
+        verificationTokenList.add(verificationToken);
     }
     
     @Test
@@ -91,18 +112,13 @@ public class NotConfirmedUsersServiceTest {
     
     @Test
     public void sendConfirmEmailAgain(){
-        userList.add(new User("login1","email1@ukr.net"));
-        userList.add(new User("login2","email2@ukr.net"));
+       
         when(verificationTokenService.findVerificationTokenByLoginAndTokenType(anyString(), eq(TokenType.CONFIRM_EMAIL))).thenReturn(verificationToken);
         notConfirmedUsersService.sendConfirmEmailAgain(userList);
         verify(mailService, times(2)).sendComfirmEMail(anyString(), anyString(), anyString(), anyString());
     }
-    @Test
-    public void actionsWithNotConfirmedUsers(){
-        
-    }
     
-    @Test
+    @Test(dependsOnMethods = { "sendConfirmEmailAgain" })
     public void deleteNotConfirmedUsers(){ 
         notConfirmedUsersService.deleteNotConfirmedUsers(userList);
         verify(passportService).delete(anyListOf(PassportInfo.class));
@@ -110,13 +126,65 @@ public class NotConfirmedUsersServiceTest {
         verify(userService).delete(anyListOf(User.class));
         
     }
+ 
     
-    @Test
-    public void deleteListVerificationToken(){
+    
+    @Test(dependsOnMethods = { "deleteNotConfirmedUsers" })
+    public void actionsWithNotConfirmedUsers(){
+        UsersDataNotConfJson usersDataNotConfJson = null;
+        String actual = notConfirmedUsersService.actionsWithNotConfirmedUsers(usersDataNotConfJson);
+        String expected = "msg.batchops.wrongInput";
+        Assert.assertEquals(actual, expected);
         
+        
+        usersDataNotConfJson = new UsersDataNotConfJson();
+        usersDataNotConfJson.setActions(ActionsWithNotConfUsers.SENDEMAILAGAIN);
+        actual = notConfirmedUsersService.actionsWithNotConfirmedUsers(usersDataNotConfJson);
+        expected = "msg.batchops.wrongInput";
+        
+        usersDataNotConfJson.setLogins("login1,login2");
+        actual = notConfirmedUsersService.actionsWithNotConfirmedUsers(usersDataNotConfJson);
+        expected = "msg.notconfirmedusers.nosuchusersfound";
+        Assert.assertEquals(actual, expected);
+        
+        
+        when(userService.findUsersByLoginList(anyListOf(String.class))).thenReturn(userList);
+        actual = notConfirmedUsersService.actionsWithNotConfirmedUsers(usersDataNotConfJson);
+        expected = "msg.notconfirmedusers.onlynotconf";
+        Assert.assertEquals(actual, expected);
+        
+        userList.get(0).setStatus(UserStatus.NOTCOMFIRMED);
+        User loggetUser = new User();
+        Role role = new Role(RoleType.ADMIN, "");
+        loggetUser.setRole(role);
+        when(userService.getLoggedUser()).thenReturn(loggetUser);
+        
+        
+        
+        when(notConfirmedUsersService.sendConfirmEmailAgain(anyListOf(User.class))).thenReturn("");
+        notConfirmedUsersService.actionsWithNotConfirmedUsers(usersDataNotConfJson);
+        verify(notConfirmedUsersService,Mockito.times(2)).sendConfirmEmailAgain(anyListOf(User.class));
+        
+        usersDataNotConfJson.setActions(ActionsWithNotConfUsers.DELETE);
+        Mockito.doNothing().when(notConfirmedUsersService).deleteListVerificationToken(anyListOf(String.class));
+        Mockito.doReturn("").when(notConfirmedUsersService).deleteNotConfirmedUsers(anyListOf(User.class));
+        notConfirmedUsersService.actionsWithNotConfirmedUsers(usersDataNotConfJson);
+        verify(notConfirmedUsersService,Mockito.times(2)).deleteNotConfirmedUsers(anyListOf(User.class));
         
     }
     
+    @Test
+    public void deleteListVerificationToken(){
+        notConfirmedUsersService.deleteListVerificationToken(new ArrayList<String>());
+        verify(verificationTokenService, Mockito.never()).deleteVerificationTokenList(anyListOf(VerificationToken.class));
+        when(verificationTokenService.findVerificationTokensByLoginsAndTokenType(anyListOf(String.class), eq(TokenType.CONFIRM_EMAIL))).thenReturn(verificationTokenList);
+        notConfirmedUsersService.deleteListVerificationToken(new ArrayList<String>());
+        verify(verificationTokenService).deleteVerificationTokenList(anyListOf(VerificationToken.class));
+
+    }
+    
+   
+        
     @Test
     public void confirmEmail(){
         boolean actual = notConfirmedUsersService.confirmEmail(TOKEN);
