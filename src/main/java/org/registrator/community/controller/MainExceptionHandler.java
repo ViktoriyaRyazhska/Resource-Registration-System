@@ -20,7 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
  * Exception handler for application
  */
 @ControllerAdvice
-public class MainExceptionHandler implements HandlerExceptionResolver {
+public class MainExceptionHandler {
     @Autowired
     private Logger logger;
 
@@ -34,22 +34,17 @@ public class MainExceptionHandler implements HandlerExceptionResolver {
         mav.setViewName("resourceEntityNotFound");
         return mav;
     }
-    
+
     @ExceptionHandler(BadInputDataException.class)
     @ResponseBody
     public String handleCustomException(BadInputDataException ex) {
-          return UIMessages.WRONG_INPUT.toString();
+        return UIMessages.WRONG_INPUT.toString();
     }
 
     @ExceptionHandler(AccessDeniedException.class)
     public String handleAccessDenied(HttpServletRequest request, Exception exception) {
         logger.error("Request: " + HttpUtils.getFullRequestURL(request) + " access denied!", exception);
         return "accessDenied";
-    }
-
-    @Override
-    public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
-        return handleUncaughtExceptions(request, ex);
     }
 
     @ExceptionHandler(RuntimeException.class)
@@ -70,4 +65,5 @@ public class MainExceptionHandler implements HandlerExceptionResolver {
     }
 
 }
+
 
