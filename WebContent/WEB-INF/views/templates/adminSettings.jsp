@@ -69,23 +69,33 @@
       <div class="panel-body">
         <div class="container">
           <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-4">
               <p><spring:message code="label.admin.settings.smtp.host" /></p>
               <input id = "smtpHost" class="form-control" name="smtpParameters.host" value="${settings.smtpParameters.host}">
             </div>
-            <div class="col-md-6">
+            <div class="col-md-2">
               <p><spring:message code="label.admin.settings.smtp.port" /></p>
               <input id = "smtpPort" class="form-control" name="smtpParameters.port" value="${settings.smtpParameters.port}">
             </div>
+            <div class="col-md-6">
+
+              <span class="checkbox"><form:checkbox path="smtpParameters.tlsEnabled" value="${settings.smtpParameters.tlsEnabled}"/>
+                <label for="smtpParameters.tlsEnabled1"><spring:message code="label.admin.settings.smtp.tls" /> </label>
+              </span>
+
+            </div>
           </div>
-          <p><spring:message code="label.admin.settings.smtp.username" /></p>
-          <input id = "smtpUsername" class="form-control" name="smtpParameters.username" value="${settings.smtpParameters.username}">
+          <div class="row">
+            <div class="col-md-4">
+              <p><spring:message code="label.admin.settings.smtp.username" /></p>
+              <input id = "smtpUsername" class="form-control" name="smtpParameters.username" value="${settings.smtpParameters.username}">
+            </div>
+            <div class="col-md-4">
+              <p><spring:message code="label.admin.settings.smtp.password" /></p>
+              <input type="password" id = "smtpPassword" class="form-control" name="smtpParameters.password" value="${settings.smtpParameters.password}">
+            </div>
+          </div>
 
-          <p><spring:message code="label.admin.settings.smtp.password" /></p>
-          <input type="password" id = "smtpPassword" class="form-control" name="smtpParameters.password" value="${settings.smtpParameters.password}">
-
-          <p><spring:message code="label.admin.settings.smtp.tls" /></p>
-          <input type="checkbox" id = "smtpTLS" class="form-control" name="smtpParameters.enableTLS" value="${settings.smtpParameters.enableTLS}">
         </div>
       </div>
     </div>

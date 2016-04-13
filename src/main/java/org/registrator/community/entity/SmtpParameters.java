@@ -30,7 +30,7 @@ public class SmtpParameters {
     private String password = "";
 
     @Column
-    private boolean enableTLS = true;
+    private boolean tlsEnabled = true;
 
     public SmtpParameters() {}
 
@@ -74,11 +74,11 @@ public class SmtpParameters {
         this.password = password;
     }
 
-    public boolean isTLS() {
-        return enableTLS;
+    public boolean getTlsEnabled() {
+        return tlsEnabled;
     }
 
-    public void setTLS(boolean enableTLS) {
-        this.enableTLS = enableTLS;
+    public void setTlsEnabled(boolean enableTLS) {
+        this.tlsEnabled = enableTLS;
     }
 }

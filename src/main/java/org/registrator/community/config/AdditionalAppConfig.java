@@ -42,7 +42,7 @@ public class AdditionalAppConfig {
        
         Properties javaMailProperties = new Properties();
         javaMailProperties.setProperty("mail.smtp.auth", "true");
-        javaMailProperties.setProperty("mail.smtp.starttls.enable", smtpParameters.isTLS()?"true":"false");
+        javaMailProperties.setProperty("mail.smtp.starttls.enable", smtpParameters.getTlsEnabled()?"true":"false");
         javaMailProperties.setProperty("mail.smtp.socketFactory.fallback", "true");
         sender.setJavaMailProperties(javaMailProperties);
 
