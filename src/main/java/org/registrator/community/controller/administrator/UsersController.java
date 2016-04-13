@@ -85,7 +85,7 @@ public class UsersController {
         logger.debug("begin");
         UserDTO userDto = userService.getUserDto(login);
         model.addAttribute("userDto", userDto);
-        List<Role> roleList = roleService.getAllRole();
+        List<Role> roleList = roleService.getAvailableRolesToAssign(RoleType.valueOf(userDto.getRole()));
         model.addAttribute("roleList", roleList);
         List<UserStatus> userStatusList = userService.fillInUserStatusforRegistratedUsers();
         model.addAttribute("userStatusList", userStatusList);
