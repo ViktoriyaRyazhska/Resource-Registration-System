@@ -33,7 +33,7 @@
             id="password" name="password" type="password"
             placeholder=<spring:message
 	                    code="label.password" />
-            size="30" autocomplete="on" required="">
+            size="30" autocomplete="on" required>
           <form:errors path="password" class="error" cssStyle="color:red" />
         </div>
 
@@ -44,7 +44,7 @@
             name="confirmPassword" type="password"
             placeholder=<spring:message
 	                    code="label.password" />
-            size="30" autocomplete="on" required="">
+            size="30" autocomplete="on" required>
           <form:errors path="confirmPassword" class="error" cssStyle="color:red" />
         </div>
         <input type="hidden" name="hash" value="${hash}">
