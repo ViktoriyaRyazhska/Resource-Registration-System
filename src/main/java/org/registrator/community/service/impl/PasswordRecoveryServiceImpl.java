@@ -46,12 +46,12 @@ public class PasswordRecoveryServiceImpl implements PasswordRecoveryService {
 
 	@Override
 	public void sendRecoverPasswordEmail(String userEmail, String baseLink) {
-	    //TODO:
-		User user = userRepository.findUserByLogin(userEmail);
-		if(user != null){
-			VerificationToken verifacationToken = verificationTokenService.savePasswordVerificationToken(userEmail, new Date());
-			mailService.sendRecoveryPasswordMail(userEmail, user.getFirstName(),verifacationToken.getToken(),baseLink);
-		}	
+	    //TODO: UNCOMMMENT!!!!!!!!!!!!
+//		User user = userRepository.findUserByLogin(userEmail);
+//		if(user != null){
+//			VerificationToken verifacationToken = verificationTokenService.savePasswordVerificationToken(userEmail, new Date());
+//			mailService.sendRecoveryPasswordMail(userEmail, user.getFirstName(),verifacationToken.getToken(),baseLink);
+//		}	
 	}
 
 }

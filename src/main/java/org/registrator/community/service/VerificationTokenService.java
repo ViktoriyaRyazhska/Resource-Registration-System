@@ -8,17 +8,17 @@ import org.registrator.community.enumeration.TokenType;
 
 public interface VerificationTokenService {
 	
-	public boolean deletePasswordVerificationTokenByEmail(String email);
+	boolean deletePasswordVerificationTokenByLogin(String login);
 	
-	public void deleteVerificationToken(VerificationToken verificationToken);
+	void deleteVerificationToken(VerificationToken verificationToken);
 	
-	public VerificationToken savePasswordVerificationToken(String userEmail, Date nowTime);
+	VerificationToken savePasswordVerificationToken(String userEmail, String login, Date nowTime);
 	
-	public String createHashForPasswordToken();
+	String createHashForPasswordToken();
 	
-	public VerificationToken findVerificationTokenByTokenAndTokenType(String token, TokenType type);
+	VerificationToken findVerificationTokenByTokenAndTokenType(String token, TokenType type);
 	
-	public boolean isExistValidVerificationToken(String token);
+	boolean isExistValidVerificationToken(String token);
 
     VerificationToken saveEmailConfirmationToken(String login, String userEmail, Date nowTime, String baseLink);
 

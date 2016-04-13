@@ -9,6 +9,7 @@ import javax.mail.internet.MimeMessage;
 import org.apache.velocity.app.VelocityEngine;
 import org.registrator.community.service.MailService;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -21,6 +22,7 @@ import static org.springframework.ui.velocity.VelocityEngineUtils.mergeTemplateI
 
 @Service
 public class MailServiceImpl implements MailService{
+    private static final Logger logger = LoggerFactory.getLogger(MailServiceImpl.class);
 	
 	public static final String SEND_FROM = "resources.registrator@gmail.com";
 	
@@ -39,9 +41,7 @@ public class MailServiceImpl implements MailService{
 	
 	@Autowired
     private VelocityEngine velocityEngine;
-	
-	@Autowired
-    private Logger logger;
+
 	
 	@Override
 	@Async
@@ -62,10 +62,9 @@ public class MailServiceImpl implements MailService{
                 message.setSubject(CONFIRM_EMAIL_SUBJECT);
             }
         };
-        try{
-        	mailSender.send(preparator);
-        }
-        catch(MailException e){
+        try {
+            mailSender.send(preparator);
+        } catch (MailException e) {
             logger.error("Send mail exception to {}", recepientEmail);
         }
 	}
@@ -114,10 +113,9 @@ public class MailServiceImpl implements MailService{
                 message.setSubject(RESET_PASSWORD_SUBJECT);
             }
         };
-        try{
+        try {
             mailSender.send(preparator);
-        }
-        catch(MailException e){
+        } catch (MailException e) {
             logger.error("Send mail exception to {}", recepientEmail);
         }
     }

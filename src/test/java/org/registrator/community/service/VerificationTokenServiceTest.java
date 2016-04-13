@@ -147,13 +147,14 @@ public class VerificationTokenServiceTest {
 	}
 
 	@Test(dataProvider = "formDataForTokenCreation", dependsOnMethods = "deleteVerificationToken")
-	public void saveAndDeletePasswordVerificationToken(String uuid, String email, Date date) {
+	public void saveAndDeletePasswordVerificationToken(String uuid, String email, String login, Date date) {
+	  //TODO: test
 		logger.debug("Start");
 
 		Date forSynt = new Date(date.getTime() + PLUS_TIME);
 
 		VerificationToken expected = new VerificationToken(uuid, email, forSynt, TokenType.RECOVER_PASSWORD),
-				actual = verificationTokenService.savePasswordVerificationToken(email, date);
+				actual = verificationTokenService.savePasswordVerificationToken(email, login, date);
 
 		Assert.assertEquals(expected.getUserEmail(), actual.getUserEmail());
 		Assert.assertEquals(expected.getExpiryDate(), actual.getExpiryDate());
@@ -161,7 +162,7 @@ public class VerificationTokenServiceTest {
 		VerificationToken extraCheck = verificationTokenRepository.findTokenByEmail(actual.getUserEmail());
 		Assert.assertNotNull(extraCheck);
 
-		boolean isDeleted = verificationTokenService.deletePasswordVerificationTokenByEmail(extraCheck.getUserEmail());
+		boolean isDeleted = verificationTokenService.deletePasswordVerificationTokenByLogin(extraCheck.getUserLogin());
 		Assert.assertEquals(isDeleted, true);
 		logger.debug("End");
 	}

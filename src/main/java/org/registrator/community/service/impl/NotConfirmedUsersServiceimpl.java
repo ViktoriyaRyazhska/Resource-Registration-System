@@ -20,18 +20,17 @@ import org.registrator.community.service.MailService;
 import org.registrator.community.service.UserService;
 import org.registrator.community.service.VerificationTokenService;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class NotConfirmedUsersServiceimpl implements NotConfirmedUsersService {
-	
-    @Autowired
-    private Logger logger;
+    private static final Logger logger = LoggerFactory.getLogger(NotConfirmedUsersServiceimpl.class);
     
     @Autowired
-	UserService userService;
+	private UserService userService;
 	
 	@Autowired
 	private MailService mailService;
@@ -51,25 +50,21 @@ public class NotConfirmedUsersServiceimpl implements NotConfirmedUsersService {
 		if(user != null){
 			VerificationToken verifacationToken = verificationTokenService.saveEmailConfirmationToken(user.getLogin(), user.getEmail(), new Date(), baseLink);
 			mailService.sendComfirmEMail(user.getEmail(), user.getFirstName(), user.getLogin(), verifacationToken.getToken(),baseLink);
-			logger.info("send confirm email to " + user.getEmail());
-			
+			logger.info("send confirm email to {} [login: {}]", user.getEmail(), user.getLogin());
 		}	
 	}
 	
 	@Override
     public String sendConfirmEmailAgain(List<User> userList) {
-
         for (User user: userList){
-            
             VerificationToken verifacationToken = verificationTokenService.findVerificationTokenByLoginAndTokenType(user.getLogin(), TokenType.CONFIRM_EMAIL);
             if (verifacationToken!=null){
-                logger.info("Send email to "+ user.getEmail());
+                logger.info("Send email to {}", user.getEmail());
                 mailService.sendComfirmEMail(user.getEmail(), user.getFirstName(), user.getLogin(), verifacationToken.getToken(),verifacationToken.getBaseLink());
             }else{
                 logger.warn("no verifacationToken found");
                 return "msg.notconfirmedusers.unsucsesfullysent";
             }
-
         }
         return "msg.notconfirmedusers.sucsesfullysent";              
     }
@@ -78,8 +73,9 @@ public class NotConfirmedUsersServiceimpl implements NotConfirmedUsersService {
 	@Transactional
 	@Override
 	public String actionsWithNotConfirmedUsers(UsersDataNotConfJson usersDataNotConfJson){
-	    logger.info("Recieved data: " + usersDataNotConfJson);
-	    if (usersDataNotConfJson == null || usersDataNotConfJson.getActions()==null || usersDataNotConfJson.getLogins()==null) {
+	    logger.info("Recieved data: {}", usersDataNotConfJson);
+	    if (usersDataNotConfJson == null || usersDataNotConfJson.getActions() == null || 
+	            usersDataNotConfJson.getLogins() == null) {
             logger.warn("Empty usersDataNotConfJson file");
             return "msg.batchops.wrongInput";
         }
@@ -87,7 +83,7 @@ public class NotConfirmedUsersServiceimpl implements NotConfirmedUsersService {
 	    List<String> loginList = new ArrayList<String>();
 	    String logins = usersDataNotConfJson.getLogins();
 	    Collections.addAll(loginList, logins.split(","));
-	    logger.debug("Loking for users with logins: "+logins);
+	    logger.debug("Loking for users with logins: {}", logins);
         List<User> userList = userService.findUsersByLoginList(loginList);
         if (userList.isEmpty()){
             logger.warn("no such users found");
@@ -105,10 +101,10 @@ public class NotConfirmedUsersServiceimpl implements NotConfirmedUsersService {
         logger.debug("check logged user RoleType");
         User loggetUser = userService.getLoggedUser();
 	    RoleType roleType = loggetUser.getRole().getType();
-	    logger.debug("logged user RoleType: "+ roleType);
+	    logger.debug("logged user RoleType: {}", roleType);
 	    
 	    if (roleType!=RoleType.ADMIN && roleType!=RoleType.COMMISSIONER){
-	        logger.warn("try to perform action by forbitten user:"+ roleType);
+	        logger.warn("try to perform action by forbitten user: {}", roleType);
 	        return "msg.notconfirmedusers.onlyadminorcommisioner";
 	    }else if(roleType == RoleType.COMMISSIONER){
 	        logger.debug("check whether users over which operation is performing  belongs to the same community");
@@ -144,7 +140,7 @@ public class NotConfirmedUsersServiceimpl implements NotConfirmedUsersService {
         
         List<PassportInfo> passportInfoList = new ArrayList<PassportInfo>();
         List<Address> addressList = new ArrayList<Address>();
-                
+        //TODO: here can be more than One Passport or Address!!!        
         for (User user: userList){
             passportInfoList.addAll(user.getPassport());
             addressList.addAll(user.getAddress());
@@ -167,9 +163,7 @@ public class NotConfirmedUsersServiceimpl implements NotConfirmedUsersService {
     
     @Transactional
     public void deleteListVerificationToken(List<String> loginList){
-        
-        
-        logger.debug("Looking for verifacationTokens with logins: "+ loginList);
+        logger.debug("Looking for verifacationTokens with logins: {}", loginList);
         List<VerificationToken> verifacationTokenList = verificationTokenService.findVerificationTokensByLoginsAndTokenType(loginList, TokenType.CONFIRM_EMAIL);
         if (verifacationTokenList.isEmpty()){
             logger.warn("no such VerificationToken found in database");

@@ -36,13 +36,15 @@ public class VerificationTokenServiceIT extends AbstractTestNGSpringContextTests
 
 	// DataProviders
 	@DataProvider(name = "ProviderForTokenFormation")
-	public Object[][] formEmailStrings() {
+	public Object[][] formEmailAndLoginStrings() {
+	    //TODO: test
 		logger.debug("Generating email strings");
 		Object[][] tmp = new Object[DESIRED_RESOURCES][1];
 		String emailMask = "tokenEmail#%03d@gmail.com";
-
+		String login = "login%d";
 		for (int i = 0; i < tmp.length; i++) {
 			tmp[i][0] = String.format(emailMask, i);
+			tmp[i][1] = String.format(login, i);
 		}
 		return tmp;
 	}
@@ -85,9 +87,10 @@ public class VerificationTokenServiceIT extends AbstractTestNGSpringContextTests
 	}
 
 	@Test(dataProvider = "ProviderForTokenFormation", priority=2)
-	public void savePasswordVerificationToken(String email) {
+	public void savePasswordVerificationToken(String email, String login) {
+	  //TODO: test
 		logger.debug("Start");
-		VerificationToken actual = verificationTokenService.savePasswordVerificationToken(email, date),
+		VerificationToken actual = verificationTokenService.savePasswordVerificationToken(email,login, date),
 				expected = new VerificationToken(actual.getToken(), email, actual.getExpiryDate(),
 						TokenType.RECOVER_PASSWORD);
 
@@ -126,6 +129,7 @@ public class VerificationTokenServiceIT extends AbstractTestNGSpringContextTests
 
 	@Test(priority=5)
 	public void deletePasswordVerificationTokenByEmailAndByTokenName() {
+	    //TODO: test
 		logger.debug("Start");
 		int listSize = cTokenList.size();
 		long repSize = verificationTokenRepository.count();
@@ -134,7 +138,7 @@ public class VerificationTokenServiceIT extends AbstractTestNGSpringContextTests
 		for(int i = 0; i< listSize; i++){
 			VerificationToken tok = verificationTokenRepository.findVerificationTokenByToken(cTokenList.get(i).getToken());
 			if(i%2==0){
-				verificationTokenService.deletePasswordVerificationTokenByEmail(tok.getUserEmail());
+				verificationTokenService.deletePasswordVerificationTokenByLogin(tok.getUserLogin());
 			}else{
 				verificationTokenService.deleteVerificationToken(tok);
 			}

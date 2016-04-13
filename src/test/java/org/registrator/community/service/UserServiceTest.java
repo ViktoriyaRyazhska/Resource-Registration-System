@@ -81,7 +81,7 @@ public class UserServiceTest {
 				return null;
 			}
 		});
-		Mockito.when(userRepository.getUserByEmail(Mockito.anyString())).then(new Answer<User>() {
+		Mockito.when(userRepository.getUsersByEmail(Mockito.anyString())).then(new Answer<User>() {
 			@Override
 			public User answer(InvocationOnMock invocation) throws Throwable {
 				for(int i=0;i<fakeUserRepository.size();i++)

@@ -4,6 +4,7 @@ import org.registrator.community.dto.json.UsersDataNotConfJson;
 import org.registrator.community.service.NotConfirmedUsersService;
 import org.registrator.community.service.VerificationTokenService;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -17,10 +18,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class NotConfirmedUsersController {
-
-
-    @Autowired
-    private Logger logger;
+    private static final Logger logger = LoggerFactory.getLogger(NotConfirmedUsersController.class);
+    
     @Autowired
     private VerificationTokenService verificationTokenService;
     @Autowired
@@ -29,8 +28,6 @@ public class NotConfirmedUsersController {
     @PreAuthorize("hasRole('ROLE_ANONYMOUS') or hasRole('ROLE_ADMIN') or hasRole('ROLE_COMMISSIONER')")
     @RequestMapping(value = {"/manualregistration/confirm_email/{hash}", "/register/confirm_email/{hash}"}, method = RequestMethod.GET)
     public String getConfirmEmailPage(@PathVariable("hash") String hash, Model model) {
-    //public String getConfirmEmailPage(@PathVariable("hash") String hash, @RequestParam("login") String login, Model model) {
-        //TODO:
         if (verificationTokenService.isExistValidVerificationToken(hash)) {
             model.addAttribute("msg", emailConfirmService.confirmEmail(hash));
         }
@@ -41,7 +38,7 @@ public class NotConfirmedUsersController {
     @PreAuthorize("hasRole('ROLE_ADMIN')or hasRole('ROLE_COMMISSIONER')")
     @RequestMapping(value = "/administrator/users/get-all-users/notcomfirmrd-user", method = RequestMethod.POST)
     public @ResponseBody String actionsWithNotConfirmedUsers(@RequestBody UsersDataNotConfJson usersDataNotConfJson) {
-        logger.info("Recieve JSON: "+ usersDataNotConfJson);
+        logger.debug("Received JSON: {}", usersDataNotConfJson);
         return emailConfirmService.actionsWithNotConfirmedUsers(usersDataNotConfJson);
     }
 

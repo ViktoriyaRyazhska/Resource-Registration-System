@@ -48,6 +48,7 @@ public class PasswordRecoveryServiceTest extends PowerMockTestCase {
     private User user;
     private VerificationToken verificationToken;
     private String userEmail = "userEmail";
+    private String userLogin = "login";
     private Date expiryDate = new Date();
     private String VALID_TOKEN = "0001";
     private String NON_VALID_TOKEN = "0002";
@@ -72,7 +73,7 @@ public class PasswordRecoveryServiceTest extends PowerMockTestCase {
         when(verificationTokenService.findVerificationTokenByTokenAndTokenType(VALID_TOKEN, TokenType.RECOVER_PASSWORD))
                 .thenReturn(verificationToken);
         //TODO:
-        when(userRepository.getUserByEmail(verificationToken.getUserEmail())).thenReturn(Arrays.asList(user));
+        when(userRepository.getUsersByEmail(verificationToken.getUserEmail())).thenReturn(Arrays.asList(user));
 
         passwordRecoveryService.recoverPasswordByEmailLink(VALID_TOKEN, NEW_PASSWORD);
 
@@ -105,10 +106,10 @@ public class PasswordRecoveryServiceTest extends PowerMockTestCase {
 
     @Test
     public void sendRecoverPasswordEmailTestWithCorrectArguments() throws Exception {
-        //TODO:
+        //TODO: test
         whenNew(Date.class).withNoArguments().thenReturn(expiryDate);
-        when(userRepository.getUserByEmail(userEmail)).thenReturn(Arrays.asList(user));
-        when(verificationTokenService.savePasswordVerificationToken(userEmail, expiryDate)).thenReturn(verificationToken);
+        when(userRepository.getUsersByEmail(userEmail)).thenReturn(Arrays.asList(user));
+        when(verificationTokenService.savePasswordVerificationToken(userEmail, userLogin, expiryDate)).thenReturn(verificationToken);
 
         passwordRecoveryService.sendRecoverPasswordEmail(userEmail, baseLink);
 
@@ -117,12 +118,12 @@ public class PasswordRecoveryServiceTest extends PowerMockTestCase {
 
     @Test
     public void sendRecoverPasswordEmailTestDoNothingIfUserNull() throws Exception {
-
-        when(userRepository.getUserByEmail(userEmail)).thenReturn(null);
+      //TODO: test
+        when(userRepository.getUsersByEmail(userEmail)).thenReturn(null);
 
         passwordRecoveryService.sendRecoverPasswordEmail(userEmail, baseLink);
 
-        verify(verificationTokenService, never()).savePasswordVerificationToken(anyString(), any(Date.class));
+        verify(verificationTokenService, never()).savePasswordVerificationToken(anyString(),anyString(), any(Date.class));
         verify(mailService, never()).sendRecoveryPasswordMail(anyString(), anyString(), anyString(), anyString());
     }
 

@@ -21,8 +21,9 @@ public class VerificationTokenServiceImpl implements VerificationTokenService{
 	private VerificationTokenRepository verificationTokenRepository;
 
 	@Override
-	public boolean deletePasswordVerificationTokenByEmail(String email) {
-		VerificationToken passwordResetToken = verificationTokenRepository.findTokenByEmail(email);
+	public boolean deletePasswordVerificationTokenByLogin(String login) {
+	    //TODO: test
+		VerificationToken passwordResetToken = verificationTokenRepository.findTokenByLogin(login);
 		if(passwordResetToken != null){
 			verificationTokenRepository.delete(passwordResetToken);
 			return true;
@@ -31,21 +32,23 @@ public class VerificationTokenServiceImpl implements VerificationTokenService{
 	}
 
 	@Override
-	public VerificationToken savePasswordVerificationToken(String userEmail, Date nowTime) {
+	public VerificationToken savePasswordVerificationToken(String userEmail, String login, Date nowTime) {
+	    //TODO: test
 		String token = createHashForPasswordToken();
 		nowTime.setTime(nowTime.getTime()+PASSWORD_TOKEN_EXPIRY_TIME);
-		VerificationToken passwordVerificationToken = new VerificationToken(token,userEmail,nowTime,TokenType.RECOVER_PASSWORD);
-		deletePasswordVerificationTokenByEmail(userEmail);
+		VerificationToken passwordVerificationToken = new VerificationToken(token, login, userEmail,nowTime,TokenType.RECOVER_PASSWORD);
+		deletePasswordVerificationTokenByLogin(login);
 		verificationTokenRepository.save(passwordVerificationToken);
 		return passwordVerificationToken;
 	}
 	
 	@Override
 	public VerificationToken saveEmailConfirmationToken(String login, String userEmail, Date nowTime, String baseLink) {
+	    //TODO: test
 		String token = createHashForPasswordToken();
 		nowTime.setTime(nowTime.getTime()+EMAIL_TOKEN_EXPIRY_TIME);
 		VerificationToken emailVerificationToken = new VerificationToken(token, login, userEmail,nowTime,TokenType.CONFIRM_EMAIL, baseLink);
-		deletePasswordVerificationTokenByEmail(userEmail);
+		deletePasswordVerificationTokenByLogin(login);
 		verificationTokenRepository.save(emailVerificationToken);
 		return emailVerificationToken;
 	}
