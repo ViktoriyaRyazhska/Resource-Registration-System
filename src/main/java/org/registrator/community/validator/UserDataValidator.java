@@ -55,10 +55,11 @@ public class UserDataValidator implements Validator {
     private List<String> emptyPassportField(UserRegistrationDTO registrationForm) {
         List<String> rejectedFields = new ArrayList<String>();
         PassportDTO passport = registrationForm.getPassport();
-        //if all passport fields are empty than OK!
-        if( passport.getSeria().isEmpty()==passport.getNumber().isEmpty() ? 
-                passport.getSeria().isEmpty()==passport.getPublished_by_data().isEmpty() : false){
-            return rejectedFields;
+        //if all passport fields are empty or filled than OK!
+        if (passport.getSeria().isEmpty() == passport.getNumber().isEmpty()) {
+            if (passport.getSeria().isEmpty() == passport.getPublished_by_data().isEmpty()) {
+                return rejectedFields;
+            }
         }
         //else get empty fields name
         if(passport.getSeria().isEmpty()){
