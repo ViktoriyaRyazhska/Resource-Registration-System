@@ -13,6 +13,7 @@ import org.registrator.community.service.NotConfirmedUsersService;
 import org.registrator.community.service.UserService;
 import org.registrator.community.validator.UserDataValidator;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -24,9 +25,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
 public class ManualRegistrationController {
-
-    @Autowired
-    private Logger logger;
+    private static final Logger logger = LoggerFactory.getLogger(ManualRegistrationController.class);
+    
     @Autowired
     private UserService userService;
     @Autowired

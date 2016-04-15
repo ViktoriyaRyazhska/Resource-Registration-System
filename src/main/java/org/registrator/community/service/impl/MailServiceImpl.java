@@ -1,8 +1,10 @@
 package org.registrator.community.service.impl;
 
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
@@ -46,78 +48,63 @@ public class MailServiceImpl implements MailService{
 	@Override
 	@Async
 	public void sendComfirmEMail(String recepientEmail, String recepientName, String login, String token, String url) {
-		
-		MimeMessagePreparator preparator = new MimeMessagePreparator() {
-            public void prepare(MimeMessage mimeMessage) throws Exception {
-                MimeMessageHelper message = new MimeMessageHelper(mimeMessage);
-                message.setTo(recepientEmail);
-                message.setFrom(new InternetAddress("resources.registrator@gmail.com", "Registrator system"));
-                Map<String, Object> templateVariables = new HashMap<>();
-                templateVariables.put("name", recepientName);
-                templateVariables.put("login", login);
-                templateVariables.put("url", url);
-                templateVariables.put("token", token);
-                String body = mergeTemplateIntoString(velocityEngine, CONFIRM_EMAIL_LETTER_PATH, "UTF-8", templateVariables);
-                message.setText(body, true);
-                message.setSubject(CONFIRM_EMAIL_SUBJECT);
-            }
-        };
+	    Map<String, Object> templateVariables = new HashMap<>();
+	    templateVariables.put("name", recepientName);
+        templateVariables.put("login", login);
+        templateVariables.put("url", url);
+        templateVariables.put("token", token);
+        MimeMessagePreparator preparator = prepareMail(recepientEmail, templateVariables, CONFIRM_EMAIL_LETTER_PATH, CONFIRM_EMAIL_SUBJECT);
         try {
             mailSender.send(preparator);
         } catch (MailException e) {
             logger.error("Send mail exception to {}", recepientEmail);
         }
+        
 	}
 
 	@Override
 	@Async
-	public void sendRecoveryPasswordMail(String recepientEmail, String recepientName, String token, String url) {
-		
-		MimeMessagePreparator preparator = new MimeMessagePreparator() {
-            public void prepare(MimeMessage mimeMessage) throws Exception {
-                MimeMessageHelper message = new MimeMessageHelper(mimeMessage);
-                message.setTo(recepientEmail);
-                message.setFrom(new InternetAddress("resources.registrator@gmail.com", "Registrator system"));
-                Map<String, Object> templateVariables = new HashMap<>();
-                templateVariables.put("name", recepientName);
-                templateVariables.put("url", url);
-                templateVariables.put("token", token);
-                String body = mergeTemplateIntoString(velocityEngine, RECOVER_PASSWORD_LETTER_PATH, "UTF-8", templateVariables);
-                message.setText(body, true);
-                message.setSubject(RECOVER_PASSWORD_SUBJECT);
-            }
-        };
-        try{
-        	mailSender.send(preparator);
-        }
-        catch(MailException e){
+	public void sendRecoveryPasswordMail(String recepientEmail, String token, String url) {
+	    Map<String, Object> templateVariables = new HashMap<>();
+        templateVariables.put("url", url);
+        templateVariables.put("token", token);
+	    MimeMessagePreparator preparator = prepareMail(recepientEmail, templateVariables, RECOVER_PASSWORD_LETTER_PATH, RECOVER_PASSWORD_SUBJECT);
+        try {
+            mailSender.send(preparator);
+        } catch (MailException e) {
             logger.error("Send mail exception to {}", recepientEmail);
-        } 
+        }
+
 	}
 
     @Override
     @Async
     public void sendResetedPasswordMail(String recepientEmail, String recepientName, String login, String password){
-
-        MimeMessagePreparator preparator = new MimeMessagePreparator() {
-            public void prepare(MimeMessage mimeMessage) throws Exception {
-                MimeMessageHelper message = new MimeMessageHelper(mimeMessage);
-                message.setTo(recepientEmail);
-                message.setFrom(new InternetAddress("resources.registrator@gmail.com", "Registrator system"));
-                Map<String, Object> templateVariables = new HashMap<>();
-                templateVariables.put("name", recepientName);
-                templateVariables.put("login", login);
-                templateVariables.put("password", password);
-                String body = mergeTemplateIntoString(velocityEngine, RESET_PASSWORD_LETTER_PATH, "UTF-8", templateVariables);
-                message.setText(body, true);
-                message.setSubject(RESET_PASSWORD_SUBJECT);
-            }
-        };
+        Map<String, Object> templateVariables = new HashMap<>();
+        templateVariables.put("name", recepientName);
+        templateVariables.put("login", login);
+        templateVariables.put("password", password);
+        MimeMessagePreparator preparator = prepareMail(recepientEmail, templateVariables, RESET_PASSWORD_LETTER_PATH, RESET_PASSWORD_SUBJECT);
         try {
             mailSender.send(preparator);
         } catch (MailException e) {
             logger.error("Send mail exception to {}", recepientEmail);
         }
+        
+    }
+    
+    private MimeMessagePreparator prepareMail(String recepientEmail,Map<String, Object> templateVariables, String templatePath, String subject){
+        MimeMessagePreparator preparator = new MimeMessagePreparator() {
+            public void prepare(MimeMessage mimeMessage) throws MessagingException, UnsupportedEncodingException {
+                MimeMessageHelper message = new MimeMessageHelper(mimeMessage);
+                message.setTo(recepientEmail);
+                message.setFrom(new InternetAddress("resources.registrator@gmail.com", "Registrator system"));
+                String body = mergeTemplateIntoString(velocityEngine, templatePath, "UTF-8", templateVariables);
+                message.setText(body, true);
+                message.setSubject(subject);
+            }
+        };
+        return preparator; 
     }
 
 }

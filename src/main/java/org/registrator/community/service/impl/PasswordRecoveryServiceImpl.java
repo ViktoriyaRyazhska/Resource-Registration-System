@@ -1,6 +1,7 @@
 package org.registrator.community.service.impl;
 
 import java.util.Date;
+import java.util.List;
 
 import org.registrator.community.dao.UserRepository;
 import org.registrator.community.entity.User;
@@ -26,32 +27,30 @@ public class PasswordRecoveryServiceImpl implements PasswordRecoveryService {
 	private VerificationTokenService verificationTokenService;
 	
 	@Autowired
-	private PasswordEncoder  userPasswordEncoder;
+	private PasswordEncoder userPasswordEncoder;
 
 	@Override
-	public boolean recoverPasswordByEmailLink(String token,String password) {
-	    //TODO:
+	public boolean recoverPasswordByEmailLink(String token, String login, String password) {
 		if(verificationTokenService.isExistValidVerificationToken(token)){
 			VerificationToken verificationToken = verificationTokenService.findVerificationTokenByTokenAndTokenType(token, TokenType.RECOVER_PASSWORD);
-				User user = userRepository.findUserByLogin(verificationToken.getUserLogin());
-				if(user != null){
-					user.setPassword(userPasswordEncoder.encode(password));
-					userRepository.save(user);
-					verificationTokenService.deleteVerificationToken(verificationToken);
-					return true;
-				}
+			User user = userRepository.findUserByLogin(login);
+			if(user != null){
+				user.setPassword(userPasswordEncoder.encode(password));
+				userRepository.save(user);
+				verificationTokenService.deleteVerificationToken(verificationToken);
+				return true;
+			}
 		}
 		return false;
 	}
 
 	@Override
 	public void sendRecoverPasswordEmail(String userEmail, String baseLink) {
-	    //TODO: UNCOMMMENT!!!!!!!!!!!!
-//		User user = userRepository.findUserByLogin(userEmail);
-//		if(user != null){
-//			VerificationToken verifacationToken = verificationTokenService.savePasswordVerificationToken(userEmail, new Date());
-//			mailService.sendRecoveryPasswordMail(userEmail, user.getFirstName(),verifacationToken.getToken(),baseLink);
-//		}	
+		List<User> users = userRepository.getUsersByEmail(userEmail);
+		if(users != null && !users.isEmpty()){
+			VerificationToken verifacationToken = verificationTokenService.savePasswordVerificationToken(userEmail, new Date());
+			mailService.sendRecoveryPasswordMail(userEmail, verifacationToken.getToken(), baseLink);
+		}	
 	}
 
 }

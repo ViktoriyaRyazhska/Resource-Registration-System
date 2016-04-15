@@ -23,10 +23,9 @@ import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.testng.annotations.Test;
 import org.testng.annotations.BeforeMethod;
 
-@PrepareForTest(MailServiceImpl.class)
-public class MailServiceTest extends PowerMockTestCase {
 
-    private Logger logger;
+public class MailServiceTest extends PowerMockTestCase {
+    
     private String recepientEmail = "recepientEmail";
     private String recepientName = "recepientName";
     private String recepientLogin = "recepientLogin";
@@ -36,20 +35,15 @@ public class MailServiceTest extends PowerMockTestCase {
     @InjectMocks
     private MailService mailService = new MailServiceImpl();
 
-    @Spy
-    private JavaMailSender mailSender = new JavaMailSenderImpl();
+    @Mock
+    private JavaMailSender mailSender;
 
     @Mock
     private VelocityEngine velocityEngine;
 
     @BeforeMethod
-    public void beforeMethod() throws IllegalAccessException {
+    public void beforeMethod() {
         MockitoAnnotations.initMocks(this);
-
-        // inject logger into tested service
-        logger = LoggerFactory.getLogger("");
-        MemberModifier.field(MailServiceImpl.class, "logger").set(mailService, logger);
-
     }
 
     @Test
@@ -57,7 +51,7 @@ public class MailServiceTest extends PowerMockTestCase {
         PowerMockito.whenNew(MimeMessageHelper.class)
                 .withAnyArguments()
                 .thenReturn(mock(MimeMessageHelper.class, RETURNS_MOCKS));
-        mailService.sendRecoveryPasswordMail(recepientEmail, recepientName, token, url);
+        mailService.sendRecoveryPasswordMail(recepientEmail, token, url);
         verify(mailSender).send(any(MimeMessagePreparator.class));
     }
 

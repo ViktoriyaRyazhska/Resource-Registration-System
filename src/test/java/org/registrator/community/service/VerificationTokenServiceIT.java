@@ -39,7 +39,7 @@ public class VerificationTokenServiceIT extends AbstractTestNGSpringContextTests
 	public Object[][] formEmailAndLoginStrings() {
 	    //TODO: test
 		logger.debug("Generating email strings");
-		Object[][] tmp = new Object[DESIRED_RESOURCES][1];
+		Object[][] tmp = new Object[DESIRED_RESOURCES][2];
 		String emailMask = "tokenEmail#%03d@gmail.com";
 		String login = "login%d";
 		for (int i = 0; i < tmp.length; i++) {
@@ -91,13 +91,14 @@ public class VerificationTokenServiceIT extends AbstractTestNGSpringContextTests
 	  //TODO: test
 		logger.debug("Start");
 		VerificationToken actual = verificationTokenService.savePasswordVerificationToken(email,login, date),
-				expected = new VerificationToken(actual.getToken(), email, actual.getExpiryDate(),
+				expected = new VerificationToken(actual.getToken(), 
+				        login, email, actual.getExpiryDate(),
 						TokenType.RECOVER_PASSWORD);
 
 		Assert.assertEquals(expected.getUserEmail(), actual.getUserEmail());
 		Assert.assertEquals(expected.getExpiryDate(), actual.getExpiryDate());
 
-		VerificationToken extraCheck = verificationTokenRepository.findTokenByEmail(actual.getUserEmail());
+		List<VerificationToken> extraCheck = verificationTokenRepository.findTokensByEmail(actual.getUserEmail());
 		Assert.assertNotNull(extraCheck);
 
 		cTokenList.add(actual);

@@ -31,7 +31,6 @@ import org.testng.annotations.BeforeMethod;
 import java.util.Arrays;
 import java.util.Date;
 
-@PrepareForTest(PasswordRecoveryServiceImpl.class)
 public class PasswordRecoveryServiceTest extends PowerMockTestCase {
 
     @InjectMocks
@@ -57,14 +56,12 @@ public class PasswordRecoveryServiceTest extends PowerMockTestCase {
 
     @BeforeMethod
     public void beforeMethod() {
-
         MockitoAnnotations.initMocks(this);
 
         user = new User("login", "password", new Role(RoleType.USER, "description"), "firstName", "lastName",
                 "middleName", "email", "ACTIVE");
 
         verificationToken = new VerificationToken(VALID_TOKEN, userEmail, expiryDate);
-
     }
 
     @Test
@@ -72,59 +69,56 @@ public class PasswordRecoveryServiceTest extends PowerMockTestCase {
         when(verificationTokenService.isExistValidVerificationToken(VALID_TOKEN)).thenReturn(true);
         when(verificationTokenService.findVerificationTokenByTokenAndTokenType(VALID_TOKEN, TokenType.RECOVER_PASSWORD))
                 .thenReturn(verificationToken);
-        //TODO:
-        when(userRepository.getUsersByEmail(verificationToken.getUserEmail())).thenReturn(Arrays.asList(user));
+        when(userRepository.findUserByLogin(userLogin)).thenReturn(user);
+        when(userPasswordEncoder.encode(NEW_PASSWORD)).thenReturn(anyString());
 
-        passwordRecoveryService.recoverPasswordByEmailLink(VALID_TOKEN, NEW_PASSWORD);
+        passwordRecoveryService.recoverPasswordByEmailLink(VALID_TOKEN, userLogin, NEW_PASSWORD);
 
         verify(userPasswordEncoder).encode(NEW_PASSWORD);
         verify(userRepository).save(user);
         verify(verificationTokenService).deleteVerificationToken(verificationToken);
-
     }
 
     @Test
     public void recoverPasswordByEmailLinkByNonValidToken() throws Exception {
         when(verificationTokenService.isExistValidVerificationToken(NON_VALID_TOKEN)).thenReturn(false);
-        Boolean actualResult = passwordRecoveryService.recoverPasswordByEmailLink(NON_VALID_TOKEN, NEW_PASSWORD);
+        Boolean actualResult = passwordRecoveryService.recoverPasswordByEmailLink(NON_VALID_TOKEN, userLogin, NEW_PASSWORD);
         assertFalse(actualResult, "Recover password by non valid token shoud return false");
     }
 
     @Test
     public void recoverPasswordByEmailLinkByTokenNull() throws Exception {
         when(verificationTokenService.isExistValidVerificationToken(null)).thenReturn(false);
-        Boolean actualResult = passwordRecoveryService.recoverPasswordByEmailLink(null, NEW_PASSWORD);
+        Boolean actualResult = passwordRecoveryService.recoverPasswordByEmailLink(null, userLogin, NEW_PASSWORD);
         assertFalse(actualResult == null, "Recover password by null user return false");
     }
 
     @Test
     public void recoverPasswordByEmailLinkByNullUser() throws Exception {
         user = null;
-        Boolean actualResult = passwordRecoveryService.recoverPasswordByEmailLink(null, NEW_PASSWORD);
+        Boolean actualResult = passwordRecoveryService.recoverPasswordByEmailLink(null, userLogin, NEW_PASSWORD);
         assertFalse(actualResult, "Recover password by null user shoud return false");
     }
 
     @Test
     public void sendRecoverPasswordEmailTestWithCorrectArguments() throws Exception {
-        //TODO: test
         whenNew(Date.class).withNoArguments().thenReturn(expiryDate);
         when(userRepository.getUsersByEmail(userEmail)).thenReturn(Arrays.asList(user));
-        when(verificationTokenService.savePasswordVerificationToken(userEmail, userLogin, expiryDate)).thenReturn(verificationToken);
+        when(verificationTokenService.savePasswordVerificationToken(any(), any())).thenReturn(verificationToken);
 
         passwordRecoveryService.sendRecoverPasswordEmail(userEmail, baseLink);
 
-        verify(mailService).sendRecoveryPasswordMail(userEmail, "firstName", VALID_TOKEN, baseLink);
+        verify(mailService).sendRecoveryPasswordMail(userEmail, VALID_TOKEN, baseLink);
     }
 
     @Test
     public void sendRecoverPasswordEmailTestDoNothingIfUserNull() throws Exception {
-      //TODO: test
         when(userRepository.getUsersByEmail(userEmail)).thenReturn(null);
 
         passwordRecoveryService.sendRecoverPasswordEmail(userEmail, baseLink);
 
         verify(verificationTokenService, never()).savePasswordVerificationToken(anyString(),anyString(), any(Date.class));
-        verify(mailService, never()).sendRecoveryPasswordMail(anyString(), anyString(), anyString(), anyString());
+        verify(mailService, never()).sendRecoveryPasswordMail(anyString(), anyString(), anyString());
     }
 
 

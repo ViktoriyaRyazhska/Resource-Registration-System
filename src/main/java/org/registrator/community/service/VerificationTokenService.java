@@ -12,6 +12,8 @@ public interface VerificationTokenService {
 	
 	void deleteVerificationToken(VerificationToken verificationToken);
 	
+	VerificationToken savePasswordVerificationToken(String userEmail, Date nowTime);
+	
 	VerificationToken savePasswordVerificationToken(String userEmail, String login, Date nowTime);
 	
 	String createHashForPasswordToken();

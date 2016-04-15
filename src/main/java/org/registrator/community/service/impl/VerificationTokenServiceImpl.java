@@ -1,5 +1,6 @@
 package org.registrator.community.service.impl;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -30,10 +31,37 @@ public class VerificationTokenServiceImpl implements VerificationTokenService{
 		}
 		return false;
 	}
+	
+	private void deleteExpiredPasswordVerificationTokenByEmail(String email) {
+        // TODO: test
+        List<VerificationToken> passwordRecoveryTokens = verificationTokenRepository.findTokensByEmail(email);
+        if (passwordRecoveryTokens != null) {
+            for (VerificationToken token : passwordRecoveryTokens) {
+                // delete only tokens, which login fields are empty (PasswordRecoveryTokens)
+                if(token.getUserLogin() == null || token.getUserLogin().isEmpty()){
+                    // here possible few recovery msgs in one email, 
+                    // need to check if they are expired
+                    if(!isExistValidVerificationToken(token.getToken())){
+                        verificationTokenRepository.delete(token);
+                    }
+                }   
+            }
+        }
+    }
+	
+	@Override
+    public VerificationToken savePasswordVerificationToken(String userEmail, Date nowTime) {
+        //TODO: now its possible to be in one email few not expired tokens
+        String token = createHashForPasswordToken();
+        nowTime.setTime(nowTime.getTime()+PASSWORD_TOKEN_EXPIRY_TIME);
+        VerificationToken passwordVerificationToken = new VerificationToken(token, userEmail, nowTime, TokenType.RECOVER_PASSWORD);
+        deleteExpiredPasswordVerificationTokenByEmail(userEmail);
+        verificationTokenRepository.save(passwordVerificationToken);
+        return passwordVerificationToken;
+    }
 
 	@Override
 	public VerificationToken savePasswordVerificationToken(String userEmail, String login, Date nowTime) {
-	    //TODO: test
 		String token = createHashForPasswordToken();
 		nowTime.setTime(nowTime.getTime()+PASSWORD_TOKEN_EXPIRY_TIME);
 		VerificationToken passwordVerificationToken = new VerificationToken(token, login, userEmail,nowTime,TokenType.RECOVER_PASSWORD);

@@ -137,15 +137,13 @@ public class NotConfirmedUsersServiceimpl implements NotConfirmedUsersService {
     @Transactional
     @Override
     public String deleteNotConfirmedUsers(List<User> userList) {
-        
         List<PassportInfo> passportInfoList = new ArrayList<PassportInfo>();
         List<Address> addressList = new ArrayList<Address>();
-        //TODO: here can be more than One Passport or Address!!!        
+        
         for (User user: userList){
             passportInfoList.addAll(user.getPassport());
             addressList.addAll(user.getAddress());
         }
-
         
         logger.info("start delete operations");
         
@@ -179,7 +177,6 @@ public class NotConfirmedUsersServiceimpl implements NotConfirmedUsersService {
 	@Transactional
 	@Override
 	public Boolean confirmEmail(String token){
-		//TODO:
         VerificationToken verToken = verificationTokenService.findVerificationTokenByTokenAndTokenType(token,
                 TokenType.CONFIRM_EMAIL);
         if (verToken == null) {

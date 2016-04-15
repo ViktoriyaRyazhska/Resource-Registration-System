@@ -67,7 +67,6 @@ public class VerificationToken {
 		this.tokenType = tokenType;
 	}
 
-
 	public VerificationToken(String token, String userEmail, Date expiryDate, TokenType tokenType, String baseLink) {
         this.token = token;
         this.userEmail = userEmail;
@@ -75,8 +74,6 @@ public class VerificationToken {
         this.tokenType = tokenType;
         this.baseLink = baseLink;
     }
-	
-	
 
     public VerificationToken(String token, String userLogin, String userEmail, Date expiryDate, TokenType tokenType,
             String baseLink) {
@@ -143,8 +140,5 @@ public class VerificationToken {
     public void setUserLogin(String userLogin) {
         this.userLogin = userLogin;
     }
-	
     
-	
-
 }
