@@ -1,5 +1,7 @@
 package org.registrator.community.dto;
 
+import org.registrator.community.enumeration.CalculatedParameter;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +16,9 @@ public class ResourceDiscreteValueDTO {
     private String discreteParameterDescription;
     
     private String discreteParameterUnit;
-    
+
+    private CalculatedParameter calculatedParameter;
+
     public ResourceDiscreteValueDTO() {
         
     }
@@ -43,18 +47,11 @@ public class ResourceDiscreteValueDTO {
         this.valueDiscretes = valueDiscretes;
     }
 
-     /*public String toString() {
+    public CalculatedParameter getCalculatedParameter() {
+        return calculatedParameter;
+    }
 
-        return "\n" + "Дискретні параметри: " + discreteParameterDTO + "\n"+
-                "Значення: " + values.toString();
-
-        StringBuilder result = new StringBuilder();
-        result.append(discreteParameterDTO.toString());
-        for (int i = 0, valuesSize = values.size(); i < valuesSize; i++) {
-            Double value = values.get(i);
-            result.append("Значення " + i + ": " + value + "\n");
-        }
-        return result.toString();
-
-    }*/    
+    public void setCalculatedParameter(CalculatedParameter calculatedParameter) {
+        this.calculatedParameter = calculatedParameter;
+    }
 }

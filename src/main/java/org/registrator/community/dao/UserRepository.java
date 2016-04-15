@@ -32,6 +32,10 @@ public interface UserRepository extends JpaRepository<User,Integer>, JpaSpecific
     @Query("SELECT u FROM User u WHERE u.territorialCommunity = :community and u.lastName LIKE :searchTerm%")
     List<User> findOwnersLikeProposed(@Param("community") TerritorialCommunity community, @Param("searchTerm") String searchTerm);
     
+    @Query("SELECT u FROM User u WHERE u.login IN (:userList)")
+    List<User> findUsersByLoginList(@Param("userList") List<String> userList);
+    
+    
 //    @Query("select u from User u where u.role.type = :roleType") 
 //    List<User> getUsersByRole(@Param("roleType")RoleType roleType);
     

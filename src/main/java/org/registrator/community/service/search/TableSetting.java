@@ -72,4 +72,13 @@ public class TableSetting {
 	public void setTableTitle(String tableTitle) {
 		this.tableTitle = tableTitle;
 	}
+
+    public Integer findColumn(String columnName) {
+        for (Map.Entry<Integer, TableColumnSetting> entry : columns.entrySet()) {
+            if (entry.getValue().isName("territorialCommunity_name")) {
+                return entry.getKey();
+            }
+        }
+        return null;
+    }
 }

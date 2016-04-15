@@ -6,76 +6,74 @@ var UA_coordinates_outside_string = "49.5315752248107 22.631835907564664;49.6917
 var UA_polygon_inside;
 var UA_polygon_outside;
 
-//method parse coordinates saved as string to create UA_polygon 
-function parse_coordinates(coordinates_string){
-	
-	coordinates_array = coordinates_string.split(";");
-	var polygonPath = [];
-	for (var i = 0; i < coordinates_array.length; i++) {
-		point_array = coordinates_array[i].split(" ");
-	    var latitude = parseFloat(point_array[0]);
-	    var longitude = parseFloat(point_array[1]);
-	   polygonPath.push(new google.maps.LatLng(latitude, longitude));
-	  
-	}	    
-	    UA_polygon = new google.maps.Polygon({
-	        path: polygonPath, 
-	        strokeColor: "#FFDD00", 
-	        strokeOpacity: 0.8, 
-	        strokeWeight: 2, 
-	        fillColor: "#FF00FF", 
-	        fillOpacity: 0.3 
-	    });
-	   // UA_polygon.setMap(map);
-return UA_polygon;	
+// method parse coordinates saved as string to create UA_polygon
+function parse_coordinates(coordinates_string) {
+
+  coordinates_array = coordinates_string.split(";");
+  var polygonPath = [];
+  for (var i = 0; i < coordinates_array.length; i++) {
+    point_array = coordinates_array[i].split(" ");
+    var latitude = parseFloat(point_array[0]);
+    var longitude = parseFloat(point_array[1]);
+    polygonPath.push(new google.maps.LatLng(latitude, longitude));
+
+  }
+  UA_polygon = new google.maps.Polygon({
+    path : polygonPath,
+    strokeColor : "#FFDD00",
+    strokeOpacity : 0.8,
+    strokeWeight : 2,
+    fillColor : "#FF00FF",
+    fillOpacity : 0.3
+  });
+  // UA_polygon.setMap(map);
+  return UA_polygon;
 }
 
-//checks if polygon is inside another polygon
-function isPolygonInsidePolygon(polygon, polygon2){
-	var isInside = true;
-	var vertices = polygon.getPath();
-	
-	for (var i = 0; i<vertices.getLength(); i++){
-		isInside = google.maps.geometry.poly.containsLocation(vertices.getAt(i), polygon2);
-		if (!isInside){
-			return false;
-		}
-	}
-	return true;
+// checks if polygon is inside another polygon
+function isPolygonInsidePolygon(polygon, polygon2) {
+  var isInside = true;
+  var vertices = polygon.getPath();
+
+  for (var i = 0; i < vertices.getLength(); i++) {
+    isInside = google.maps.geometry.poly.containsLocation(vertices.getAt(i), polygon2);
+    if (!isInside) {
+      return false;
+    }
+  }
+  return true;
 }
 
+// check if polygon is inside Ukraine
+function isInsideUkraine(polygon) {
+  var isInside = true;
 
-//check if polygon is inside Ukraine
-function isInsideUkraine(polygon){
-	var isInside = true;
-	
-	console.log("UA_polygon_inside = " + UA_polygon_inside);
-	//if UA_polygon_inside not created parse coordinates
-	if (UA_polygon_inside == null){
-		UA_polygon_inside = parse_coordinates(UA_coordinates_inside_string);
-	}
-		
-	console.log("UA_polygon_outside = " + UA_polygon_outside);
-	//if UA_polygon_outside not created parse coordinates
-	if (UA_polygon_outside == null){
-		UA_polygon_outside = parse_coordinates(UA_coordinates_outside_string);
-	}
-	
-	isInside = isPolygonInsidePolygon(polygon, UA_polygon_inside);
-	if (isInside){
-		console.log("polygon is inside Ukraine");
-		return true;
-	}
-	// else we need more verifications
-	isInside = isPolygonInsidePolygon(polygon, UA_polygon_outside);
-	if (!isInside){
-		console.log("polygon is not inside Ukraine");
-		bootbox.alert(jQuery.i18n.prop('msg.poligonNotInsideUkranie'));
-		return false;
-	}
-	// else near the border of Ukraine	
-	console.log("near the border of Ukraine");
-	bootbox.alert(jQuery.i18n.prop('msg.poligonNearUkraineBorder'));	
-	return true;	
+  console.log("UA_polygon_inside = " + UA_polygon_inside);
+  // if UA_polygon_inside not created parse coordinates
+  if (UA_polygon_inside == null) {
+    UA_polygon_inside = parse_coordinates(UA_coordinates_inside_string);
+  }
+
+  console.log("UA_polygon_outside = " + UA_polygon_outside);
+  // if UA_polygon_outside not created parse coordinates
+  if (UA_polygon_outside == null) {
+    UA_polygon_outside = parse_coordinates(UA_coordinates_outside_string);
+  }
+
+  isInside = isPolygonInsidePolygon(polygon, UA_polygon_inside);
+  if (isInside) {
+    console.log("polygon is inside Ukraine");
+    return true;
+  }
+  // else we need more verifications
+  isInside = isPolygonInsidePolygon(polygon, UA_polygon_outside);
+  if (!isInside) {
+    console.log("polygon is not inside Ukraine");
+    bootbox.alert(jQuery.i18n.prop('msg.poligonNotInsideUkraine'));
+    return false;
+  }
+  // else near the border of Ukraine
+  console.log("near the border of Ukraine");
+  bootbox.alert(jQuery.i18n.prop('msg.poligonNearUkraineBorder'));
+  return true;
 }
-

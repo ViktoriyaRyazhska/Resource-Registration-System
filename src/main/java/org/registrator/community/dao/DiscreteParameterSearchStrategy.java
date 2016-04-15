@@ -10,7 +10,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.*;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Strategy to add Criteria joins and restrictions for searching resources by discrete parameters

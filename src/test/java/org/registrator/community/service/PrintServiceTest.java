@@ -1,5 +1,6 @@
 package org.registrator.community.service;
 
+import com.itextpdf.text.DocumentException;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -20,7 +21,7 @@ import static org.mockito.Mockito.*;
 public class PrintServiceTest {
 
     @InjectMocks
-    private PrintService printService = new PrintServiceImpl();
+    private PrintService printService;
     @Mock
     private InquiryRepository inquiryRepository;
     @Mock
@@ -44,7 +45,9 @@ public class PrintServiceTest {
     private static ResourceDiscreteValue resourceDiscreteSquireValue;
 
     @BeforeMethod
-    public void init(){
+    public void init() throws IOException, DocumentException {
+
+        printService = new PrintServiceImpl();
 
         MockitoAnnotations.initMocks(this);
         globalTerritorialCommunity = new TerritorialCommunity();
@@ -93,8 +96,35 @@ public class PrintServiceTest {
 
     }
 
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testPrintProcurationThrowsExceptionOnInvalidInquiryType() throws IOException, DocumentException{
+
+        when(inquiryRepository.getOne(OUTPUT_ID)).thenReturn(inquiryInput);
+
+        printService.printProcuration(OUTPUT_ID);
+
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testPrintExtractThrowsExceptionOnInvalidInquiryType() throws IOException, DocumentException {
+
+        when(inquiryRepository.getOne(OUTPUT_ID)).thenReturn(inquiryInput);
+
+        printService.printExtract(OUTPUT_ID);
+
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testPrintProcurationOnSubmitInfoThrowsExceptionOnInvalidInquiryType() throws IOException, DocumentException {
+
+        when(inquiryRepository.getOne(INPUT_ID)).thenReturn(inquiryOutput);
+
+        printService.printProcurationOnSubmitInfo(INPUT_ID);
+
+    }
+
     @Test
-    public void testPrintProcurationInvokesEntitiesWithCorrectParameter() throws Exception{
+    public void testPrintProcurationInvokesEntitiesWithCorrectParameter() throws IOException, DocumentException {
 
         when(inquiryRepository.getOne(OUTPUT_ID)).thenReturn(inquiryOutput);
 
@@ -105,7 +135,7 @@ public class PrintServiceTest {
     }
 
     @Test
-    public void testPrintExtractInvokesEntitiesWithCorrectParameter() throws Exception{
+    public void testPrintExtractInvokesEntitiesWithCorrectParameter() throws IOException, DocumentException {
 
         when(inquiryRepository.getOne(OUTPUT_ID)).thenReturn(inquiryOutput);
 
@@ -118,7 +148,7 @@ public class PrintServiceTest {
     }
 
     @Test
-    public void testPrintProcurationOnSubmitInfoInvokesEntitiesWithCorrectParameter() throws Exception{
+    public void testPrintProcurationOnSubmitInfoInvokesEntitiesWithCorrectParameter() throws IOException, DocumentException {
 
         when(inquiryRepository.getOne(INPUT_ID)).thenReturn(inquiryInput);
 
@@ -130,18 +160,9 @@ public class PrintServiceTest {
 
     }
 
-    //@Test(expectedExceptions = NullPointerException.class) // Should be incorrect InquiryType Exception
-    public void testPrintProcurationThrowsExceptionInvalidInquiryType() throws NullPointerException{
-
-        when(inquiryRepository.getOne(INPUT_ID)).thenReturn(inquiryInput);
-
-        printService.printProcuration(INPUT_ID);
-
-    }
-
 
     @Test
-    public void testPrintProcurationExistsNotNullCorrectFileFormat() throws Exception{
+    public void testPrintProcurationExistsNotNullCorrectFileFormat() throws IOException, DocumentException {
 
         when(inquiryRepository.getOne(OUTPUT_ID)).thenReturn(inquiryOutput);
 
@@ -166,7 +187,7 @@ public class PrintServiceTest {
 
 
     @Test
-    public void testPrintExtractExistsNotNullCorrectFileFormat() throws Exception{
+    public void testPrintExtractExistsNotNullCorrectFileFormat() throws IOException, DocumentException {
 
         when(inquiryRepository.getOne(OUTPUT_ID)).thenReturn(inquiryOutput);
         when(polygonRepository.findByResource(resource)).thenReturn(Arrays.asList(polygon));
@@ -193,7 +214,7 @@ public class PrintServiceTest {
 
 
     @Test
-    public void testPrintProcurationOnSubmitInfoExistsNotNullCorrectFileFormat() throws IOException {
+    public void testPrintProcurationOnSubmitInfoExistsNotNullCorrectFileFormat() throws IOException, DocumentException {
 
         when(inquiryRepository.getOne(INPUT_ID)).thenReturn(inquiryInput);
         when(polygonRepository.findByResource(resource)).thenReturn(Arrays.asList(polygon));

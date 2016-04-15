@@ -7,101 +7,101 @@ import javax.validation.constraints.Pattern;
 
 public class AddressDTO implements Serializable {
 
-	private static final long serialVersionUID = 1L;
-	
-	public static final String ONLY_LITERALS = "[а-яіїєА-ЯІЇЄa-zA-Z,\\s,\\.,\\-]+";
-	public static final String ONLY_DIGITS = "[0-9]+";
+    private static final long serialVersionUID = 1L;
 
-	@Pattern(regexp = "[[0-9])]*", message = "{msg.registration.onlydigits}")
-	private String postcode;
+    public static final String ONLY_LITERALS = "[а-яіїєА-ЯІЇЄa-zA-Z,\\s,\\.,\\-]+";
+    public static final String ONLY_DIGITS = "[0-9]+";
 
-	private String region;
+    @Pattern(regexp = "[[0-9])]*", message = "{msg.registration.onlydigits}")
+    private String postcode;
 
-	private String district;
+    private String region;
 
-	private String city;
+    private String district;
 
-	private String street;
+    private String city;
 
-	private String building;
+    private String street;
 
-	private String flat;
+    private String building;
 
-	public AddressDTO(String postcode, String region, String district, String city, String street, String building,
-			String flat) {
-		this.postcode = postcode;
-		this.region = region;
-		this.district = district;
-		this.city = city;
-		this.street = street;
-		this.building = building;
-		this.flat = flat;
-	}
+    private String flat;
 
-	public AddressDTO() {
+    public AddressDTO(String postcode, String region, String district, String city, String street, String building,
+            String flat) {
+        this.postcode = postcode;
+        this.region = region;
+        this.district = district;
+        this.city = city;
+        this.street = street;
+        this.building = building;
+        this.flat = flat;
+    }
 
-	}
+    public AddressDTO() {
 
-	public String getPostcode() {
-		return postcode;
-	}
+    }
 
-	public void setPostcode(String postcode) {
-		this.postcode = postcode;
-	}
+    public String getPostcode() {
+        return postcode;
+    }
 
-	public String getRegion() {
-		return region;
-	}
+    public void setPostcode(String postcode) {
+        this.postcode = postcode;
+    }
 
-	public void setRegion(String region) {
-		this.region = region;
-	}
+    public String getRegion() {
+        return region;
+    }
 
-	public String getDistrict() {
-		return district;
-	}
+    public void setRegion(String region) {
+        this.region = region;
+    }
 
-	public void setDistrict(String district) {
-		this.district = district;
-	}
+    public String getDistrict() {
+        return district;
+    }
 
-	public String getCity() {
-		return city;
-	}
+    public void setDistrict(String district) {
+        this.district = district;
+    }
 
-	public void setCity(String city) {
-		this.city = city;
-	}
+    public String getCity() {
+        return city;
+    }
 
-	public String getStreet() {
-		return street;
-	}
+    public void setCity(String city) {
+        this.city = city;
+    }
 
-	public void setStreet(String street) {
-		this.street = street;
-	}
+    public String getStreet() {
+        return street;
+    }
 
-	public String getBuilding() {
-		return building;
-	}
+    public void setStreet(String street) {
+        this.street = street;
+    }
 
-	public void setBuilding(String building) {
-		this.building = building;
-	}
+    public String getBuilding() {
+        return building;
+    }
 
-	public String getFlat() {
-		return flat;
-	}
+    public void setBuilding(String building) {
+        this.building = building;
+    }
 
-	public void setFlat(String flat) {
-		this.flat = flat;
-	}
+    public String getFlat() {
+        return flat;
+    }
 
-	@Override
-	public String toString() {
-		return "\n" + "Postcode " + postcode + "\n" + "Region " + region + "\n" + "District " + district + "\n"
-				+ "City " + city + "\n" + "Street " + street + "\n" + "Building " + building + "\n" + "Flat " + flat
-				+ "\n";
-	}
+    public void setFlat(String flat) {
+        this.flat = flat;
+    }
+
+    @Override
+    public String toString() {
+        return "\n" + "Postcode " + postcode + "\n" + "Region " + region + "\n" + "District " + district + "\n"
+                + "City " + city + "\n" + "Street " + street + "\n" + "Building " + building + "\n" + "Flat " + flat
+                + "\n";
+    }
 }

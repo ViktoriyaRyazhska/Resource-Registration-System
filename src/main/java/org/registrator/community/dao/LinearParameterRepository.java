@@ -8,18 +8,18 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface LinearParameterRepository extends JpaRepository<LinearParameter, Integer>{
-	
-	@Query("Select l"+
-			" From LinearParameter l" +
-			" Where l.description = :description and l.resourceType = :resourceType" )
-	public LinearParameter findByResourceAndName(@Param("description")String description,
-			@Param("resourceType")ResourceType resourceType);
-	
-	@Query("Select l"+
-			" From LinearParameter l" +
-			" Where l.resourceType = :resourceType" )
-	List<LinearParameter> findByResourceType(@Param("resourceType")ResourceType resourceType);
 
-	LinearParameter findByLinearParameterId (Integer id);
-	
+    @Query("Select l"+
+            " From LinearParameter l" +
+            " Where l.description = :description and l.resourceType = :resourceType" )
+    public LinearParameter findByResourceAndName(@Param("description")String description,
+            @Param("resourceType")ResourceType resourceType);
+
+    @Query("Select l"+
+            " From LinearParameter l" +
+            " Where l.resourceType = :resourceType" )
+    List<LinearParameter> findByResourceType(@Param("resourceType")ResourceType resourceType);
+
+    LinearParameter findByLinearParameterId (Integer id);
+
 }

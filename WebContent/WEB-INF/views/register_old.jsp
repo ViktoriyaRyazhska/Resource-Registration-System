@@ -6,133 +6,167 @@
 <title>Edit User Profile</title>
 <link rel="stylesheet" href="${base}resource/css/register.css">
 <link rel="stylesheet" href="${base}resource/css/bootstrap.css">
-<script src="${base}resource/js/registration/validate_registration.js" type="text/javascript"></script>
+<script src="${base}resource/js/registration/validate_registration.js"
+  type="text/javascript"></script>
 <script type="text/javascript">
-// AJAX request
-$(document).ready(function() {
-  $('#username').keyup(function (){
+  // AJAX request
+  $(document).ready(function() {
+    $('#username').keyup(function() {
       var username = $(this).val();
-        console.log(username);
+      console.log(username);
 
-        if(username.length >= 3){
+      if (username.length >= 3) {
         $.ajax({
-            url: 'http://localhost:8080/registrator/check-username-is-available',
-            method: 'GET',
-            data: {login: username},
-            dataType: 'json',
-            success: function(data){
-                var divElem = $();
-                if(data == "fail"){
-                  console.log(username + " is already in use");
-                  //divElem.text(username + " is already in use");
-                  //divElem.css('color', 'red');
-                }
-            },
-            error: function(){
-                console.log("Cannot process request");
+          url : 'http://localhost:8080/registrator/check-username-is-available',
+          method : 'GET',
+          data : {
+            login : username
+          },
+          dataType : 'json',
+          success : function(data) {
+            var divElem = $();
+            if (data == "fail") {
+              console.log(username + " is already in use");
+              //divElem.text(username + " is already in use");
+              //divElem.css('color', 'red');
             }
-        })}})
-});
+          },
+          error : function() {
+            console.log("Cannot process request");
+          }
+        })
+      }
+    })
+  });
 </script>
 
 </head>
 <body>
-<div id="register_container" class="col-md-4">
-  <legend><strong>Зареєструвати нового користувача</strong></legend>
-    <form class="form-horizontal" id="register_form" role="form" method="GET" action="register2">
-        <div class="personal_header header"><span><b> ► Особисті дані</b></span>
-        </div>
-        <div class="personal_content content">
-            <p>
-              <label for="first_name">Ім'я *</label>
-              <input name="firstName" type="text" class="form-control login" id="first_name" tabindex="100" />
-            </p>
-            <p>
-              <label for="lastname">Прізвище *</label>
-              <input name="lastName" type="text" class="form-control login" id="lastname" tabindex="100" />
-            </p>
-            <p>
-              <label for="middle_name">По батькові *</label>
-              <input name="middleName" type="text" class="form-control login" id="middlename" tabindex="100" />
-            </p>
-            <p>
-              <label for="login">Логін *</label>
-              <input name="login" type="text" class="form-control login" id="login" tabindex="100" />
-            </p>
-            <p>
-              <label for="password">Password *</label>
-              <input id="password" name="password" type="password" class="form-control login" tabindex="100"/>
-            </p>
-            <p>
-              <label for="confirm_password">Confirm password *</label>
-              <input id="confirm_password" name="confirm_password" type="password" class="form-control login" tabindex="100"/>
-            </p>
-            <p>
-              <label for="email">Електронна адреса *</label>
-              <input name="email" type="text" class="form-control login" id="email" tabindex="100" />
-            </p>
-            <p>
-              <label for="date_of_birth">Дата народження (у форматі рррр-мм-дд)</label>
-              <input name="date_of_birth" type="text" class="form-control login" id="date_of_birth" tabindex="100" />
-            </p>
-            </div>
-            <p>
-            <div class="passport_header header"><span><b> ► Паспортні дані</b></span>
+  <div id="register_container" class="col-md-4">
+    <legend>
+      <strong>Зареєструвати нового користувача</strong>
+    </legend>
+    <form class="form-horizontal" id="register_form" role="form"
+      method="GET" action="register2">
+      <div class="personal_header header">
+        <span><b> ► Особисті дані</b></span>
+      </div>
+      <div class="personal_content content">
+        <p>
+          <label for="first_name">Ім'я *</label> <input name="firstName"
+            type="text" class="form-control login" id="first_name"
+            tabindex="100" />
+        </p>
+        <p>
+          <label for="lastname">Прізвище *</label> <input
+            name="lastName" type="text" class="form-control login"
+            id="lastname" tabindex="100" />
+        </p>
+        <p>
+          <label for="middle_name">По батькові *</label> <input
+            name="middleName" type="text" class="form-control login"
+            id="middlename" tabindex="100" />
+        </p>
+        <p>
+          <label for="login">Логін *</label> <input name="login"
+            type="text" class="form-control login" id="login"
+            tabindex="100" />
+        </p>
+        <p>
+          <label for="password">Password *</label> <input id="password"
+            name="password" type="password" class="form-control login"
+            tabindex="100" />
+        </p>
+        <p>
+          <label for="confirm_password">Confirm password *</label> <input
+            id="confirm_password" name="confirm_password"
+            type="password" class="form-control login" tabindex="100" />
+        </p>
+        <p>
+          <label for="email">Електронна адреса *</label> <input
+            name="email" type="text" class="form-control login"
+            id="email" tabindex="100" />
+        </p>
+        <p>
+          <label for="date_of_birth">Дата народження (у форматі
+            рррр-мм-дд)</label> <input name="date_of_birth" type="text"
+            class="form-control login" id="date_of_birth" tabindex="100" />
+        </p>
+      </div>
+      <p>
+      <div class="passport_header header">
+        <span><b> ► Паспортні дані</b></span>
 
-            </div>
-            <div class="passport_content content">
-            <p>
-              <label for="passport_seria">Паспорт (серія) *</label>
-              <input name="seria" type="text" class="form-control login" id="passport_seria" tabindex="100" />
-            </p>
-             <p>
-              <label for="passport_number">Паспорт (номер) *</label>
-              <input name="number" type="text" class="form-control login" id="passport_number" tabindex="100" />
-            </p>
-             <p>
-              <label for="published_by_data">Ким і коли виданий *</label>
-              <input name="publishedByData" type="text" class="form-control login" id="published_by_data" tabindex="100" />
-            </p>
-            </div>
-            <p>
-            <div class="address_header header"><span><b> ► Адреса</b></span></div>
-            <div class="address_content content">
-              <label for="city">Місто *</label>
-              <input name="city" type="text" class="form-control login" id="city" tabindex="100" />
-            </p>
-            <p>
-              <label for="region">Область *</label>
-              <input name="region" type="text" class="form-control login" id="region" tabindex="100" />
-            </p>
-             <p>
-              <label for="district">Район</label>
-              <input name="district" type="text" class="form-control login" id="district" tabindex="100" />
-            </p>
-            <p>
-              <label for="street">Вулиця *</label>
-              <input name="street" type="text" class="form-control login" id="street" tabindex="100" />
-            </p>
-            <p>
-              <label for="building">Будинок *</label>
-              <input name="building" type="text" class="form-control login" id="building" tabindex="100" />
-            </p>
-            <p>
-              <label for="flat">Номер квартири</label>
-              <input name="flat" type="text" class="form-control login" id="flat" tabindex="100" />
-            </p>
-            <p>
-              <label for="postcode">Поштовий код *</label>
-              <input name="postCode" type="text" class="form-control login" id="postcode" tabindex="100" />
-            </p>
-            </div>
-<!--             <div id="captcha">
+      </div>
+      <div class="passport_content content">
+        <p>
+          <label for="passport_seria">Паспорт (серія) *</label> <input
+            name="seria" type="text" class="form-control login"
+            id="passport_seria" tabindex="100" />
+        </p>
+        <p>
+          <label for="passport_number">Паспорт (номер) *</label> <input
+            name="number" type="text" class="form-control login"
+            id="passport_number" tabindex="100" />
+        </p>
+        <p>
+          <label for="published_by_data">Ким і коли виданий *</label> <input
+            name="publishedByData" type="text"
+            class="form-control login" id="published_by_data"
+            tabindex="100" />
+        </p>
+      </div>
+      <p>
+      <div class="address_header header">
+        <span><b> ► Адреса</b></span>
+      </div>
+      <div class="address_content content">
+        <label for="city">Місто *</label> <input name="city" type="text"
+          class="form-control login" id="city" tabindex="100" />
+        </p>
+        <p>
+          <label for="region">Область *</label> <input name="region"
+            type="text" class="form-control login" id="region"
+            tabindex="100" />
+        </p>
+        <p>
+          <label for="district">Район</label> <input name="district"
+            type="text" class="form-control login" id="district"
+            tabindex="100" />
+        </p>
+        <p>
+          <label for="street">Вулиця *</label> <input name="street"
+            type="text" class="form-control login" id="street"
+            tabindex="100" />
+        </p>
+        <p>
+          <label for="building">Будинок *</label> <input name="building"
+            type="text" class="form-control login" id="building"
+            tabindex="100" />
+        </p>
+        <p>
+          <label for="flat">Номер квартири</label> <input name="flat"
+            type="text" class="form-control login" id="flat"
+            tabindex="100" />
+        </p>
+        <p>
+          <label for="postcode">Поштовий код *</label> <input
+            name="postCode" type="text" class="form-control login"
+            id="postcode" tabindex="100" />
+        </p>
+      </div>
+      <!--             <div id="captcha">
             <p><label>Введіть символи</label>
             </div> -->
-            <p><p>
-            <button class="btn btn-success" type="submit" id="submit">Надіслати</button>
-            <button class="btn btn-success" type="reset" onclick="location.reload();">Очистити форму</button>
+      <p>
+      <p>
+        <button class="btn btn-success" type="submit" id="submit">Надіслати</button>
+        <button class="btn btn-success" type="reset"
+          onclick="location.reload();">Очистити форму</button>
     </form>
-<p>Поля, позначені зірочкою (*), є обов'язковими для заповнення
+    <p>Поля, позначені зірочкою (*), є обов'язковими для заповнення
+
+    
 </body>
 
 <!--

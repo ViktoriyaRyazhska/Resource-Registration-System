@@ -25,6 +25,9 @@ public class VerificationToken {
 	@Column(name = "token", nullable = false)
     private String token;
     
+	@Column(name = "user_Login", nullable = true)
+	private String userLogin;
+	
 	@Column(name = "user_email", nullable = false)
     private String userEmail;
     
@@ -34,6 +37,9 @@ public class VerificationToken {
 	@Column(name = "token_type", nullable = false)
     @Enumerated(EnumType.STRING)
 	private TokenType tokenType;
+	
+	@Column(name = "base_Link", nullable = true)
+	private String baseLink;
 
 	public VerificationToken() {
 	}
@@ -51,8 +57,32 @@ public class VerificationToken {
 		this.expiryDate = expiryDate;
 		this.tokenType = tokenType;
 	}
+	
+	
 
-	public Long getId() {
+	public VerificationToken(String token, String userEmail, Date expiryDate, TokenType tokenType, String baseLink) {
+        super();
+        this.token = token;
+        this.userEmail = userEmail;
+        this.expiryDate = expiryDate;
+        this.tokenType = tokenType;
+        this.baseLink = baseLink;
+    }
+	
+	
+
+    public VerificationToken(String token, String userLogin, String userEmail, Date expiryDate, TokenType tokenType,
+            String baseLink) {
+        super();
+        this.token = token;
+        this.userLogin = userLogin;
+        this.userEmail = userEmail;
+        this.expiryDate = expiryDate;
+        this.tokenType = tokenType;
+        this.baseLink = baseLink;
+    }
+
+    public Long getId() {
 		return id;
 	}
 
@@ -91,5 +121,24 @@ public class VerificationToken {
 	public void setTokenType(TokenType tokenType) {
 		this.tokenType = tokenType;
 	}
+
+    public String getBaseLink() {
+        return baseLink;
+    }
+
+    public void setBaseLink(String baseLink) {
+        this.baseLink = baseLink;
+    }
+
+    public String getUserLogin() {
+        return userLogin;
+    }
+
+    public void setUserLogin(String userLogin) {
+        this.userLogin = userLogin;
+    }
+	
+    
+	
 
 }

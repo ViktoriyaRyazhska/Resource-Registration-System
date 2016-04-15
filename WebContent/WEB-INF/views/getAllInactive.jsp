@@ -10,30 +10,30 @@
 
 </head>
 <body>
-	<div class="container">
-		<table id="unregistated" border="1">
-			<tr>
-				<th>First name</th>
-				<th>Last name</th>
-				<th>Email</th>
-				<th>Middle name</th>
-				<th>Address</th>
-			</tr>
+  <div class="container">
+    <table id="unregistated" border="1">
+      <tr>
+        <th>First name</th>
+        <th>Last name</th>
+        <th>Email</th>
+        <th>Middle name</th>
+        <th>Address</th>
+      </tr>
 
-			<c:if test="${not empty unregistatedUsers}">
-				<c:forEach items="${unregistatedUsers}" var="user">
-					<tr>
-						<td>${user.firstName}</td>
-						<td>${user.lastName}</td>
-						<td>${user.email}</td>
-						<td>${user.middleName}</td>
-						<c:forEach items="${user.address}" var="add">
-							<td>${add.city}</td>
-						</c:forEach>
-					</tr>
-				</c:forEach>
-			</c:if>
-		</table>
-	</div>
+      <c:if test="${not empty unregistatedUsers}">
+        <c:forEach items="${unregistatedUsers}" var="user">
+          <tr>
+            <td>${user.firstName}</td>
+            <td>${user.lastName}</td>
+            <td>${user.email}</td>
+            <td>${user.middleName}</td>
+            <c:forEach items="${user.address}" var="add">
+              <td>${add.city}</td>
+            </c:forEach>
+          </tr>
+        </c:forEach>
+      </c:if>
+    </table>
+  </div>
 </body>
 </html>

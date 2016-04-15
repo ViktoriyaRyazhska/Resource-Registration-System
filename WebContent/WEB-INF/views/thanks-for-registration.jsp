@@ -12,12 +12,17 @@ body {
 </head>
 <body>
 
-<a href="${pageContext.request.contextPath}/login"
-		class="btn btn-success" role="button">Повернутись на головну</a>
-<div>
-<p><p>Вітаємо - ви успішно зареєстровані.
-<p> * * * * *
+  <a href="${pageContext.request.contextPath}/login"
+    class="btn btn-success" role="button">Повернутись на головну</a>
+  <div>
+    <p>
+    <p>Вітаємо - реєстрація майже завершина.
+    <p>
+    <p>
+      Для завершення реєстрації Вам потрібно пройти по посиланню яке
+      було відправлено на Ваш e-mail
+      <!-- <p> * * * * *
 <p>Ваші дані в процесі опрацювання.
-<p>Дякуємо за реєстрацію!
-</div>
+<p>Дякуємо за реєстрацію! -->
+  </div>
 </body>

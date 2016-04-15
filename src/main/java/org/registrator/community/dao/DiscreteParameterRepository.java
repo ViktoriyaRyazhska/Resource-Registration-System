@@ -10,13 +10,13 @@ import java.util.List;
 
 public interface DiscreteParameterRepository extends JpaRepository<DiscreteParameter, Integer>{
 
-	@Query("Select d"+
-			" From DiscreteParameter d" +
-			" Where d.description = :description and d.resourceType = :resourceType" )
-	public DiscreteParameter findByResourceAndName(@Param("description")String description,
-			@Param("resourceType")ResourceType resourceType);
+    @Query("Select d"+
+            " From DiscreteParameter d" +
+            " Where d.description = :description and d.resourceType = :resourceType" )
+    public DiscreteParameter findByResourceAndName(@Param("description")String description,
+            @Param("resourceType")ResourceType resourceType);
 
-	List<DiscreteParameter> findAllByResourceType(ResourceType resourceType);
+    List<DiscreteParameter> findAllByResourceType(ResourceType resourceType);
 
     DiscreteParameter findByDiscreteParameterId (Integer id);
 }

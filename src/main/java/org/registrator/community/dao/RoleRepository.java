@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface RoleRepository extends JpaRepository<Role, String> {
-	@Query("Select r From Role r where r.type = :type")
-	public Role findRoleByType(@Param("type") RoleType type);
+    @Query("Select r From Role r where r.type = :type")
+    public Role findRoleByType(@Param("type") RoleType type);
 }

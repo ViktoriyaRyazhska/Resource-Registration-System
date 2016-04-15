@@ -7,9 +7,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserPasswordEncoder extends BCryptPasswordEncoder implements PasswordEncoder{
 
-	@Override
-	public String encode(CharSequence rawPassword) {
-		return super.encode(rawPassword);
-	}
+    @Override
+    public String encode(CharSequence rawPassword) {
+        return super.encode(rawPassword);
+    }
 
 }

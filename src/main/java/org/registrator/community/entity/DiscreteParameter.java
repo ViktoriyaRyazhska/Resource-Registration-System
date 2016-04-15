@@ -1,37 +1,20 @@
 package org.registrator.community.entity;
 
+import org.registrator.community.enumeration.CalculatedParameter;
+
 import java.io.Serializable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "discrete_parameters")
 public class DiscreteParameter  implements ResourceParameter, Serializable{
-
-    @Override
-	public String toString() {
-		return "DiscreteParameter [discreteParameterId=" + discreteParameterId + ", resourceType=" + resourceType
-				+ ", description=" + description + ", unitName=" + unitName + "]";
-	}
-
-	private static final long serialVersionUID = 1L;
-
-
 
     @Id
     @Column(name = "discrete_parameter_id")
     @GeneratedValue
     private Integer discreteParameterId;
 
-    
-    
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "resource_type_id", nullable = false)
     private ResourceType resourceType;
@@ -41,6 +24,11 @@ public class DiscreteParameter  implements ResourceParameter, Serializable{
     
     @Column(name = "unit_name", nullable = false)
     private String unitName ;
+
+    @Column
+    @Enumerated(EnumType.STRING)
+    @Access(AccessType.PROPERTY)
+    private CalculatedParameter calculatedParameter;
     
     public DiscreteParameter() {
         
@@ -85,4 +73,21 @@ public class DiscreteParameter  implements ResourceParameter, Serializable{
         this.unitName = unitName;
     }
 
+    public CalculatedParameter getCalculatedParameter() {
+        if (calculatedParameter == null) {
+            return CalculatedParameter.NONE;
+        }
+        return calculatedParameter;
+    }
+
+    public void setCalculatedParameter(CalculatedParameter calculatedParameter) {
+        this.calculatedParameter = calculatedParameter;
+    }
+
+    @PrePersist
+    protected void onPrePersist() {
+        if (calculatedParameter == null) {
+            calculatedParameter = CalculatedParameter.NONE;
+        }
+    }
 }

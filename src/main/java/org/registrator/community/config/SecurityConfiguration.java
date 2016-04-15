@@ -20,39 +20,39 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
-	@Autowired
-	@Qualifier("userDetailsService")
-	private UserDetailsService userDetailsService;
+    @Autowired
+    @Qualifier("userDetailsService")
+    private UserDetailsService userDetailsService;
 
-	@Autowired
-	private DataSource dataSource;
-	
-	@Autowired
-	@Qualifier("authenticationProvider")
-	AuthenticationProvider authenticationProvider;
+    @Autowired
+    private DataSource dataSource;
 
-	@Autowired
-	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-		auth.authenticationProvider(authenticationProvider);
-	}
+    @Autowired
+    @Qualifier("authenticationProvider")
+    AuthenticationProvider authenticationProvider;
 
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        auth.authenticationProvider(authenticationProvider);
+    }
 
-		http.csrf().disable().formLogin().loginPage("/login").permitAll()
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
 
-				.failureUrl("/login?error").usernameParameter("login").passwordParameter("password").and().logout()
-				.logoutUrl("/logout").permitAll().logoutSuccessUrl("/login?logout").and().exceptionHandling()
-				.accessDeniedPage("/denied").and().authorizeRequests().and().rememberMe()
-				.rememberMeParameter("_spring_security_remember_me").tokenRepository(persistentTokenRepository())
-				.tokenValiditySeconds(87400);
+        http.csrf().disable().formLogin().loginPage("/login").permitAll()
 
-	}
+                .failureUrl("/login?error").usernameParameter("login").passwordParameter("password").and().logout()
+                .logoutUrl("/logout").permitAll().logoutSuccessUrl("/login?logout").and().exceptionHandling()
+                .accessDeniedPage("/denied").and().authorizeRequests().and().rememberMe()
+                .rememberMeParameter("_spring_security_remember_me").tokenRepository(persistentTokenRepository())
+                .tokenValiditySeconds(87400);
 
-	@Bean
-	public PersistentTokenRepository persistentTokenRepository() {
-		JdbcTokenRepositoryImpl tokenRepositoryImpl = new JdbcTokenRepositoryImpl();
-		tokenRepositoryImpl.setDataSource(dataSource);
-		return tokenRepositoryImpl;
-	}
+    }
+
+    @Bean
+    public PersistentTokenRepository persistentTokenRepository() {
+        JdbcTokenRepositoryImpl tokenRepositoryImpl = new JdbcTokenRepositoryImpl();
+        tokenRepositoryImpl.setDataSource(dataSource);
+        return tokenRepositoryImpl;
+    }
 }

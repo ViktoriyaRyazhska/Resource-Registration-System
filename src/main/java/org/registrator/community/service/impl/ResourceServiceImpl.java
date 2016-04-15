@@ -2,29 +2,63 @@ package org.registrator.community.service.impl;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import org.registrator.community.dao.*;
+
+import org.registrator.community.dao.DiscreteParameterRepository;
+import org.registrator.community.dao.LinearParameterRepository;
+import org.registrator.community.dao.PolygonRepository;
+import org.registrator.community.dao.ResourceDiscreteValueRepository;
+import org.registrator.community.dao.ResourceFindByParams;
+import org.registrator.community.dao.ResourceLinearValueRepository;
+import org.registrator.community.dao.ResourceNumberRepository;
+import org.registrator.community.dao.ResourceRepository;
+import org.registrator.community.dao.ResourceTypeRepository;
+import org.registrator.community.dao.TomeRepository;
+import org.registrator.community.dao.UserRepository;
+import org.registrator.community.dto.ParameterSearchResultDTO;
+import org.registrator.community.dto.PointAreaDTO;
+import org.registrator.community.dto.PointDTO;
+import org.registrator.community.dto.PoligonAreaDTO;
+import org.registrator.community.dto.ResourceAreaDTO;
+import org.registrator.community.dto.ResourceDTO;
+import org.registrator.community.dto.ResourceDiscreteValueDTO;
+import org.registrator.community.dto.ResourceLinearValueDTO;
+import org.registrator.community.dto.SegmentLinearDTO;
+import org.registrator.community.dto.ValueDiscreteDTO;
 import org.registrator.community.dto.json.PointJson;
 import org.registrator.community.dto.json.PolygonJson;
 import org.registrator.community.dto.json.ResourceSearchJson;
-import org.registrator.community.dto.*;
-import org.registrator.community.entity.*;
+import org.registrator.community.entity.DiscreteParameter;
+import org.registrator.community.entity.LinearParameter;
+import org.registrator.community.entity.Polygon;
+import org.registrator.community.entity.Resource;
+import org.registrator.community.entity.ResourceDiscreteValue;
+import org.registrator.community.entity.ResourceLinearValue;
+import org.registrator.community.entity.ResourceNumber;
+import org.registrator.community.entity.ResourceType;
+import org.registrator.community.entity.TerritorialCommunity;
+import org.registrator.community.entity.User;
 import org.registrator.community.enumeration.ResourceStatus;
+import org.registrator.community.exceptions.ResourceEntityNotFound;
 import org.registrator.community.service.InquiryService;
 import org.registrator.community.service.ResourceService;
+import org.registrator.community.service.SettingsService;
+import org.registrator.community.service.UserService;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.transaction.Transactional;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import javax.transaction.Transactional;
 
 @Service
 public class ResourceServiceImpl implements ResourceService {
@@ -68,9 +102,21 @@ public class ResourceServiceImpl implements ResourceService {
     @Autowired
     private ResourceFindByParams resourceFindByParams;
 
-    @PersistenceContext
-    private EntityManager entityManager;
+    @Autowired
+    private SettingsService settingsService;
 
+    @Autowired
+    private UserService userService;
+
+    @Override
+    public ResourceDTO createNewResourceDTO() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        ResourceDTO result = new ResourceDTO();
+        result.setIdentifier(getRegistrationNumber(auth.getName()));
+
+        return result;
+    }
 
     /**
      * Method parse the resourceDTO into entity objects and save them into
@@ -82,31 +128,37 @@ public class ResourceServiceImpl implements ResourceService {
      */
     @Override
     @Transactional
-    public ResourceDTO addNewResource(ResourceDTO resourceDTO, String ownerLogin, User registrator) {
-        logger.info("Method addNewResource");
-        logger.info("Owner Login -" + ownerLogin);
+    public ResourceDTO saveResource(ResourceDTO resourceDTO, User registrator) {
+        logger.info("Method saveResource");
+        logger.info("Owner Login -" + resourceDTO.getOwnerLogin());
         logger.info("Registrator Login -" + registrator.getLogin());
+         /* form the resource entity and save in into database */
 
-        /* form the resource entity and save in into database */
-        Resource resourceEntity = parseToResourseEntity(resourceDTO, registrator);
+        Resource resourceEntity = resourceRepository.findByIdentifier(resourceDTO.getIdentifier());
+        boolean isNew = (resourceEntity == null);
+        resourceEntity = parseToResourseEntity(resourceDTO, registrator);
         resourceEntity = resourceRepository.save(resourceEntity);
 
-        /* sava all additional parameters of given resource */
+        /* save all additional parameters of given resource */
         saveResourceParameters(resourceDTO, resourceEntity);
 
-        // save data in the table inquiry_list
-        if (!ownerLogin.isEmpty()) {
-            inquiryService.addInputInquiry(ownerLogin, resourceEntity, registrator);
+        if (isNew) {
+            // save data in the table inquiry_list
+            if (!resourceDTO.getOwnerLogin().isEmpty()) {
+                inquiryService.addInputInquiry(resourceDTO.getOwnerLogin(), resourceEntity, registrator);
+            }
+
+
+            //increment registration number of resource for authenticated registrar if needed
+            if (resourceEntity.getIdentifier().equals(getRegistrationNumber(registrator.getLogin()))) {
+                incrementRegistrationNumber(registrator.getLogin());
+            }
         }
 
-        /*
-         * increment registration number of resource for authenticated registrar if needed
-         */
-        if(resourceEntity.getIdentifier().equals(getRegistrationNumber(registrator.getLogin()))){           
-            incrementRegistrationNumber(registrator.getLogin());
-        }
-        return findByIdentifier(resourceEntity.getIdentifier());
+        return formResourceDTO(resourceEntity);
     }
+
+
 
     /**
      * Find the resource with given identifier and form resourceDTO object
@@ -115,7 +167,7 @@ public class ResourceServiceImpl implements ResourceService {
      * @return resourseDTO if exist
      */
     @Override
-    public ResourceDTO findByIdentifier(String identifier) {
+    public ResourceDTO findByIdentifier(String identifier) throws ResourceEntityNotFound {
 
         logger.info("Method findByIdentifier");
         Resource resourceEntity = resourceRepository.findByIdentifier(identifier);
@@ -129,7 +181,7 @@ public class ResourceServiceImpl implements ResourceService {
 
         } else {
             logger.info("Resource with identifier " + identifier + " was not found in database");
-            return null;
+            throw new ResourceEntityNotFound(identifier);
         }
 
     }
@@ -221,20 +273,24 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Override
     public String getRegistrationNumber(String login) {
-        final int MAXIMAL_NUMBER_LENGTH = 4;
         User user = userRepository.findUserByLogin(login);
+        TerritorialCommunity community = user.getTerritorialCommunity();
+        
         ResourceNumber resourceNumber = resourceNumberRepository.findResourceNumberByUser(user);
+        String regObjectPre = (community.getRegistrationNumber() != null) ? community.getRegistrationNumber() : "0000000000000000";
+
         if (resourceNumber != null) {
-            int numberOfDigits = resourceNumber.getNumber().toString().length();
             StringBuilder resourceNumberPattern = new StringBuilder();
-            for (int i = numberOfDigits; i < MAXIMAL_NUMBER_LENGTH; i++) {
-                resourceNumberPattern.append("0");
-            }
-            resourceNumberPattern.append(resourceNumber.getNumber());
 
-            return resourceNumber.getRegistratorNumber() + resourceNumberPattern.toString();
+            resourceNumberPattern.append(regObjectPre); // NEED THE MODIFIED TC
+            resourceNumberPattern.append("/");
+            resourceNumberPattern.append(resourceNumber.getRegistratorNumber());
+            resourceNumberPattern.append(":");
+            String incrementNumber = String.format("%04d", resourceNumber.getNumber());
+            resourceNumberPattern.append(incrementNumber);
+
+            return resourceNumberPattern.toString();
         }
-
         return null;
     }
 
@@ -247,16 +303,22 @@ public class ResourceServiceImpl implements ResourceService {
      */
 
     private Resource parseToResourseEntity(ResourceDTO resourceDTO, User registrator) {
-        Resource resourceEntity = new Resource();
-        resourceEntity.setIdentifier(resourceDTO.getIdentifier());
+
+        Resource resourceEntity = resourceRepository.findByIdentifier(resourceDTO.getIdentifier());
+        if (resourceEntity == null) {
+            resourceEntity = new Resource();
+            resourceEntity.setIdentifier(resourceDTO.getIdentifier());
+            resourceEntity.setRegistrator(registrator);
+            resourceEntity.setStatus(ResourceStatus.ACTIVE);
+            resourceEntity.setTome(tomeRepository.findTomeByRegistrator(registrator));
+        }
         resourceEntity.setDescription(resourceDTO.getDescription());
         resourceEntity.setReasonInclusion(resourceDTO.getReasonInclusion());
-        resourceEntity.setTome(tomeRepository.findTomeByRegistrator(registrator));
-        resourceEntity.setRegistrator(registrator);
-        resourceEntity.setStatus(ResourceStatus.ACTIVE);
+
         ResourceType resourceType = resourceTypeRepository.findByName(resourceDTO.getResourceType());
         resourceEntity.setType(resourceType);
         resourceEntity.setDate(resourceDTO.getDate());
+
         return resourceEntity;
     }
 
@@ -268,26 +330,35 @@ public class ResourceServiceImpl implements ResourceService {
      */
     private void saveResourceParameters(ResourceDTO resourceDTO, Resource resourceEntity) {
         /* save list of area points */
+
+        polygonRepository.deleteByResource(resourceEntity);
+        List<Polygon> polygons = new ArrayList<>();
         for (PoligonAreaDTO poligonAreaDTO : resourceDTO.getResourceArea().getPoligons()) {
 
             Polygon polygonEntity = getPolygonEntity(resourceEntity, poligonAreaDTO);
             polygonEntity.setCoordinates(createCoordinatesJson(poligonAreaDTO));
             polygonEntity = polygonRepository.save(polygonEntity);
+            polygons.add(polygonEntity);
         }
+        resourceEntity.setPolygons(polygons);
 
         /* save list of resource linear values if exist */
+        List<ResourceLinearValue> resourceLinearValues = new ArrayList<>();
         if (!resourceDTO.getResourceLinear().isEmpty()) {
             logger.info("save linear values of resource");
-            List<ResourceLinearValue> resourceLinearValues = parseToLinearValueList(resourceDTO, resourceEntity);
+            resourceLinearValues = parseToLinearValueList(resourceDTO, resourceEntity);
             linearValueRepository.save(resourceLinearValues);
         }
+        resourceEntity.setResourceLinearValues(resourceLinearValues);
 
         /* save list of resource discrete values if exist */
+        List<ResourceDiscreteValue> resourceDiscreteValues = new ArrayList<>();
         if (!resourceDTO.getResourceDiscrete().isEmpty()) {
             logger.info("save discrete values of resource");
-            List<ResourceDiscreteValue> resourceDiscreteValues = parseToDiscreteValueList(resourceDTO, resourceEntity);
+            resourceDiscreteValues = parseToDiscreteValueList(resourceDTO, resourceEntity);
             discreteValueRepository.save(resourceDiscreteValues);
         }
+        resourceEntity.setResourceDiscreteValues(resourceDiscreteValues);
     }
 
     /**
@@ -299,6 +370,7 @@ public class ResourceServiceImpl implements ResourceService {
      */
     private Polygon getPolygonEntity(Resource resourceEntity, PoligonAreaDTO poligonAreaDTO) {
         Polygon polygonEntity = new Polygon();
+
         Double minLat = 90.0;
         Double maxLat = -90.0;
         Double minLng = 180.0;
@@ -361,6 +433,8 @@ public class ResourceServiceImpl implements ResourceService {
      * @return List<ResourceDiscreteValue>
      */
     private List<ResourceDiscreteValue> parseToDiscreteValueList(ResourceDTO resourceDTO, Resource resourceEntity) {
+        discreteValueRepository.deleteByResource(resourceEntity);
+
         List<ResourceDiscreteValue> resourceDiscreteValues = new ArrayList<ResourceDiscreteValue>();
         for (ResourceDiscreteValueDTO discValueDTO : resourceDTO.getResourceDiscrete()) {
             DiscreteParameter discreteParameter = discreteParameterRepository
@@ -385,6 +459,8 @@ public class ResourceServiceImpl implements ResourceService {
      * @return List<ResourceLinearValue>
      */
     private List<ResourceLinearValue> parseToLinearValueList(ResourceDTO resourceDTO, Resource resourceEntity) {
+        linearValueRepository.deleteByResource(resourceEntity);
+
         List<ResourceLinearValue> resourceLinearValues = new ArrayList<ResourceLinearValue>();
         for (ResourceLinearValueDTO linValueDTO : resourceDTO.getResourceLinear()) {
             LinearParameter linParameter = linearParameterRepository
@@ -430,13 +506,12 @@ public class ResourceServiceImpl implements ResourceService {
      */
     private ResourceDTO fillBasicParametersResourceDTO(Resource resourceEntity) {
         ResourceDTO resourceDTO = new ResourceDTO();
+        resourceDTO.setResourceId(resourceEntity.getResourcesId());
         resourceDTO.setDescription(resourceEntity.getDescription());
         resourceDTO.setDate(resourceEntity.getDate());
         resourceDTO.setIdentifier(resourceEntity.getIdentifier());
         resourceDTO.setReasonInclusion(resourceEntity.getReasonInclusion());
-        resourceDTO.setRegistratorName(
-                resourceEntity.getRegistrator().getFirstName() + " " + resourceEntity.getRegistrator().getMiddleName()
-                        + " " + resourceEntity.getRegistrator().getLastName());
+        resourceDTO.setRegistratorName(resourceEntity.getRegistrator().toString());
         resourceDTO.setTomeIdentifier(resourceEntity.getTome().getIdentifier());
         resourceDTO.setResourceType(resourceEntity.getType().getTypeName());
         return resourceDTO;
@@ -493,7 +568,7 @@ public class ResourceServiceImpl implements ResourceService {
             ResourceDiscreteValueDTO resDisDTO = new ResourceDiscreteValueDTO();
             resDisDTO.setDiscreteParameterDescription(dp.getDescription());
             resDisDTO.setDiscreteParameterUnit(dp.getUnitName());
-
+            resDisDTO.setCalculatedParameter(dp.getCalculatedParameter());
             List<ValueDiscreteDTO> valuediscretes = new ArrayList<>();
             for (ResourceDiscreteValue dv : discreteValues) {
                 if (dv.getDiscreteParameter().getDiscreteParameterId().equals(dp.getDiscreteParameterId())) {
@@ -531,12 +606,14 @@ public class ResourceServiceImpl implements ResourceService {
             Gson gson = new Gson();
 
             PoligonAreaDTO poligon = new PoligonAreaDTO();
+            poligon.setPolygonId(polygon.getId());
             List<PointAreaDTO> pointDTOs = new ArrayList<>();
             List<PointDTO> coordinates = gson.fromJson(polygon.getCoordinates(), new TypeToken<List<PointDTO>>(){}.getType());
 
+            int pointNumber = 1;
             for (PointDTO coordinate : coordinates) {
                 PointAreaDTO pointDTO = new PointAreaDTO();
-//                pointDTO.setOrderNumber(area.getOrderNumber());
+                pointDTO.setOrderNumber(pointNumber++);
                 pointDTO.setLatitudeValues(coordinate.getLat());
                 pointDTO.setLongitudeValues(coordinate.getLng());
                 pointDTOs.add(pointDTO);
@@ -578,5 +655,29 @@ public class ResourceServiceImpl implements ResourceService {
         return count;
     }
 
+    @Override
+    public boolean userCanEditResource(ResourceDTO resourceDTO)  {
+        if (resourceDTO == null) {
+            return false;
+        }
+
+        Resource resourceEntity = resourceRepository.findByIdentifier(resourceDTO.getIdentifier());
+
+        User user = userService.getLoggedUser();
+        if (user == null) {
+            return false;
+        }
+
+        Calendar today = Calendar.getInstance(settingsService.getTimeZone());
+        Calendar createdAt = resourceEntity.getCreatedAt();
+
+        boolean sameDate =  ((today != null) && (createdAt != null)
+                && (today.get(Calendar.YEAR) == createdAt.get(Calendar.YEAR))
+                && (today.get(Calendar.MONTH) == createdAt.get(Calendar.MONTH))
+                && (today.get(Calendar.DATE) == createdAt.get(Calendar.DATE))
+        );
+
+        return user.equals(resourceEntity.getRegistrator()) && sameDate;
+    }
 
 }

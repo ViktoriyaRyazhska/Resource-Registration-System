@@ -4,7 +4,7 @@ import org.springframework.security.web.context.AbstractSecurityWebApplicationIn
 // equal to DelegatingFilterProxy
 public class SecurityWebApplicationInitializer extends AbstractSecurityWebApplicationInitializer{
 
-	
-	
-	
+
+
+
 }

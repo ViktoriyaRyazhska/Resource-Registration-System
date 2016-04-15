@@ -1,3 +1,3 @@
 $("#btnsubmit").click(function() {
-	bootbox.alert("i");
+  bootbox.alert("i");
 });

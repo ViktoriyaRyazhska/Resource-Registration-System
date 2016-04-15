@@ -67,4 +67,8 @@ public class TableColumnSetting {
 	public void setButtonId(String buttonId) {
 		this.buttonId = buttonId;
 	}
+
+    public boolean isName(String name) {
+        return data.equalsIgnoreCase(name);
+    }
 }

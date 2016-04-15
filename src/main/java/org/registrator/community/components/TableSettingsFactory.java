@@ -9,27 +9,27 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TableSettingsFactory {
-	
-	private final String TABLE_SETTINGS_FILE_NAME="/searchTable.xml";
 
-	private Map<String,TableSetting> tableSettingsMap;
-		
-	public TableSettingsFactory() {
-		init();
-	}
+    private final String TABLE_SETTINGS_FILE_NAME="/searchTable.xml";
 
-	private void init(){
-		DataTableSettingsHolder tablesHolder = new XmlAnalyzerUtil().unmarshal(DataTableSettingsHolder.class, TABLE_SETTINGS_FILE_NAME);
-		if(tablesHolder != null){
-			tableSettingsMap =  tablesHolder.getTables();
-		}
-		
-	}
-	
-	public TableSetting getTableSetting(String tableName){
-		if(tableSettingsMap==null){
-			init();
-		}
-		return tableSettingsMap.get(tableName);
-	}
+    private Map<String,TableSetting> tableSettingsMap;
+
+    public TableSettingsFactory() {
+        init();
+    }
+
+    private void init(){
+        DataTableSettingsHolder tablesHolder = new XmlAnalyzerUtil().unmarshal(DataTableSettingsHolder.class, TABLE_SETTINGS_FILE_NAME);
+        if(tablesHolder != null){
+            tableSettingsMap =  tablesHolder.getTables();
+        }
+
+    }
+
+    public TableSetting getTableSetting(String tableName){
+        if(tableSettingsMap==null){
+            init();
+        }
+        return tableSettingsMap.get(tableName);
+    }
 }

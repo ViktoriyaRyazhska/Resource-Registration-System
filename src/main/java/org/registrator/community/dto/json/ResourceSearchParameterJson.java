@@ -31,14 +31,8 @@ public class ResourceSearchParameterJson {
         this.id = id;
     }
 
-    @JsonIgnore
     public void setCompare(ParameterValueCompare compare) {
         this.compare = compare;
-    }
-
-    //used to deserialize from json, do not delete :-)
-    public void setCompare(String compareString) {
-        this.compare = ParameterValueCompare.from(compareString);
     }
 
     public void setValue(Double value) {

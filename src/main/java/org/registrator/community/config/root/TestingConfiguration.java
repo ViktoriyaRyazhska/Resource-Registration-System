@@ -24,12 +24,12 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableJpaRepositories(basePackages = "org.registrator.community.dao")
 public class TestingConfiguration {
 
-	@Bean(initMethod = "init")
-	public TestDataInitializer initTestData() {
-		return new TestDataInitializer();
-	}
+    @Bean(initMethod = "init")
+    public TestDataInitializer initTestData() {
+        return new TestDataInitializer();
+    }
 
-	@Bean(name = "datasource")
+    @Bean(name = "datasource")
     public DriverManagerDataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName(org.hsqldb.jdbcDriver.class.getName());
@@ -59,7 +59,7 @@ public class TestingConfiguration {
         return entityManagerFactoryBean;
     }
 
-	@Bean(name = "transactionManager")
+    @Bean(name = "transactionManager")
     public PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory,
                                                          DriverManagerDataSource dataSource) {
         JpaTransactionManager transactionManager = new JpaTransactionManager();

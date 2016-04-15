@@ -1,11 +1,6 @@
 package org.registrator.community.dao;
 
-import org.registrator.community.dto.json.ResourceSearchJson;
-import org.registrator.community.entity.Resource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -13,15 +8,18 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import java.io.Serializable;
-import java.util.List;
+
+import org.registrator.community.dto.json.ResourceSearchJson;
+import org.registrator.community.entity.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Repository;
 
 /**
  * Implements search of resources by parameters. Adds additional behavior to ResourceRepository
  */
 @Repository
-@Transactional(readOnly = true)
-public class ResourceFindByParamsImpl implements ResourceFindByParams, Serializable {
+public class ResourceFindByParamsImpl implements ResourceFindByParams {
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -46,6 +44,7 @@ public class ResourceFindByParamsImpl implements ResourceFindByParams, Serializa
      * @param parameters resource parameters and values for searching
      * @return List of resources
      */
+    @Override
     public List<Resource> findByParams(ResourceSearchJson parameters) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Resource> criteria = criteriaBuilder.createQuery(Resource.class);

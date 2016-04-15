@@ -6,20 +6,30 @@
 	</listeners>
 
 	<!-- 3 ERROR 5 WARNING 7 INFO 9 DEBUG -->
-	<test verbose="9" name="Test">
+	<test verbose="9" name="UnitTest">
 		<classes>
+			<class name="org.registrator.community.service.CommunityServiceTest"/>
 			<class name="org.registrator.community.service.CronServiceTest"/>
-			<class name="org.registrator.community.service.InquiryServiceTest"/>
+            <class name="org.registrator.community.service.DiscreteParameterServiceTest"/>
+			<class name="org.registrator.community.service.InquiryServiceOldTest"/>
+            <class name="org.registrator.community.service.InquiryServiceTest"/>
+            <class name="org.registrator.community.service.LimitLoginAuthenticationProviderTest"/>
 			<class name="org.registrator.community.service.LinearParameterServiceTest"/>
+            <class name="org.registrator.community.service.MailServiceTest"/>
+            <class name="org.registrator.community.service.PasswordChangeServiceTest"/>
+            <class name="org.registrator.community.service.PasswordRecoveryServiceTest"/>
+            <class name="org.registrator.community.service.PasswordResetServiceTest"/>
 			<class name="org.registrator.community.service.PrintServiceTest"/>
-			<class name="org.registrator.community.service.PrintServiceIntegrationTest"/>
 			<class name="org.registrator.community.service.ResourceDeleteServiceTest"/>
 			<class name="org.registrator.community.service.ResourceDiscreteValueServiceTest"/>
 			<class name="org.registrator.community.service.ResourceLinearValueServiceTest"/>
 			<class name="org.registrator.community.service.ResourceServiceTest"/>
-			<class name="org.registrator.community.service.ResourceTypeServiceTest"/>
+			<class name="org.registrator.community.service.ResourceTypeServiceOldTest"/>
+            <class name="org.registrator.community.service.ResourceTypeServiceTest"/>
 			<class name="org.registrator.community.service.RoleServiceTest"/>
+            <class name="org.registrator.community.service.TimeZoneServiceTest"/>
 			<class name="org.registrator.community.service.UserServiceTest"/>
+            <class name="org.registrator.community.service.VerificationTokenServiceTest"/>
 		</classes>
 	</test>
 </suite>

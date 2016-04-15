@@ -30,7 +30,7 @@ public class DevelopmentConfiguration {
     
     @Bean(initMethod = "init")
     public FirstTimeDeploy firstTimeDeploy(){
-    	return new FirstTimeDeploy();
+        return new FirstTimeDeploy();
     }
 
     @Bean(name = "datasource")

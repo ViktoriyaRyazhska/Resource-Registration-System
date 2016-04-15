@@ -7,11 +7,13 @@
 <title>Profile</title>
 </head>
 <body>
-<h1>Your Profile</h1>
-<p>HELLO ;)
-<p>YOU'RE SUCCESSFULLY LOGGED IN!!!!</p>
-        <c:out value="${spitter.username}" /><br/>
-        <c:out value="${spitter.firstName}" /><br/>
-        <c:out value="${spitter.lastName}" />
+  <h1>Your Profile</h1>
+  <p>HELLO ;)
+  <p>YOU'RE SUCCESSFULLY LOGGED IN!!!!</p>
+  <c:out value="${spitter.username}" />
+  <br />
+  <c:out value="${spitter.firstName}" />
+  <br />
+  <c:out value="${spitter.lastName}" />
 </body>
 </html>

@@ -49,3 +49,12 @@ init-connect='SET NAMES utf8'
 character-set-server = utf8
 
 All database settings You can change in database.properties file.
+
+Google codestyle guide
+https://google.github.io/styleguide/javaguide.html
+Settings for IDE
+https://google.github.io/styleguide/javaguide.html
+
+.gitignore
+https://github.com/Danimoth/gitattributes/blob/master/Java.gitattributes
+

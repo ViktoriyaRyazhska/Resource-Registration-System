@@ -22,12 +22,12 @@ public class ResourceDiscreteValue implements Serializable {
     
     
     @Override
-	public String toString() {
-		return "ResourceDiscreteValue [resourceDiscreteId=" + resourceDiscreteId + ", resource=" + resource + ", value="
-				+ value + ", comment=" + comment + ", discreteParameter=" + discreteParameter + "]";
-	}
+    public String toString() {
+        return "ResourceDiscreteValue [resourceDiscreteId=" + resourceDiscreteId + ", resource=" + resource + ", value="
+                + value + ", comment=" + comment + ", discreteParameter=" + discreteParameter + "]";
+    }
 
-	@Column(name = "value", nullable = false)
+    @Column(name = "value", nullable = false)
     private Double value;
     
     @Column(name = "comment")
@@ -75,7 +75,7 @@ public class ResourceDiscreteValue implements Serializable {
 
 
     public void setResourceDiscreteId(Integer resourceDiscreteId) {
-    	this.resourceDiscreteId = resourceDiscreteId;
+        this.resourceDiscreteId = resourceDiscreteId;
     }
 
 

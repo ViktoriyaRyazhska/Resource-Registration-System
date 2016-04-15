@@ -21,27 +21,27 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @RequestMapping(value = "/administrator/users/")
 public class UserSearchController {
-	
-	@Autowired
-	@Qualifier("userSearchService")
-	BaseSearchService<User> userSearchService;
-	
-	@Autowired
-	TableSettingsFactory tableSettingsFactory;
-	
-	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_COMMISSIONER')")
-	@RequestMapping(value="search")
-	public String getUserBySearchCriteria(Model model){
-		model.addAttribute("tableSetting", tableSettingsFactory.getTableSetting("userSearch"));
-		return "searchTableTemplate";
-	}
-	
-	@ResponseBody
-	@RequestMapping(value = "getData",method = RequestMethod.POST)
-	public TableSearchResponseDTO getDataFromDataTable(@Valid @RequestBody TableSearchRequestDTO dataTableRequest){
-		
-		TableSearchResponseDTO dto = userSearchService.executeSearchRequest(dataTableRequest);
-		return dto;
-	}
-	
+
+    @Autowired
+    @Qualifier("userSearchService")
+    BaseSearchService<User> userSearchService;
+
+    @Autowired
+    TableSettingsFactory tableSettingsFactory;
+
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_COMMISSIONER')")
+    @RequestMapping(value="search")
+    public String getUserBySearchCriteria(Model model){
+        model.addAttribute("tableSetting", tableSettingsFactory.getTableSetting("userSearch"));
+        return "searchTableTemplate";
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "getData",method = RequestMethod.POST)
+    public TableSearchResponseDTO getDataFromDataTable(@Valid @RequestBody TableSearchRequestDTO dataTableRequest){
+
+        TableSearchResponseDTO dto = userSearchService.executeSearchRequest(dataTableRequest);
+        return dto;
+    }
+
 }

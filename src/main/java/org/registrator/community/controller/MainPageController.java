@@ -1,8 +1,6 @@
 package org.registrator.community.controller;
 
-import javax.servlet.http.HttpSession;
-
-import org.registrator.community.components.AdminSettings;
+import org.registrator.community.service.SettingsService;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -11,13 +9,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.servlet.http.HttpSession;
+
 @Controller
 public class MainPageController {
 
     @Autowired
     Logger logger;
     @Autowired
-    AdminSettings adminSettings;
+    SettingsService settingsService;
 
     /**
      * This method return homepage if credentials are correct according to the
@@ -35,7 +35,7 @@ public class MainPageController {
             logger.info("end: incorrect credentials");
             return "redirect:/login";
         }
-        session.setAttribute("registrationMethod", adminSettings.getRegistrationMethod());
+        session.setAttribute("registrationMethod", settingsService.getRegistrationMethod());
         logger.info("end: correct credentials");
         return "homepage";
     }

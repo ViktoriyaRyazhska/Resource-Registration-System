@@ -1,36 +1,34 @@
 .toggle-button {
-    margin: 0 5px;
-    padding: 0;
+  margin: 0 5px;
+  padding: 0;
 }
 
 .searchDiv {
-    display: none;
+  display: none;
 }
 
 .btn {
-    margin: 0 5px;
+  margin: 0 5px;
 }
 
 #resTypeFilter {
-    margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 
 #datatable tbody tr {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .clickedTr {
-    background-color: rgba( 255, 255, 0, 0.2) !important;
+  background-color: rgba(255, 255, 0, 0.2) !important;
 }
 
 #paginationDiv {
-    text-align: center;
+  text-align: center;
 }
 
 /*#paginationList li {*/
-    /*display: inline-block;*/
-    /*cursor: pointer;*/
-    /*padding: 5px 10px;*/
+/*display: inline-block;*/
+/*cursor: pointer;*/
+/*padding: 5px 10px;*/
 /*}*/
-
-

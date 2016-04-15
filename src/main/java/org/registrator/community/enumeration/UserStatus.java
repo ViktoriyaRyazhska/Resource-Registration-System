@@ -3,7 +3,8 @@ package org.registrator.community.enumeration;
 public enum UserStatus {
     BLOCK("BLOCK"),
     ACTIVE("ACTIVE"),
-    INACTIVE("INACTIVE");
+    INACTIVE("INACTIVE"),
+	NOTCOMFIRMED("NOTCOMFIRMED");
     
     private final String STATUS;
     

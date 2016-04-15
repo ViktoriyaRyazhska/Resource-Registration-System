@@ -10,61 +10,62 @@
 
 </head>
 <body>
-	<header class="header">
-		<div class="container">
-			<h1>
-				<spring:message code="label.title" />
-			</h1>
-			<h2>
-				<small><spring:message code="label.subtitle" /></small>
-			</h2>
+  <header class="header">
+    <div class="container">
+      <h1>
+        <spring:message code="label.title" />
+      </h1>
+      <h2>
+        <small><spring:message code="label.subtitle" /></small>
+      </h2>
 
-			<div class="languages">
-				<a href="?lang=ua">UA</a>| <a href="?lang=en">ENG</a>| <a
-					href="?lang=ru">RUS</a>
-			</div>
-
-
-		</div>
-	</header>
-	<!--     <a  href="www.google.com" role="button">Перейти на нову версію</a>-->
+      <div class="languages">
+        <a href="?lang=ua">UA</a>| <a href="?lang=en">ENG</a>| <a
+          href="?lang=ru">RUS</a>
+      </div>
 
 
-
-
-	<nav class="page-navigation">
-		<div class="container">
-			<ul>
-				<li><a href="*">Home</a></li>
-				<li><a href="3.html">About</a></li>
-				<li><a href="4.html">Contact</a></li>
+    </div>
+  </header>
+  <!--     <a  href="www.google.com" role="button">Перейти на нову версію</a>-->
 
 
 
-			</ul>
+
+  <nav class="page-navigation">
+    <div class="container">
+      <ul>
+        <li><a href="*">Home</a></li>
+        <li><a href="3.html">About</a></li>
+        <li><a href="4.html">Contact</a></li>
 
 
-			<!--LOGIN FORM-->
-			<form action="#" class="login">
-				<input type="text" placeholder=<spring:message code="label.login" />
-					required> <input type="password"
-					placeholder=<spring:message code="label.password" /> required>
-				<input type="submit" value="Sign in">
-			</form>
-			<!-- /LOGIN FORM -->
-		</div>
-	</nav>
 
-	<img src="resource/img/1.jpg" alt="list picture" width="300px"
-		height="300px">
-	<img src="resource/img/2.jpg" alt="list picture" width="300px"
-		height="300px">
-	<img src="resource/img/3.jpg" alt="list picture" width="300px"
-		height="300px">
-	<img src="resource/img/4.jpg" alt="list picture" width="300px"
-		height="300px">
+      </ul>
 
-	<button>Show more about this resource...</button>
-	<footer class="footer">Copyright Softserve 2015</footer>
+
+      <!--LOGIN FORM-->
+      <form action="#" class="login">
+        <input type="text"
+          placeholder=<spring:message code="label.login" /> required>
+        <input type="password"
+          placeholder=<spring:message code="label.password" /> required>
+        <input type="submit" value="Sign in">
+      </form>
+      <!-- /LOGIN FORM -->
+    </div>
+  </nav>
+
+  <img src="resource/img/1.jpg" alt="list picture" width="300px"
+    height="300px">
+  <img src="resource/img/2.jpg" alt="list picture" width="300px"
+    height="300px">
+  <img src="resource/img/3.jpg" alt="list picture" width="300px"
+    height="300px">
+  <img src="resource/img/4.jpg" alt="list picture" width="300px"
+    height="300px">
+
+  <button>Show more about this resource...</button>
+  <footer class="footer">Copyright Softserve 2015</footer>
 </body>
 </html>

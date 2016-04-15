@@ -24,7 +24,10 @@ public class TestDataInitializer {
 		
 		SessionFactory sessionFactory = entityManagerFactory.unwrap(SessionFactory.class);
 		Session session = sessionFactory.openSession();
-		
+
+        Settings settings = new Settings();
+        session.persist(settings);
+
 		Transaction territorialCommunity = session.beginTransaction();
         TerritorialCommunity globalTerritorialCommunity = new TerritorialCommunity();
         globalTerritorialCommunity.setName("Україна");

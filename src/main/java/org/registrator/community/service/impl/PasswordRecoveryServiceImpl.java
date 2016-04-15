@@ -17,11 +17,11 @@ import org.springframework.stereotype.Service;
 public class PasswordRecoveryServiceImpl implements PasswordRecoveryService {
 	
 	@Autowired
-	UserRepository userRepository;
+	private UserRepository userRepository;
 	
 	@Autowired
 	private MailService mailService;
-	
+
 	@Autowired
 	private VerificationTokenService verificationTokenService;
 	
@@ -51,4 +51,5 @@ public class PasswordRecoveryServiceImpl implements PasswordRecoveryService {
 			mailService.sendRecoveryPasswordMail(userEmail, user.getFirstName(),verifacationToken.getToken(),baseLink);
 		}	
 	}
+
 }

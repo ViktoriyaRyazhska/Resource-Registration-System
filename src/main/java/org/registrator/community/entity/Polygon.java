@@ -8,9 +8,9 @@ import java.util.List;
 @Table(name = "polygon")
 public class Polygon implements Serializable{
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Id
+    @Id
     @Column(name = "id")
     @GeneratedValue
     private Long id;

@@ -16,7 +16,7 @@ import javax.persistence.EntityManagerFactory;
 
 @Configuration
 @ComponentScan({"org.registrator.community.dto",
-	"org.registrator.community.service","org.registrator.community.validator"})
+    "org.registrator.community.service","org.registrator.community.validator"})
 @EnableScheduling
 @EnableTransactionManagement
 @Import(AdditionalAppConfig.class)

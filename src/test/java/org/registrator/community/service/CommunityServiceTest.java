@@ -9,6 +9,7 @@ import org.mockito.MockitoAnnotations;
 import org.powermock.api.support.membermodification.MemberModifier;
 import org.registrator.community.dao.CommunityRepository;
 import org.registrator.community.dao.UserRepository;
+import org.registrator.community.dto.CommunityDTO;
 import org.registrator.community.entity.TerritorialCommunity;
 import org.registrator.community.entity.User;
 import org.registrator.community.service.impl.CommunityServiceImpl;
@@ -25,6 +26,7 @@ public class CommunityServiceTest {
 	// test data
 	private final Integer ID = 1;
 	private final String NAME = "TestName";
+	private final String REGISTRATION_NUMBER = "804:14:01:001:79000";
 	TerritorialCommunity tc;
 	//end test data
 	
@@ -37,15 +39,22 @@ public class CommunityServiceTest {
 	@Mock
 	private UserRepository userRepository;
 	
-	@Mock
 	private Logger logger;
 
 	@BeforeMethod
-    public void init() {
+    public void init() throws IllegalArgumentException, IllegalAccessException {
         MockitoAnnotations.initMocks(this);
+        
+        // inject logger into tested service
+        logger = LoggerFactory.getLogger("");
+        MemberModifier
+            .field(CommunityServiceImpl.class, "logger")
+            .set(communityService, logger);
+        
         tc = new TerritorialCommunity();
         tc.setName(NAME);
 		tc.setTerritorialCommunityId(ID);
+		tc.setRegistrationNumber(REGISTRATION_NUMBER);
     }
 	
 	
@@ -56,6 +65,7 @@ public class CommunityServiceTest {
 		TerritorialCommunity actualTC = communityService.findAll().get(0);
 		Assert.assertEquals(actualTC.getName(), NAME);
 		Assert.assertEquals(actualTC.getTerritorialCommunityId(), ID);
+		Assert.assertEquals(actualTC.getRegistrationNumber(), REGISTRATION_NUMBER);
 	}
 	
 	@Test
@@ -63,6 +73,7 @@ public class CommunityServiceTest {
 		Mockito.when(communityRepository.findByName(NAME)).thenReturn(tc);
 		Assert.assertEquals(communityService.findByName(NAME).getName(), NAME);
 		Assert.assertEquals(communityService.findByName(NAME).getTerritorialCommunityId(), ID);
+		Assert.assertEquals(communityService.findByName(NAME).getRegistrationNumber(), REGISTRATION_NUMBER);
 	}
 	
 	@Test
@@ -70,6 +81,7 @@ public class CommunityServiceTest {
 		Mockito.when(communityRepository.saveAndFlush(tc)).thenReturn(tc);
 		Assert.assertEquals(communityService.addCommunity(tc).getName(), NAME);
 		Assert.assertEquals(communityService.addCommunity(tc).getTerritorialCommunityId(), ID);
+		Assert.assertEquals(communityService.addCommunity(tc).getRegistrationNumber(), REGISTRATION_NUMBER);
 	}
 	
 	@Test
@@ -78,18 +90,11 @@ public class CommunityServiceTest {
 		//Mockito.doReturn(tc).when(communityRepository).findOne(ID);
 		Assert.assertEquals(communityService.findById(ID).getName(), NAME);
 		Assert.assertEquals(communityService.findById(ID).getTerritorialCommunityId(), ID);
+		Assert.assertEquals(communityService.findById(ID).getRegistrationNumber(), REGISTRATION_NUMBER);
 	}
 	
 	@Test
-	public void deleteCommunity() throws IllegalAccessException{
-		
-		 // inject logger into tested service
-        logger = LoggerFactory.getLogger("");
-        MemberModifier
-        	.field(CommunityServiceImpl.class, "logger")
-            .set(communityService, logger);
-        
-        
+	public void deleteCommunity(){
 		Assert.assertTrue(communityService.deleteCommunity(tc));                  // try to delete, if success then return true
 		Mockito.verify(communityRepository).delete(tc);                           // check whether method have been called
 		Mockito.when(userRepository.findByTerritorialCommunity(tc))
@@ -104,6 +109,20 @@ public class CommunityServiceTest {
 		TerritorialCommunity actualTC = communityService.findAllByAsc().get(0);
 		Assert.assertEquals(actualTC.getName(), NAME);
 		Assert.assertEquals(actualTC.getTerritorialCommunityId(), ID);
+		Assert.assertEquals(actualTC.getRegistrationNumber(), REGISTRATION_NUMBER);
 	}
+	
+	@Test
+    public void updateCommunity(){
+        Mockito.when(communityRepository.findOne(ID)).thenReturn(tc);
+        Mockito.when(communityRepository.save(tc)).thenReturn(tc);
+        final String newName = "New name";
+        final String newRegistrationNumber = "805:15:02:002:79001";
+        communityService.updateCommunity(new CommunityDTO(newName, ID, newRegistrationNumber));
+        Mockito.verify(communityRepository).save(tc);
+        Assert.assertEquals(communityService.findById(ID).getName(), newName);
+        Assert.assertEquals(communityService.findById(ID).getTerritorialCommunityId(), ID);
+        Assert.assertEquals(communityService.findById(ID).getRegistrationNumber(), newRegistrationNumber);
+    }
 
 }

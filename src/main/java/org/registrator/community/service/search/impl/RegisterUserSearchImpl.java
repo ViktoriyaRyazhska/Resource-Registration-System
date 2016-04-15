@@ -33,10 +33,13 @@ public class RegisterUserSearchImpl extends AbstractSearchService<User,UserRepos
 			List<Map<String,String>> personList = new ArrayList<Map<String,String>>();
 			for(User user : searchEntityList){
 				Map<String,String> map = new HashMap<String,String>();
-				map.put("0", user.getFirstName());
-				map.put("1", user.getLastName());
-				map.put("2", user.getLogin());
-				map.put("3", user.getTerritorialCommunity().getName());
+				map.put("0", user.getStatus().toString());
+				map.put("1", user.getFirstName());
+				map.put("2", user.getLastName());
+				map.put("3", user.getLogin());
+				map.put("4", user.getTerritorialCommunity().getName());
+				map.put("5", user.getEmail());
+				map.put("6", user.getRole().toString());
 
 				personList.add(map);	
 			}
