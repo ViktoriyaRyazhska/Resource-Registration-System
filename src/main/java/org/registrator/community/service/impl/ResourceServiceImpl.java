@@ -61,6 +61,7 @@ import java.util.Set;
 import javax.transaction.Transactional;
 
 @Service
+@Transactional
 public class ResourceServiceImpl implements ResourceService {
 
     @Autowired
