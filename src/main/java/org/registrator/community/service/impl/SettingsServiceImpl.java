@@ -24,7 +24,7 @@ public class SettingsServiceImpl implements SettingsService {
     private SettingsRepository settingsRepository;
 
     @Override
-    public SettingsDTO getAllSettings() {
+    public SettingsDTO getAllSettingsDTO() {
         Settings settings = settingsRepository.getAllSettings();
         SettingsDTO settingsDTO = new SettingsDTO();
         settingsDTO.setRegistrationMethod(settings.getRegistrationMethod().toString());
@@ -34,8 +34,26 @@ public class SettingsServiceImpl implements SettingsService {
     }
 
     @Override
+    public Settings getAllSettings() {
+        Settings result = settingsRepository.getAllSettings();
+        if (result == null) {
+            result = new Settings();
+        }
+        return result;
+    }
+
+    @Override
+    public void saveAll(SettingsDTO settingsDTO) {
+        Settings settings = getAllSettings();
+        settings.setRegistrationMethod(RegistrationMethod.valueOf(settingsDTO.getRegistrationMethod()));
+        settings.setTimeZone(TimeZone.getTimeZone(settingsDTO.getTimeZone()));
+        settings.setSmtpParameters(settingsDTO.getSmtpParameters());
+        settingsRepository.save(settings);
+    }
+
+    @Override
     public void setTimeZone(TimeZone timeZone) {
-        Settings settings = settingsRepository.getAllSettings();
+        Settings settings = getAllSettings();
         settings.setTimeZone(timeZone);
         settingsRepository.save(settings);
     }
@@ -47,22 +65,18 @@ public class SettingsServiceImpl implements SettingsService {
 
     @Override
     public void setRegistrationMethod(RegistrationMethod registrationMethod) {
-        Settings settings = settingsRepository.getAllSettings();
+        Settings settings = getAllSettings();
         settings.setRegistrationMethod(registrationMethod);
         settingsRepository.save(settings);
     }
 
     @Override
     public RegistrationMethod getRegistrationMethod() {
-        return settingsRepository.getAllSettings().getRegistrationMethod();
+        return getAllSettings().getRegistrationMethod();
     }
 
     @Override
     public SmtpParameters getSmtpParameters() {
-        SmtpParameters result = settingsRepository.getAllSettings().getSmtpParameters();
-        if (result == null) {
-            result = new SmtpParameters();
-        }
-        return result;
+        return getAllSettings().getSmtpParameters();
     }
 }

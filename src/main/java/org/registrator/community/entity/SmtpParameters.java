@@ -1,5 +1,8 @@
 package org.registrator.community.entity;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import org.hibernate.validator.constraints.NotEmpty;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.EnumType;
@@ -14,13 +17,16 @@ public class SmtpParameters {
     }
 
     @Column(length = 100)
+    @NotEmpty(message = "{msg.notEmptyField}")
     private String host = "";
 
     @Column(length = 5)
     @Enumerated(EnumType.STRING)
+    @NotEmpty(message = "{msg.notEmptyField}")
     private Protocol protocol = Protocol.SMTP;
 
     @Column
+    @NotEmpty(message = "{msg.notEmptyField}")
     private int port = 465;
 
     @Column(length = 100)

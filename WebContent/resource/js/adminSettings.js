@@ -1,11 +1,23 @@
 $(document).ready(function() {
-  $("#confirmRegistrationMethod").click(function() {
+  //$("#confirmRegistrationMethod").click(function() {
+  //
+  //  $.ajax({
+  //    type : "POST",
+  //    url : "settings",
+  //    data : $("#сhangeReg").serialize(),
+  //    success : function(data) {
+  //      bootbox.alert(jQuery.i18n.prop('msg.settingsChanged'));
+  //    }
+  //  });
+  //
+  //  return false;
+  //});
 
-    var url = "settings";
+  $("#checkSMTP").click(function() {
 
     $.ajax({
       type : "POST",
-      url : url,
+      url : "checkParametersSMTP",
       data : $("#сhangeReg").serialize(),
       success : function(data) {
         bootbox.alert(jQuery.i18n.prop('msg.settingsChanged'));

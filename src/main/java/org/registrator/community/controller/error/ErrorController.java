@@ -12,7 +12,7 @@ import java.text.MessageFormat;
 
 @Controller
 @RequestMapping("/error/")
-class ErrorController {
+public class ErrorController {
     
     private Logger logger = LoggerFactory.getLogger(ErrorController.class);
 

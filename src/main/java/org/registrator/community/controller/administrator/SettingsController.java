@@ -1,7 +1,6 @@
 package org.registrator.community.controller.administrator;
 
 import org.registrator.community.dto.SettingsDTO;
-import org.registrator.community.enumeration.RegistrationMethod;
 import org.registrator.community.service.SettingsService;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.TimeZone;
@@ -40,7 +37,7 @@ public class SettingsController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/settings", method = RequestMethod.GET)
     public String showSettings(Model model) {
-        model.addAttribute("settings", settingsService.getAllSettings());
+        model.addAttribute("settings", settingsService.getAllSettingsDTO());
         return "adminSettings";
     }
 
@@ -61,20 +58,30 @@ public class SettingsController {
         validator.validate(settings, result);
         if (result.hasErrors()) {
             settings.setError(true);
-            logger.info("Settings have errors {}", result);
+            logger.debug("Settings have errors {}", result);
             return "adminSettings";
         }
-        logger.info("Settings don't have errors {}", result);
+        logger.debug("Settings don't have errors {}", result);
 
-        settingsService.setRegistrationMethod(RegistrationMethod.valueOf(settings.getRegistrationMethod()));
-        settingsService.setTimeZone(TimeZone.getTimeZone(settings.getTimeZone()));
+        settingsService.saveAll(settings);
+
         logger.info("settings are successfully changed");
         settings.setSuccess(true);
         model.addAttribute("settings", settings);
         return "adminSettings";
     }
 
-    private static class TimeZoneValidator implements Validator{
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @ResponseBody
+    @RequestMapping(value = "/checkParametersSMTP", method = RequestMethod.POST)
+    public SettingsDTO checkParametersSMTP(@Valid @ModelAttribute SettingsDTO settings,
+                                      BindingResult result,
+                                      Model model) {
+
+        return settings;
+    }
+
+    private static class TimeZoneValidator implements Validator {
         @Override
         public boolean supports(Class<?> clazz) {
             return clazz.equals(SettingsDTO.class);
@@ -89,7 +96,7 @@ public class SettingsController {
                     return;
                 }
             }
-            errors.rejectValue("timeZone", "msg.settings.timeZone.error","Wrong time zone");
+            errors.rejectValue("timeZone", "msg.settings.timeZone.error", "Wrong time zone");
         }
     }
 
