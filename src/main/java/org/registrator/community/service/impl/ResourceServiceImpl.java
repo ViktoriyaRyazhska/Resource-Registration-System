@@ -166,6 +166,7 @@ public class ResourceServiceImpl implements ResourceService {
      * @param identifier
      * @return resourseDTO if exist
      */
+    @Transactional
     @Override
     public ResourceDTO findByIdentifier(String identifier) throws ResourceEntityNotFound {
 
@@ -202,6 +203,7 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
+    @Transactional
     public Set<Resource> getAllByAreaLimits(Double minLat, Double maxLat, Double minLng, Double maxLng, String resType, Integer page) {
         Set<Resource> resources = new HashSet<>();
         Pageable pageable = new PageRequest(page, 200);
