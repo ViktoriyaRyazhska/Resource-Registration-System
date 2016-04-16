@@ -208,7 +208,7 @@ public class InquiryController {
      *
      * @author Vitalii Horban
      */
-    @PreAuthorize("hasRole('ROLE_REGISTRATOR')")
+    @PreAuthorize("hasRole('ROLE_REGISTRATOR') or hasRole('ROLE_USER')")
     @RequestMapping(value = "/printdata/{inquiryId}", method = RequestMethod.GET)
     public ResponseEntity<byte[]> downloadInfoFile(HttpServletResponse response,
                                                    @PathVariable("inquiryId") Integer inquiryId) {
