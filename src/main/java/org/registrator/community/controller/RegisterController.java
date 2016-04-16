@@ -42,7 +42,7 @@ public class RegisterController {
     private NotConfirmedUsersService emailConfirmService;
     
     @Autowired
-    UserDataValidator validator;
+    private UserDataValidator validator;
 
     @PreAuthorize("hasRole('ROLE_ANONYMOUS')")
     @RequestMapping(value = "/register", method = RequestMethod.GET)

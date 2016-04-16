@@ -22,7 +22,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-
 @Controller
 public class ManualRegistrationController {
     private static final Logger logger = LoggerFactory.getLogger(ManualRegistrationController.class);
@@ -33,9 +32,8 @@ public class ManualRegistrationController {
     private CommunityService communityService;
     @Autowired
     private NotConfirmedUsersService emailConfirmService;
-    
     @Autowired
-    UserDataValidator validator;
+    private UserDataValidator validator;
 
     /**
      * Method for loading form for adding new user
@@ -68,15 +66,15 @@ public class ManualRegistrationController {
             List<TerritorialCommunity> territorialCommunities = communityService.findAllByAsc();
             model.addAttribute("territorialCommunities", territorialCommunities);
             model.addAttribute("registrationForm", registrationForm);
-            logger.warn("Registration form sent to server with following errors: \n" + result.getFieldErrors()
-                    + "\n Error messages displayed to admin or commissioner.");
+            logger.warn("Registration form sent to server with following errors: \n {} "
+                    + "\n Error messages displayed to admin or commissioner.", result.getFieldErrors());
             return "regForComm";
         }
         userService.registerUser(registrationForm);
         String baseLink = (request.getRequestURL()).toString().split("confirm_email")[0];
         emailConfirmService.sendConfirmEmailFirstTime(registrationForm.getLogin(), baseLink);
 
-        logger.info("Successfully registered new commissioner/user: " + registrationForm.getLogin());
+        logger.info("Successfully registered new commissioner/user: {}", registrationForm.getLogin());
         return "redirect:/administrator/users/get-all-users?statusType=notcomfirmed";
     }
 }
