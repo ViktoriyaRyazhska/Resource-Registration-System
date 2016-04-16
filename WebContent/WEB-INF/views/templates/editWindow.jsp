@@ -5,7 +5,6 @@
 
 <script src="<c:url value='/resource/js/move.js'/>"></script>
 <script src="<c:url value='/resource/js/editingUser.js'/>"></script>
-<script src="<c:url value='/resource/js/userValidate.js'/>"></script>
 <script src="<c:url value='/resource/js/checkResourceNumber.js'/>"></script>
 
 <div class="container">
@@ -25,10 +24,10 @@
             <div class="col-lg-8">
               <input id="firstName" name="firstName" placeholder=""
                 class="form-control input-md readonly" type="text"
-                value="${userDto.firstName}" <c:if test="${not failEdit}">readonly</c:if> >
+                value="${userDto.firstName}" <c:if test="${not failEdit}">readonly</c:if> required >
               <div class="control-group error">
                 <form:errors path="firstName" cssClass="error"
-                  style="color:black" />
+                  cssStyle="color:red" />
               </div>
             </div>
           </div>
@@ -38,10 +37,10 @@
             <div class="col-lg-8">
               <input id="lastname" name="lastName" placeholder=""
                 class="form-control input-md readonly" type="text"
-                value="${userDto.lastName}" <c:if test="${not failEdit}">readonly</c:if> >
+                value="${userDto.lastName}" <c:if test="${not failEdit}">readonly</c:if> required >
               <div class="control-group error">
                 <form:errors path="lastName" cssClass="error"
-                  style="color:black" />
+                  cssStyle="color:red" />
               </div>
             </div>
           </div>
@@ -54,7 +53,7 @@
                 value="${userDto.middleName}" <c:if test="${not failEdit}">readonly</c:if> >
               <div class="control-group error">
                 <form:errors path="middleName" cssClass="black"
-                  style="color:black" />
+                  cssStyle="color:red" />
               </div>
             </div>
           </div>
@@ -73,10 +72,10 @@
             <div class="col-lg-8">
               <input id="email" name="email" placeholder=""
                 class="form-control input-md readonly" type="text"
-                value="${userDto.email}" <c:if test="${not failEdit}">readonly</c:if> >
+                value="${userDto.email}" <c:if test="${not failEdit}">readonly</c:if> required >
               <div class="control-group error">
                 <form:errors path="email" cssClass="error"
-                  style="color:black" />
+                   cssStyle="color:red" />
               </div>
             </div>
           </div>
@@ -141,7 +140,7 @@
                 value="${userDto.address.region}" <c:if test="${not failEdit}">readonly</c:if> >
               <div class="control-group error">
                 <form:errors path="address.region" cssClass="error"
-                  style="color:black" />
+                  cssStyle="color:red" />
               </div>
             </div>
           </div>
@@ -154,7 +153,7 @@
                 value="${userDto.address.city}" <c:if test="${not failEdit}">readonly</c:if> >
               <div class="control-group error">
                 <form:errors path="address.city" cssClass="error"
-                  style="color:black" />
+                  cssStyle="color:red" />
               </div>
             </div>
           </div>
@@ -167,7 +166,7 @@
                 type="text" value="${userDto.address.district}" <c:if test="${not failEdit}">readonly</c:if> >
               <div class="control-group error">
                 <form:errors path="address.district" cssClass="error"
-                  style="color:black" />
+                  cssStyle="color:red" />
               </div>
             </div>
           </div>
@@ -180,7 +179,7 @@
                 value="${userDto.address.street}" <c:if test="${not failEdit}">readonly</c:if> >
               <div class="control-group error">
                 <form:errors path="address.street" cssClass="error"
-                  style="color:black" />
+                  cssStyle="color:red" />
               </div>
             </div>
           </div>
@@ -193,7 +192,7 @@
                 type="text" value="${userDto.address.building}" <c:if test="${not failEdit}">readonly</c:if> >
               <div class="control-group error">
                 <form:errors path="address.building" cssClass="error"
-                  style="color:black" />
+                  cssStyle="color:red" />
               </div>
             </div>
           </div>
@@ -206,7 +205,7 @@
                 value="${userDto.address.flat}" <c:if test="${not failEdit}">readonly</c:if> >
               <div class="control-group error">
                 <form:errors path="address.building" cssClass="error"
-                  style="color:black" />
+                  cssStyle="color:red" />
               </div>
             </div>
           </div>
@@ -219,7 +218,7 @@
                 type="text" value="${userDto.address.postcode}" <c:if test="${not failEdit}">readonly</c:if> >
               <div class="control-group error">
                 <form:errors path="address.postcode" cssClass="error"
-                  style="color:black" />
+                  cssStyle="color:red" />
               </div>
             </div>
           </div>
@@ -237,7 +236,7 @@
                 value="${userDto.passport.seria}" <c:if test="${not failEdit}">readonly</c:if> >
               <div class="control-group error">
                 <form:errors path="passport.seria" cssClass="error"
-                  style="color:black" />
+                  cssStyle="color:red" />
               </div>
             </div>
           </div>
@@ -250,7 +249,7 @@
                 value="${userDto.passport.number}" <c:if test="${not failEdit}">readonly</c:if> >
               <div class="control-group error">
                 <form:errors path="passport.number" cssClass="error"
-                  style="color:black" />
+                  cssStyle="color:red" />
               </div>
             </div>
           </div>
@@ -264,7 +263,7 @@
                 value="${userDto.passport.published_by_data}" <c:if test="${not failEdit}">readonly</c:if> >
               <div class="control-group error">
                 <form:errors path="passport.published_by_data"
-                  cssClass="error" style="color:black" />
+                  cssClass="error" cssStyle="color:red" />
               </div>
             </div>
           </div>
@@ -304,7 +303,7 @@
                 <div class="control-group error">
                   <form:errors
                     path="resourceNumberJson.registratorNumber"
-                    cssClass="error" style="color:black" />
+                    cssClass="error" cssStyle="color:red" />
                 </div>
               </div>
             </div>
@@ -320,7 +319,7 @@
                   <c:if test="${not failEdit}">readonly</c:if> >
                 <div class="control-group error">
                   <form:errors path="resourceNumberJson.resourceNumber"
-                    cssClass="error" style="color:black" />
+                    cssClass="error" cssStyle="color:red" />
                 </div>
               </div>
             </div>
