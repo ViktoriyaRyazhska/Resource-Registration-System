@@ -7,6 +7,7 @@ import org.registrator.community.dto.UserRegistrationDTO;
 import org.registrator.community.dto.json.CommunityParamJson;
 import org.registrator.community.dto.json.RoleTypeJson;
 import org.registrator.community.dto.json.UserStatusJson;
+import org.registrator.community.entity.TerritorialCommunity;
 import org.registrator.community.entity.User;
 import org.registrator.community.enumeration.UserStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -80,4 +81,6 @@ public interface UserService {
     User getLoggedUser();
 
 	void changeUserStatuses(UserStatusJson userStatusJson);
+
+	public void deactiveUsersOfCommunity(TerritorialCommunity community);
 }
