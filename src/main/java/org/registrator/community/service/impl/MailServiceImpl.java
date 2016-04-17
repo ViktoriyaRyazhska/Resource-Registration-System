@@ -48,6 +48,7 @@ public class MailServiceImpl implements MailService{
 	@Override
 	@Async
 	public void sendComfirmEMail(String recepientEmail, String recepientName, String login, String token, String url) {
+	    logger.info("Method sendComfirmEMail run it Thread: {}", Thread.currentThread().getName());
 	    Map<String, Object> templateVariables = new HashMap<>();
 	    templateVariables.put("name", recepientName);
         templateVariables.put("login", login);
@@ -65,6 +66,7 @@ public class MailServiceImpl implements MailService{
 	@Override
 	@Async
 	public void sendRecoveryPasswordMail(String recepientEmail, String token, String url) {
+	    logger.info("Method sendRecoveryPasswordMail run it Thread: {}", Thread.currentThread().getName());
 	    Map<String, Object> templateVariables = new HashMap<>();
         templateVariables.put("url", url);
         templateVariables.put("token", token);
@@ -80,6 +82,7 @@ public class MailServiceImpl implements MailService{
     @Override
     @Async
     public void sendResetedPasswordMail(String recepientEmail, String recepientName, String login, String password){
+        logger.info("Method sendResetedPasswordMail run it Thread: {}", Thread.currentThread().getName());
         Map<String, Object> templateVariables = new HashMap<>();
         templateVariables.put("name", recepientName);
         templateVariables.put("login", login);

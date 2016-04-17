@@ -37,7 +37,6 @@ public class VerificationTokenServiceIT extends AbstractTestNGSpringContextTests
 	// DataProviders
 	@DataProvider(name = "ProviderForTokenFormation")
 	public Object[][] formEmailAndLoginStrings() {
-	    //TODO: test
 		logger.debug("Generating email strings");
 		Object[][] tmp = new Object[DESIRED_RESOURCES][2];
 		String emailMask = "tokenEmail#%03d@gmail.com";
@@ -88,7 +87,6 @@ public class VerificationTokenServiceIT extends AbstractTestNGSpringContextTests
 
 	@Test(dataProvider = "ProviderForTokenFormation", priority=2)
 	public void savePasswordVerificationToken(String email, String login) {
-	  //TODO: test
 		logger.debug("Start");
 		VerificationToken actual = verificationTokenService.savePasswordVerificationToken(email,login, date),
 				expected = new VerificationToken(actual.getToken(), 
@@ -130,7 +128,6 @@ public class VerificationTokenServiceIT extends AbstractTestNGSpringContextTests
 
 	@Test(priority=5)
 	public void deletePasswordVerificationTokenByEmailAndByTokenName() {
-	    //TODO: test
 		logger.debug("Start");
 		int listSize = cTokenList.size();
 		long repSize = verificationTokenRepository.count();

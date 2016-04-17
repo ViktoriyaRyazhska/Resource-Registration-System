@@ -23,7 +23,6 @@ public class VerificationTokenServiceImpl implements VerificationTokenService{
 
 	@Override
 	public boolean deletePasswordVerificationTokenByLogin(String login) {
-	    //TODO: test
 		VerificationToken passwordResetToken = verificationTokenRepository.findTokenByLogin(login);
 		if(passwordResetToken != null){
 			verificationTokenRepository.delete(passwordResetToken);
@@ -33,7 +32,6 @@ public class VerificationTokenServiceImpl implements VerificationTokenService{
 	}
 	
 	private void deleteExpiredPasswordVerificationTokenByEmail(String email) {
-        // TODO: test
         List<VerificationToken> passwordRecoveryTokens = verificationTokenRepository.findTokensByEmail(email);
         if (passwordRecoveryTokens != null) {
             for (VerificationToken token : passwordRecoveryTokens) {
@@ -51,7 +49,6 @@ public class VerificationTokenServiceImpl implements VerificationTokenService{
 	
 	@Override
     public VerificationToken savePasswordVerificationToken(String userEmail, Date nowTime) {
-        //TODO: now its possible to be in one email few not expired tokens
         String token = createHashForPasswordToken();
         nowTime.setTime(nowTime.getTime()+PASSWORD_TOKEN_EXPIRY_TIME);
         VerificationToken passwordVerificationToken = new VerificationToken(token, userEmail, nowTime, TokenType.RECOVER_PASSWORD);
@@ -72,7 +69,6 @@ public class VerificationTokenServiceImpl implements VerificationTokenService{
 	
 	@Override
 	public VerificationToken saveEmailConfirmationToken(String login, String userEmail, Date nowTime, String baseLink) {
-	    //TODO: test
 		String token = createHashForPasswordToken();
 		nowTime.setTime(nowTime.getTime()+EMAIL_TOKEN_EXPIRY_TIME);
 		VerificationToken emailVerificationToken = new VerificationToken(token, login, userEmail,nowTime,TokenType.CONFIRM_EMAIL, baseLink);
