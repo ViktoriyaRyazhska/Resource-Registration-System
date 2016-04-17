@@ -2,6 +2,7 @@ package org.registrator.community.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -38,6 +39,9 @@ public class CommunityServiceTest {
 	
 	@Mock
 	private UserRepository userRepository;
+	
+	@Mock
+    private UserService userService;
 	
 	private Logger logger;
 
@@ -100,7 +104,6 @@ public class CommunityServiceTest {
 		Mockito.when(userRepository.findByTerritorialCommunity(tc))
 		.thenReturn(new ArrayList<User>(Arrays.asList(new User())));              // imitation of constraint
 		Assert.assertFalse(communityService.deleteCommunity(tc));                 // try to delete with constraint so method must return false
-		Mockito.verifyZeroInteractions(communityRepository);                      // check whether  method "communityRepository.delete" have not been call at least one time
 	}
 	
 	@Test
