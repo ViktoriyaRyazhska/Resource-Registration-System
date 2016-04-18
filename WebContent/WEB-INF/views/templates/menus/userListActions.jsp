@@ -2,12 +2,14 @@
 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles"%>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c'%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <script src="<c:url value='/resource/js/batchUserOps.js'/>"></script>
 
 <div class="dropdown" id="actionList"
  style="float: Left; margin-right: 5px;">
  
+<sec:authorize access="hasRole('ADMIN')">
  <c:if test="${statusType eq 'ACTIVE'}">
  <a id="dLabel" role="button" data-toggle="dropdown"
   class="btn btn-xs btn-primary" data-target="#" href="#"><spring:message
@@ -39,8 +41,10 @@
  <ul class="dropdown-menu multi-level" role="menu"
   aria-labelledby="dropdownMenu">
 
-  <li><a href="#" class="notcomfirmrd-user" id = "DELETE">Видалити</a></li>
-  <li><a href="#" class="notcomfirmrd-user" id = "SENDEMAILAGAIN">Надіслати email щераз</a></li>
+  <li><a href="#" class="notcomfirmrd-user" id = "DELETE"><spring:message
+     code="label.modal.delete" /></a></li>
+  <li><a href="#" class="notcomfirmrd-user" id = "SENDEMAILAGAIN"><spring:message
+     code="label.modal.sendEmailAgain" /></a></li>
  </ul>
  </c:if>
  
@@ -50,9 +54,21 @@
    code="label.modal.actions" /> <span class="caret"></span> </a>
  <ul class="dropdown-menu multi-level" role="menu"
   aria-labelledby="dropdownMenu">
-    <li><a href="#">Розблокувати</a></li>
+    <li><a href="#" class="unblock">Розблокувати</a></li>
  </ul>
  </c:if>
+ 
+ <c:if test="${statusType eq 'INACTIVE'}">
+     <a id="dLabel" role="button" data-toggle="dropdown"
+  class="btn btn-xs btn-primary" data-target="#" href="#"><spring:message
+   code="label.modal.actions" /> <span class="caret"></span> </a>
+ <ul class="dropdown-menu multi-level" role="menu"
+  aria-labelledby="dropdownMenu">
+    <li><a href="#" class="unblock">Зробити активними</a></li>
+    <li><a href="#" class="block">Заблокувати</a></li>
+ </ul>
+ </c:if>
+ </sec:authorize>
  </div>
  
  <div id="modalWindow" class="form-horizontal">

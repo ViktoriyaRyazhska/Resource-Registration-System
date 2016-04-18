@@ -5,7 +5,7 @@ import org.registrator.community.dto.UserRegistrationDTO;
 import org.registrator.community.entity.TerritorialCommunity;
 import org.registrator.community.enumeration.RegistrationMethod;
 import org.registrator.community.service.CommunityService;
-import org.registrator.community.service.EmailConfirmService;
+import org.registrator.community.service.NotConfirmedUsersService;
 import org.registrator.community.service.SettingsService;
 import org.registrator.community.service.UserService;
 import org.registrator.community.validator.UserDataValidator;
@@ -27,8 +27,8 @@ import java.util.List;
 
 @Controller
 public class RegisterController {
-
-    private static final Logger log = LoggerFactory.getLogger(RegisterController.class);
+    private static final Logger logger = LoggerFactory.getLogger(RegisterController.class);
+    
     @Autowired
     private UserService userService;
 
@@ -39,10 +39,10 @@ public class RegisterController {
     private CommunityService communityService;
     
     @Autowired
-    private EmailConfirmService emailConfirmService;
+    private NotConfirmedUsersService emailConfirmService;
     
     @Autowired
-    UserDataValidator validator;
+    private UserDataValidator validator;
 
     @PreAuthorize("hasRole('ROLE_ANONYMOUS')")
     @RequestMapping(value = "/register", method = RequestMethod.GET)
@@ -50,7 +50,7 @@ public class RegisterController {
         List<TerritorialCommunity> territorialCommunities = communityService.findAllByAsc(); 
         model.addAttribute("territorialCommunities", territorialCommunities);
         model.addAttribute("registrationForm", new UserRegistrationDTO());
-        log.info("Loaded 'New user registration form' " + request.getRemoteAddr());
+        logger.info("Loaded 'New user registration form' {}", request.getRemoteAddr());
         if (settingsService.getRegistrationMethod() == RegistrationMethod.MANUAL){
             return "redirect:/";
         }
@@ -65,8 +65,8 @@ public class RegisterController {
             List<TerritorialCommunity> territorialCommunities = communityService.findAllByAsc();
             model.addAttribute("territorialCommunities", territorialCommunities);
             model.addAttribute("registrationForm", registrationForm);
-            log.warn("Registration form sent to server with following errors: \n" + result.getFieldErrors()
-                    + "\n Error messages displayed to user.");
+            logger.warn("Registration form sent to server with following errors: \n {} "
+                    + "\n Error messages displayed to user.",result.getFieldErrors());
             return "register";
         }
         userService.registerUser(registrationForm);
@@ -74,8 +74,8 @@ public class RegisterController {
         emailConfirmService.sendConfirmEmailFirstTime(registrationForm.getLogin(), baseLink);
 
 
-        log.info("Successfully registered new user: " + registrationForm.getLogin());
-        return "thanks-for-registration";
+        logger.info("Successfully registered new user: " + registrationForm.getLogin());
+        return "finish-registration";
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)

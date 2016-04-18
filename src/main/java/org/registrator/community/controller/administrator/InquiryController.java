@@ -48,9 +48,6 @@ public class InquiryController {
     @Autowired
     private UserService userService;
 
-    private static String EXTRACT = "extract.pdf";
-    private static String PROCURATION_ON_SUBMIT = "procuration_on_submit.pdf";
-    private static String MANDATE_TO_EXTRACT = "mandate_to_extract.pdf";
 
     /**
      * Method for showing form on UI to input the parameters for inquiry to get
@@ -160,8 +157,6 @@ public class InquiryController {
             byte[] array = bos.toByteArray();
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.parseMediaType("application/pdf"));
-            String filename = MANDATE_TO_EXTRACT;
-            headers.setContentDispositionFormData(filename, filename);
             headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
             responseContent = new ResponseEntity<byte[]>(array, headers, HttpStatus.OK);
             logger.info(
@@ -194,8 +189,6 @@ public class InquiryController {
             byte[] array = bos.toByteArray();
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.parseMediaType("application/pdf"));
-            String filename = EXTRACT;
-            headers.setContentDispositionFormData(filename, filename);
             headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
             responseContent = new ResponseEntity<byte[]>(array, headers, HttpStatus.OK);
             logger.info(
@@ -215,7 +208,7 @@ public class InquiryController {
      *
      * @author Vitalii Horban
      */
-    @PreAuthorize("hasRole('ROLE_REGISTRATOR')")
+    @PreAuthorize("hasRole('ROLE_REGISTRATOR') or hasRole('ROLE_USER')")
     @RequestMapping(value = "/printdata/{inquiryId}", method = RequestMethod.GET)
     public ResponseEntity<byte[]> downloadInfoFile(HttpServletResponse response,
                                                    @PathVariable("inquiryId") Integer inquiryId) {
@@ -229,8 +222,6 @@ public class InquiryController {
             byte[] array = bos.toByteArray();
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.parseMediaType("application/pdf"));
-            String filename = PROCURATION_ON_SUBMIT;
-            headers.setContentDispositionFormData(filename, filename);
             headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
             responseContent = new ResponseEntity<byte[]>(array, headers, HttpStatus.OK);
             logger.info(

@@ -15,7 +15,7 @@ import org.springframework.validation.Validator;
 @Component
 public class PasswordChangeValidator implements Validator {
 
-    private static final String PASSWORD_PATTERN="[a-zA-Z0-9].{4,20}";
+    private static final String PASSWORD_PATTERN="[a-zA-Z0-9].{5,20}";
 
 
     @Autowired

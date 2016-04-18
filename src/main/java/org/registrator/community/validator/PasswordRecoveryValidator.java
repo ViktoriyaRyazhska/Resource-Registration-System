@@ -38,7 +38,7 @@ public class PasswordRecoveryValidator implements Validator {
 	private void validatePasswordEquals(String password,
 			String confirmPassword, Errors errors) {
 		if (!password.equals(confirmPassword)){
-            errors.rejectValue("confirmPassword","user.Password.passwordNotEquals","Passwords are not equal");
+            errors.rejectValue("confirmPassword", "msg.change.password.badconfirmation");
         }
 	}
 
@@ -47,7 +47,7 @@ public class PasswordRecoveryValidator implements Validator {
             errors.rejectValue("password", "user.Password.emptyPassword","Enter a Password");
         }
         else if(!password.matches(PASSWORD_PATTERN)){
-            errors.rejectValue("password", "user.Password.badPassword","Enter correct password");
+			errors.rejectValue("password", "msg.change.password.nonvalid.password");
         }	
 	}
 

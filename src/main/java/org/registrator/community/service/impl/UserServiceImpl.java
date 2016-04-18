@@ -4,7 +4,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import org.registrator.community.dao.AddressRepository;
 import org.registrator.community.dao.PassportRepository;
@@ -22,7 +21,6 @@ import org.registrator.community.dto.json.CommunityParamJson;
 import org.registrator.community.dto.json.ResourceNumberJson;
 import org.registrator.community.dto.json.RoleTypeJson;
 import org.registrator.community.dto.json.UserStatusJson;
-import org.registrator.community.dto.search.Search;
 import org.registrator.community.entity.Address;
 import org.registrator.community.entity.OtherDocuments;
 import org.registrator.community.entity.PassportInfo;
@@ -37,11 +35,12 @@ import org.registrator.community.enumeration.UserStatus;
 import org.registrator.community.exceptions.BadInputDataException;
 import org.registrator.community.service.CommunityService;
 import org.registrator.community.service.UserService;
-import org.registrator.community.service.search.TableColumnSetting;
-import org.registrator.community.service.search.TableSetting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -122,6 +121,35 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
+    @Transactional
+    @Override
+    public void changeUserStatuses(UserStatusJson taskInfo){
+    	logger.debug("begin");
+        logger.debug("Recieved package: " + taskInfo);
+    	if(taskInfo.getLogin() == null || taskInfo.getStatus() == null){
+    		logger.warn("Empty userStatusJson");
+    		throw new BadInputDataException();
+    	}
+		List<String> givenUsers = new ArrayList<String>();
+		Collections.addAll(givenUsers, taskInfo.getLogin().split(","));
+
+		List<User> userList = userRepository.findUsersByLoginList(givenUsers);
+		
+		UserStatus status = null;
+		try{
+			String givenStatus = taskInfo.getStatus();
+			status = UserStatus.valueOf(givenStatus);
+		}catch(IllegalArgumentException e){
+			logger.warn("Bad argument given: "+taskInfo.getStatus());
+			throw new BadInputDataException();
+		}
+		for(User user : userList){
+			user.setStatus(status);
+		}
+		userRepository.save(userList);
+    	
+    	logger.debug("end");
+    }
     /**
      * Method, which retruns all registrated users
      *
@@ -319,8 +347,8 @@ public class UserServiceImpl implements UserService {
                     resourceNumber.getRegistratorNumber(), tome.getIdentifier());
         } else {
             resourceNumberJson = new ResourceNumberJson();
-            resourceNumberJson.setResource_number("0");
-            resourceNumberJson.setRegistrator_number("0");
+            resourceNumberJson.setResourceNumber("0");
+            resourceNumberJson.setRegistratorNumber("0");
             resourceNumberJson.setIdentifier("0");
         }
         UserDTO userdto = new UserDTO(user.getFirstName(), user.getLastName(), user.getMiddleName(),
@@ -351,51 +379,7 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
-    /**
-     * Method, which delete user only if user status = NOTCOMFIRMED
-     *
-     * @return List<UserDTO>
-     */
-    @Transactional
-    @Override
-    public String deleteNotConfirmedUsers(String logins) {
-        
-        List<PassportInfo> passportInfoList = new ArrayList<PassportInfo>();
-        List<Address> addressList = new ArrayList<Address>();
-        List<String> users = new ArrayList<String>();
-
-        Collections.addAll(users, logins.split(","));
-        logger.info("Loking for users with logins: "+logins);
-        List<User> userList = userRepository.findUsersByLoginList(users);
-        if (userList.isEmpty()){
-            logger.info("no such users found in database");
-            return "No such users found";
-        }
-        for (User user: userList){
-            if (user.getStatus() == UserStatus.NOTCOMFIRMED) {
-                passportInfoList.addAll(user.getPassport());
-                addressList.addAll(user.getAddress());
-            }else{
-                logger.info("Try to delete users wich are not in status NOTCOMFIRMED");
-                return "only NOTCOMFIRMED alowed to delete";
-                }
-        }
-        
-        logger.info("users found");
-        logger.info("start delete operations");
-        
-        passportRepository.delete(passportInfoList);
-        logger.info("pasports succesfuly deleted");
-        
-        addressRepository.delete(addressList);
-        logger.info("addresses succesfuly deleted");
-        
-        userRepository.delete(userList);
-        logger.info("users succesfuly deleted");
-        
-        return "sucsesfuly deleted";
-    }
-
+ 
     @Transactional
     @Override
     public boolean login(String username, String password) {
@@ -600,8 +584,8 @@ public class UserServiceImpl implements UserService {
         } else {
             resourceNumberJson = new ResourceNumberJson();
             resourceNumberJson = new ResourceNumberJson();
-            resourceNumberJson.setResource_number("0");
-            resourceNumberJson.setRegistrator_number("0");
+            resourceNumberJson.setResourceNumber("0");
+            resourceNumberJson.setRegistratorNumber("0");
             resourceNumberJson.setIdentifier("0");
         }
         UserDTO userdto = new UserDTO(user.getFirstName(), user.getLastName(), user.getMiddleName(),
@@ -629,8 +613,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findUserByEmail(String email) {
-        return userRepository.getUserByEmail(email);
+    public List<User> findUsersByEmail(String email) {
+        return userRepository.getUsersByEmail(email);
     }
 
     /**
@@ -641,20 +625,21 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public void createTomeAndRecourceNumber(UserDTO userDto) {
+    	logger.debug("Begin");
         User user = userRepository.findUserByLogin(userDto.getLogin());
         Tome tome = tomeRepository.findTomeByRegistrator(user);
         ResourceNumber resourceNumber = resourceNumberRepository.findResourceNumberByUser(user);
 
         if (tome != null && resourceNumber != null && userDto.getResourceNumberJson() != null) {
             ResourceNumberJson resourceNumberJson = userDto.getResourceNumberJson();
-            if (resourceNumberJson.getRegistrator_number() == null || resourceNumberJson.getResource_number() == null) {
+            if (resourceNumberJson.getRegistratorNumber() == null || resourceNumberJson.getResourceNumber() == null) {
                 logger.warn("Bad ResourceNumberJson data");
                 return;
             }
 
             ResourceNumberDTO resourseNumberDto = new ResourceNumberDTO(
-                    Integer.parseInt(resourceNumberJson.getResource_number()),
-                    resourceNumberJson.getRegistrator_number());
+                    Integer.parseInt(resourceNumberJson.getResourceNumber()),
+                    resourceNumberJson.getRegistratorNumber());
 
             resourceNumber.setRegistratorNumber(resourseNumberDto.getRegistratorNumber());
             resourceNumber.setNumber(resourseNumberDto.getNumber());
@@ -664,27 +649,42 @@ public class UserServiceImpl implements UserService {
             List<User> userList = Collections.singletonList(user);
             createTomesAndResourceNumbers(userList);
         }
+        logger.debug("End");
     }
        
     @Transactional
     @Override
     public void createTomesAndResourceNumbers(List<User> users) {
+    	if(users.isEmpty()){
+    		logger.warn("Recieved empty user list");
+    		throw new BadInputDataException();
+    	}
+    	
+    	int pageNumber = 0;
+    	int elementsForPage = 1;
+    	String orderField = "identifier";
+    	PageRequest page = new PageRequest(pageNumber,elementsForPage, Sort.Direction.DESC, orderField);
+        Page<Tome> tomeListPage = tomeRepository.findAll(page);
+        List<Tome> tomeList = tomeListPage.getContent();
 
-        List<Tome> tomeList = tomeRepository.findAll();
-        Integer tomeNumber = 0;
-        if (!tomeList.isEmpty()) {
-            Tome tempTome = tomeList.get(tomeList.size() - 1);
+        int tomeNumber = 0;
+        if (tomeList != null && !tomeList.isEmpty()) {
+            Tome tempTome = tomeList.get(0);
             String lastTomeNum = tempTome.getIdentifier();
-            tomeNumber = Integer.parseInt(lastTomeNum);
+            try{
+            	tomeNumber = Integer.parseInt(lastTomeNum);
+            }catch(NumberFormatException e){
+            	logger.warn("Found a bad tome identifier \""+lastTomeNum+"\". Tome identifiers can only contain decimal values");
+            }
         }
 
         List<ResourceNumber> resourceNumberList = resourceNumberRepository
                 .findResourceNumbersByCommunity(users.get(0).getTerritorialCommunity());
-        Integer registratorNumber = 0;
-        Integer registratorStartIncrement = 1;
+        int registratorNumber = 0;
+        int registratorStartIncrement = 1;
         for (ResourceNumber res : resourceNumberList) {
             try{
-                Integer tmpNumber = Integer.parseInt(res.getRegistratorNumber());
+                int tmpNumber = Integer.parseInt(res.getRegistratorNumber());
                 registratorNumber = (tmpNumber > registratorNumber) ? tmpNumber : registratorNumber;
             }catch(NumberFormatException e){
                 logger.warn("Resource number of user \""+res.getUser().getLogin()+"\" is in a incorrect format: "+res.getRegistratorNumber()+". Only decimals allowed.");
@@ -695,7 +695,7 @@ public class UserServiceImpl implements UserService {
             Tome userTome = tomeRepository.findTomeByRegistrator(user);
             if (userTome == null) {
                 tomeNumber++;
-                String newTomeId = tomeNumber.toString();
+                String newTomeId = String.valueOf(tomeNumber);
                 Tome newUserTome = new Tome(user, newTomeId);
                 tomeRepository.save(newUserTome);
             }
@@ -704,8 +704,8 @@ public class UserServiceImpl implements UserService {
 
             if (userResourceNumber == null) {
                 registratorNumber++;
-                ResourceNumber newResourceNumber = new ResourceNumber(registratorStartIncrement,
-                        registratorNumber.toString(), user);
+                String newRegistratorNumber = String.valueOf(registratorNumber);
+                ResourceNumber newResourceNumber = new ResourceNumber(registratorStartIncrement,newRegistratorNumber, user);
                 resourceNumberRepository.save(newResourceNumber);
             } else {
                 String foundRegistratorNumber = userResourceNumber.getRegistratorNumber();
@@ -723,7 +723,8 @@ public class UserServiceImpl implements UserService {
                         && !registratorWithSameNumber.getUser().equals(userResourceNumber.getUser())) {
 
                     registratorNumber++;
-                    userResourceNumber.setRegistratorNumber(registratorNumber.toString());
+                    String newRegistratorNumber = String.valueOf(registratorNumber);
+                    userResourceNumber.setRegistratorNumber(newRegistratorNumber);
                     resourceNumberRepository.save(userResourceNumber);
                 }
             }
@@ -787,6 +788,11 @@ public class UserServiceImpl implements UserService {
     public User findUserByLogin(String login) {
         return userRepository.findUserByLogin(login);
     }
+    
+    @Override
+    public List<User> findUsersByLoginList(List<String> loginList){
+        return userRepository.findUsersByLoginList(loginList);
+    }
 
     @Transactional
     @Override
@@ -816,9 +822,10 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public void setUsersRole(RoleTypeJson taskInfo) {
-        logger.info("Recieved package: " + taskInfo);
+        logger.debug("Recieved package: " + taskInfo);
 
         if(taskInfo.getLogin() == null || taskInfo.getRole() == null){
+        	logger.warn("Recieved bad RoleTypeJson");
             throw new BadInputDataException();
         }
         
@@ -828,8 +835,8 @@ public class UserServiceImpl implements UserService {
         List<User> userList = userRepository.findUsersByLoginList(givenUsers);
 
         Role role = checkRole(taskInfo.getRole());
-        logger.info("Selected role: " + role);
-        logger.info("Performing Change Role operations");
+        logger.debug("Selected role: " + role);
+        logger.debug("Performing Change Role operations");
 
         for (User user : userList) {
             user.setRole(role);
@@ -837,8 +844,10 @@ public class UserServiceImpl implements UserService {
         }
 
         if (role.getType() == RoleType.REGISTRATOR) {
+        	logger.debug("Role is Registrator. Performing createTomes method");
             createTomesAndResourceNumbers(userList);
         }
+        logger.debug("End");
     }
 
     /* Batch Community change */
@@ -854,9 +863,10 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public void setUsersCommun(CommunityParamJson taskInfo) {
-        logger.info("Recieved package: " + taskInfo);
+        logger.debug("Recieved package: " + taskInfo);
         
         if(taskInfo.getCommunityId() == null || taskInfo.getLogin() == null){
+        	logger.warn("Recieved bad CommunityParamJson");
             throw new BadInputDataException();
         }
 
@@ -871,7 +881,7 @@ public class UserServiceImpl implements UserService {
             throw new BadInputDataException();
         }
 
-        logger.info("Selected Community: " + community.getName());
+        logger.debug("Selected Community: " + community.getName());
 
         Role role = checkRole("USER");
 
@@ -879,6 +889,12 @@ public class UserServiceImpl implements UserService {
             user.setRole(role);
             user.setTerritorialCommunity(community);
         }
+        logger.debug("End");
+    }
+    
+    @Override
+    public void delete(List<User> userList){
+        userRepository.delete(userList);
     }
 
 
@@ -898,5 +914,28 @@ public class UserServiceImpl implements UserService {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         return getUserByLogin(auth.getName());
+    }
+    
+    @Override
+    @Transactional
+    public void deactiveUsersOfCommunity(TerritorialCommunity community){
+    	logger.debug("begin");
+    	logger.debug("fetching user list. Community id: %d",community.getTerritorialCommunityId());
+    	List<User> users = userRepository.findByTerritorialCommunity(community);
+    	RoleType adminRole = RoleType.ADMIN;
+    	UserStatus supportedUserStatus = UserStatus.ACTIVE;
+    	UserStatus newUserStatus = UserStatus.INACTIVE;
+    	logger.debug("updating roles");
+    	for(User user : users){
+    		if(user.getRole().getType() == adminRole){
+    			continue;
+    		}
+    		if(user.getStatus() == supportedUserStatus){
+    			user.setStatus(newUserStatus);
+    		}
+    	}
+    	logger.debug("saving changes");
+    	userRepository.save(users);
+    	logger.debug("end");
     }
 }

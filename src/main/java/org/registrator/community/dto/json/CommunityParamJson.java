@@ -1,9 +1,12 @@
 package org.registrator.community.dto.json;
 
+import javax.validation.constraints.Pattern;
+
 import org.hibernate.validator.constraints.NotEmpty;
 
 public class CommunityParamJson {
     @NotEmpty
+    @Pattern(regexp = "^[\\w]{4,30}$")
     private String login;
     @NotEmpty
     private String communityId;
@@ -16,7 +19,10 @@ public class CommunityParamJson {
         this.login = login;
     }
 
-    public String getCommunityId() {
+    public CommunityParamJson() {
+	}
+
+	public String getCommunityId() {
         return communityId;
     }
 
@@ -28,8 +34,6 @@ public class CommunityParamJson {
         this.login = login;
         this.communityId = communityId;
     }
-
-    public CommunityParamJson() {}
 
     @Override
     public String toString() {

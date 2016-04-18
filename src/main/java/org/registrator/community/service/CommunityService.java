@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.registrator.community.dto.CommunityDTO;
 import org.registrator.community.entity.TerritorialCommunity;
+import org.registrator.community.enumeration.CommunityStatus;
 
 public interface CommunityService {
 
@@ -22,4 +23,6 @@ public interface CommunityService {
     List<TerritorialCommunity> getCommunityBySearchTag(String searchTag);
 
     boolean updateCommunity(CommunityDTO communityDTO);
+
+	void setCommunityStatus(TerritorialCommunity community, CommunityStatus status);
 }

@@ -6,6 +6,7 @@ import org.registrator.community.entity.Settings;
 import org.registrator.community.entity.SmtpParameters;
 import org.registrator.community.enumeration.RegistrationMethod;
 import org.registrator.community.mailer.ReloadableMailSender;
+import org.registrator.community.service.MailService;
 import org.registrator.community.service.SettingsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,9 +25,6 @@ public class SettingsServiceImpl implements SettingsService {
 
     @Autowired
     private SettingsRepository settingsRepository;
-
-    @Autowired
-    private ReloadableMailSender mailSender;
 
     @Override
     public SettingsDTO getAllSettingsDTO() {
@@ -54,13 +52,8 @@ public class SettingsServiceImpl implements SettingsService {
         Settings settings = getAllSettings();
         settings.setRegistrationMethod(RegistrationMethod.valueOf(settingsDTO.getRegistrationMethod()));
         settings.setTimeZone(TimeZone.getTimeZone(settingsDTO.getTimeZone()));
-        boolean needToRefreshSMTP = !settingsDTO.getSmtpParameters().equals(settings.getSmtpParameters());
         settings.setSmtpParameters(settingsDTO.getSmtpParameters());
         settingsRepository.save(settings);
-
-        if (needToRefreshSMTP) {
-            mailSender.applyNewParameters(settings.getSmtpParameters());
-        }
     }
 
     @Override

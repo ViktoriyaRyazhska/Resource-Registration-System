@@ -31,6 +31,8 @@ import org.registrator.community.validator.ResourceNumberJSONDTOValidator;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -80,17 +82,17 @@ public class UsersController {
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_COMMISSIONER')")
     @RequestMapping(value = "/edit-registrated-user", method = RequestMethod.GET)
     public String fillInEditWindow(@RequestParam("login") String login, Model model, boolean failEdit) {
-        logger.info("begin");
+        logger.debug("begin");
         UserDTO userDto = userService.getUserDto(login);
         model.addAttribute("userDto", userDto);
-        List<Role> roleList = roleService.getAllRole();
+        List<Role> roleList = roleService.getAvailableRolesToAssign(RoleType.valueOf(userDto.getRole()));
         model.addAttribute("roleList", roleList);
         List<UserStatus> userStatusList = userService.fillInUserStatusforRegistratedUsers();
         model.addAttribute("userStatusList", userStatusList);
         List<TerritorialCommunity> territorialCommunities = communityService.findAll();
         model.addAttribute("territorialCommunities", territorialCommunities);
         model.addAttribute("failEdit", failEdit);
-        logger.info("end");
+        logger.debug("end");
         return "editWindow";
     }
 
@@ -104,18 +106,16 @@ public class UsersController {
     public String editRegistratedUser(@Valid @ModelAttribute("userDTO") UserDTO userDto,
             BindingResult result, Model model, RedirectAttributes redirectAttributes) {
         ResourceNumberJson resNumJson = userDto.getResourceNumberJson();
-        if (resNumJson != null) {
-            resourceNumberValidator.validate(resNumJson, result);
-        }
+        resourceNumberValidator.validate(resNumJson, result);
 
         if (result.hasErrors()) {
             return fillInEditWindow(userDto.getLogin(), model, true);
         } else {
-            logger.info("begin");
+            logger.debug("begin");
             userService.createTomeAndRecourceNumber(userDto);
             UserDTO editUserDto = userService.editUserInformation(userDto);
             model.addAttribute("userDto", editUserDto);
-            logger.info("end");
+            logger.debug("end");
             redirectAttributes.addFlashAttribute("tableSetting",
                     tableSettingsFactory.getTableSetting("registerUser"));
             return "redirect:/administrator/users/get-all-users";
@@ -129,14 +129,14 @@ public class UsersController {
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_COMMISSIONER')")
     @RequestMapping(value = "/get-all-inactive-users", method = RequestMethod.GET)
     public String getAllInactiveUsers(Model model) {
-        logger.info("begin");
+        logger.debug("begin");
         List<UserDTO> inactiveUsers = userService.getAllInactiveUsers();
         model.addAttribute("unregistatedUsers", inactiveUsers);
         List<UserStatus> userStatusList = userService.fillInUserStatusforInactiveUsers();
         model.addAttribute("userStatusList", userStatusList);
         List<Role> roleList = roleService.getAllRole();
         model.addAttribute("roleList", roleList);
-        logger.info("end");
+        logger.debug("end");
         return "InActiveUsers";
     }
 
@@ -148,9 +148,9 @@ public class UsersController {
     @ResponseBody
     @RequestMapping(value = "/get-all-inactive-users", method = RequestMethod.POST)
     public String changeStatus(@RequestBody UserStatusJson userStatusDto) {
-        logger.info("begin");
+        logger.debug("begin");
         userService.changeUserStatus(userStatusDto);
-        logger.info("end");
+        logger.debug("end");
         return "InActiveUsers";
     }
 
@@ -158,12 +158,11 @@ public class UsersController {
      * Controller for get all registrated users
      * 
      */
-
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_COMMISSIONER')")
     @RequestMapping(value = "/get-all-users", method = RequestMethod.GET)
     public String getAllUsers(
             @RequestParam(value = "statusType", required = false) String statusType, Model model) {
-        logger.info("begin");
+        logger.debug("begin");
 
         model.addAttribute("tableSetting", tableSettingsFactory.getTableSetting("registerUser"));
         List<Role> roleTypes = roleService.getAllRole();
@@ -181,7 +180,7 @@ public class UsersController {
         String userStatusString = userStatus.toString();
         model.addAttribute("statusType", userStatusString);
 
-        logger.info("end");
+        logger.debug("end");
         return "usersList";
     }
 
@@ -205,45 +204,50 @@ public class UsersController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_COMMISSIONER')")
     @RequestMapping(value = "batch-role-change", method = RequestMethod.POST)
-    public @ResponseBody String setRoleForUsers(@Valid @RequestBody RoleTypeJson roleTypeJson, BindingResult result) {
-        logger.info("begin");
+    public @ResponseBody ResponseEntity<String> setRoleForUsers(@Valid @RequestBody RoleTypeJson roleTypeJson, BindingResult result) {
+        logger.debug("begin");
         massUserOpsValidator.validate(roleTypeJson, result);
 
         if (result.hasErrors()) {
             ObjectError objectError = result.getGlobalError();  
-            String error = objectError.getCode();
+            String msg = objectError.getCode();
+    		ResponseEntity<String> response = new ResponseEntity<String>(msg, HttpStatus.BAD_REQUEST);
             
-            logger.info("end");
-            return error;
+            logger.debug("end");
+            return response;
         }else{
             userService.setUsersRole(roleTypeJson);
-            logger.info("end");
-            return UIMessages.CHANGES_ACCEPTED.toString();
+            logger.debug("end");
+            String msg = UIMessages.CHANGES_ACCEPTED.getMessage();
+    		ResponseEntity<String> response = new ResponseEntity<String>(msg, HttpStatus.OK);
+            return response;
         }
     }
     
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_COMMISSIONER')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "batch-community-change", method = RequestMethod.POST)
-    public @ResponseBody String setCommunityForUsers(
+    public @ResponseBody ResponseEntity<String> setCommunityForUsers(
            @Valid @RequestBody CommunityParamJson communityParamJson, BindingResult result) {
         
-        logger.info("begin");
+        logger.debug("begin");
         massUserOpsValidator.validate(communityParamJson, result);
         
         if (result.hasErrors()) {
             ObjectError objectError = result.getGlobalError();  
-            String error = objectError.getCode();
-            
-            logger.info("end");
-            return error;
+            String msg = objectError.getCode();
+    		ResponseEntity<String> response = new ResponseEntity<String>(msg, HttpStatus.BAD_REQUEST);
+            logger.debug("end");
+            return response;
         }else{
             userService.setUsersCommun(communityParamJson);
-            logger.info("end");
-            return UIMessages.CHANGES_ACCEPTED.toString();
+            logger.debug("end");
+            String msg = UIMessages.CHANGES_ACCEPTED.getMessage();
+    		ResponseEntity<String> response = new ResponseEntity<String>(msg, HttpStatus.OK);
+            return response;
         }
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_COMMISSIONER')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @ResponseBody
     @RequestMapping(value = "communities", method = RequestMethod.POST)
     public List<TerritorialCommunity> getCommunityList(
@@ -253,19 +257,34 @@ public class UsersController {
         return territorialCommunities;
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_COMMISSIONER')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @ResponseBody
     @RequestMapping(value = "get-community", method = RequestMethod.POST)
     public TerritorialCommunity getCommunity(@RequestBody String communityName) {
         TerritorialCommunity territorialCommunity = communityService.findByName(communityName);
         return territorialCommunity;
     }
+    
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @RequestMapping(value = "batch-status-change", method = RequestMethod.POST)
+    public @ResponseBody ResponseEntity<String> setStatusForUsers(@Valid @RequestBody UserStatusJson userStatusJson, BindingResult result){
+    	if(result.hasErrors()){
+    		String msg = UIMessages.WRONG_INPUT.getMessage();
+    		ResponseEntity<String> response = new ResponseEntity<String>(msg, HttpStatus.BAD_REQUEST);
+    		return response;
+    	}else{
+    		userService.changeUserStatuses(userStatusJson);
+    		String msg = UIMessages.CHANGES_ACCEPTED.getMessage();
+    		ResponseEntity<String> response = new ResponseEntity<String>(msg, HttpStatus.OK);
+    		return response;
+    	}
+    }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping("/unlockusers")
     public String home() {
         userService.resetAllFailAttempts();
-        logger.info("All users atempts are reseted");
+        logger.debug("All users atempts are reseted");
         return "homepage";
     }
 

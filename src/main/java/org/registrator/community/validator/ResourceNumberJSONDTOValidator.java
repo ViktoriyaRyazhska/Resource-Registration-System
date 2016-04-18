@@ -32,21 +32,22 @@ public class ResourceNumberJSONDTOValidator implements Validator {
 
     @Override
     public void validate(Object object, Errors errors) {
+        if(object == null)return;
         ResourceNumberJson resourceNumberJson = (ResourceNumberJson) object;
 
         User user = userRepository.findUserByLogin(resourceNumberJson.getLogin());
-        ResourceNumber newResourceNumber = new ResourceNumber(1, resourceNumberJson.getRegistrator_number(), user);
+        ResourceNumber newResourceNumber = new ResourceNumber(1, resourceNumberJson.getRegistratorNumber(), user);
 
         List<ResourceNumber> resNumList = resourceNumberRepository
                 .findResourceNumbersByCommunity(user.getTerritorialCommunity());
 
         ResourceNumber tmpNumber = null;
         String matchPattern = "^\\d+$";
-        if(!resourceNumberJson.getRegistrator_number().matches(matchPattern)){
-            errors.rejectValue("resourceNumberJson.registrator_number", "msg.registration.registratornumber.patterError");
+        if(!resourceNumberJson.getRegistratorNumber().matches(matchPattern)){
+            errors.rejectValue("resourceNumberJson.registratorNumber", "msg.registration.registratornumber.patterError");
         }
-        if(!resourceNumberJson.getResource_number().matches(matchPattern)){
-            errors.rejectValue("resourceNumberJson.resource_number", "msg.registration.registratornumber.patterError");
+        if(!resourceNumberJson.getResourceNumber().matches(matchPattern)){
+            errors.rejectValue("resourceNumberJson.resourceNumber", "msg.registration.registratornumber.patterError");
         }
         
         for (ResourceNumber num : resNumList) {
@@ -56,7 +57,7 @@ public class ResourceNumberJSONDTOValidator implements Validator {
         }
         if (tmpNumber != null) {
             if (!tmpNumber.getUser().getLogin().equals(user.getLogin())) {
-                errors.rejectValue("resourceNumberJson.registrator_number", "msg.registation.registratornumber.unique");
+                errors.rejectValue("resourceNumberJson.registratorNumber", "msg.registation.registratornumber.unique");
             }
         }
     }

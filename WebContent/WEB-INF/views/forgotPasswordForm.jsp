@@ -7,7 +7,7 @@
 
 <div class="signin-container">
   <img src="<c:url value='/resource/img/ukraine_logo.gif'/>"
-    class="login_logo col-md-8">
+    class="login_logo col-md-8 col-xs-12">
   <fieldset id="login_fieldset" class="forms col-md-4">
 
     <c:if test="${msg!= null}">
@@ -30,8 +30,7 @@
           </h5>
           <input class="form-control" id="email" name="email"
             type="text"
-            placeholder=<spring:message
-	                    code="label.user.email" />
+            placeholder="<spring:message code="label.user.email" />" 
             size="30" autocomplete="on" autofocus="autofocus" required>
 
         </div>
@@ -46,11 +45,13 @@
         class="forgot-password align-left"> <spring:message
             code="label.signIn" />
       </a>
-      </span> <span style="float: right"> <a
-        href="${pageContext.request.contextPath}/registration"
-        class="forgot-password align-right"> <spring:message
-            code="label.register" />
-      </a>
+      </span> <span style="float: right"> 
+      <c:if test="${registrationMethod eq ('PERSONAL') || registrationMethod eq ('MIXED')}">
+          <a href="${pageContext.request.contextPath}/register"
+            class="forgot-password align-right"> <spring:message
+              code="label.register" />
+          </a>
+        </c:if>
       </span>
     </div>
   </fieldset>

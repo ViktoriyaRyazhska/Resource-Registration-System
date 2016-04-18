@@ -1,8 +1,11 @@
 package org.registrator.community.dto.json;
 
-public class ResourceNumberJson {
+import javax.validation.constraints.Pattern;
 
+public class ResourceNumberJson {
+    @Pattern(regexp = "^[\\w]{4,30}$")
     private String login;
+    
     private String resource_number;
     private String registrator_number;
     private String identifier;
@@ -24,11 +27,11 @@ public class ResourceNumberJson {
         this.login = login;
     }
 
-    public String getRegistrator_number() {
+    public String getRegistratorNumber() {
         return registrator_number;
     }
 
-    public void setRegistrator_number(String registrator_number) {
+    public void setRegistratorNumber(String registrator_number) {
         this.registrator_number = registrator_number;
     }
 
@@ -40,11 +43,11 @@ public class ResourceNumberJson {
         this.identifier = identifier;
     }
 
-    public String getResource_number() {
+    public String getResourceNumber() {
         return resource_number;
     }
 
-    public void setResource_number(String resource_number) {
+    public void setResourceNumber(String resource_number) {
         this.resource_number = resource_number;
     }
 

@@ -34,7 +34,7 @@ public class User implements Serializable {
     @GeneratedValue
     private Integer userId;
 
-    @Column(name = "login", unique = true, nullable = false)
+    @Column(name = "login", length = 30, unique = true, nullable = false)
     private String login;
 
     @Column(name = "password", nullable = false)
@@ -183,6 +183,21 @@ public class User implements Serializable {
 
     public User() {
 
+    }
+    
+    
+
+    public User(String login, String email, UserStatus status) {
+        super();
+        this.login = login;
+        this.email = email;
+        this.status = status;
+    }
+
+    public User(String login, String email) {
+        super();
+        this.login = login;
+        this.email = email;
     }
 
     public User(String login, String password, Role role, String firstName, String lastName, String middleName,

@@ -3,7 +3,7 @@ jQuery(document).ready(function($) {
     $("#dark_bg").show();
     $.ajax({
       type : "GET",
-      url : "/reset_password",
+      url : baseUrl.toString() + "/reset_password",
       success : function(data) {
         bootbox.alert(jQuery.i18n.prop(data));
         $("#dark_bg").hide();
@@ -11,7 +11,7 @@ jQuery(document).ready(function($) {
       },
       error : function(xhr, status, error) {
         $("#dark_bg").hide();
-        bootbox.alert("<h3>Error performing CUSTOM Password reset operation</h3>" + xhr.responseText);
+        bootbox.alert("<h3>"+jQuery.i18n.prop("msg.batchops.ajaxError")+"</h3>" + xhr.responseText);
         return "";
       }
     });

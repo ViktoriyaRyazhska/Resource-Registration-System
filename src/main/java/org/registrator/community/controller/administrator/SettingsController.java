@@ -70,7 +70,13 @@ public class SettingsController {
         }
         logger.debug("Settings don't have errors {}", result);
 
+        boolean needToRefreshSMTP = !settings.getSmtpParameters().equals(settingsService.getSmtpParameters());
+
         settingsService.saveAll(settings);
+
+        if (needToRefreshSMTP) {
+            mailService.applyNewParameters(settingsService.getSmtpParameters());
+        }
 
         logger.info("settings are successfully changed");
         settings.setSuccess(true);

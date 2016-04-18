@@ -17,6 +17,10 @@
               code="label.menu.inquiries" /></a>
           <ul class="dropdown_menu">
             <li><a
+                    href="<c:url value='/inquiry/add/listInquiryUserInput'/>">
+              <spring:message code="label.menu.inquiries.input" />
+            </a></li>
+            <li><a
               href="<c:url value='/inquiry/add/listInqUserOut'/>"> <spring:message
                   code="label.menu.inquiries.output" />
             </a></li>

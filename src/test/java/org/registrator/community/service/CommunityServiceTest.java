@@ -2,6 +2,7 @@ package org.registrator.community.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -40,6 +41,8 @@ public class CommunityServiceTest {
 	private UserRepository userRepository;
 	
 	@Mock
+    private UserService userService;
+	
 	private Logger logger;
 
 	@BeforeMethod
@@ -55,6 +58,7 @@ public class CommunityServiceTest {
         tc = new TerritorialCommunity();
         tc.setName(NAME);
 		tc.setTerritorialCommunityId(ID);
+		tc.setRegistrationNumber(REGISTRATION_NUMBER);
     }
 	
 	
@@ -65,6 +69,7 @@ public class CommunityServiceTest {
 		TerritorialCommunity actualTC = communityService.findAll().get(0);
 		Assert.assertEquals(actualTC.getName(), NAME);
 		Assert.assertEquals(actualTC.getTerritorialCommunityId(), ID);
+		Assert.assertEquals(actualTC.getRegistrationNumber(), REGISTRATION_NUMBER);
 	}
 	
 	@Test
@@ -72,6 +77,7 @@ public class CommunityServiceTest {
 		Mockito.when(communityRepository.findByName(NAME)).thenReturn(tc);
 		Assert.assertEquals(communityService.findByName(NAME).getName(), NAME);
 		Assert.assertEquals(communityService.findByName(NAME).getTerritorialCommunityId(), ID);
+		Assert.assertEquals(communityService.findByName(NAME).getRegistrationNumber(), REGISTRATION_NUMBER);
 	}
 	
 	@Test
@@ -79,6 +85,7 @@ public class CommunityServiceTest {
 		Mockito.when(communityRepository.saveAndFlush(tc)).thenReturn(tc);
 		Assert.assertEquals(communityService.addCommunity(tc).getName(), NAME);
 		Assert.assertEquals(communityService.addCommunity(tc).getTerritorialCommunityId(), ID);
+		Assert.assertEquals(communityService.addCommunity(tc).getRegistrationNumber(), REGISTRATION_NUMBER);
 	}
 	
 	@Test
@@ -87,6 +94,7 @@ public class CommunityServiceTest {
 		//Mockito.doReturn(tc).when(communityRepository).findOne(ID);
 		Assert.assertEquals(communityService.findById(ID).getName(), NAME);
 		Assert.assertEquals(communityService.findById(ID).getTerritorialCommunityId(), ID);
+		Assert.assertEquals(communityService.findById(ID).getRegistrationNumber(), REGISTRATION_NUMBER);
 	}
 	
 	@Test
@@ -96,7 +104,6 @@ public class CommunityServiceTest {
 		Mockito.when(userRepository.findByTerritorialCommunity(tc))
 		.thenReturn(new ArrayList<User>(Arrays.asList(new User())));              // imitation of constraint
 		Assert.assertFalse(communityService.deleteCommunity(tc));                 // try to delete with constraint so method must return false
-		Mockito.verifyZeroInteractions(communityRepository);                      // check whether  method "communityRepository.delete" have not been call at least one time
 	}
 	
 	@Test
@@ -105,6 +112,7 @@ public class CommunityServiceTest {
 		TerritorialCommunity actualTC = communityService.findAllByAsc().get(0);
 		Assert.assertEquals(actualTC.getName(), NAME);
 		Assert.assertEquals(actualTC.getTerritorialCommunityId(), ID);
+		Assert.assertEquals(actualTC.getRegistrationNumber(), REGISTRATION_NUMBER);
 	}
 	
 	@Test
