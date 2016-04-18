@@ -111,7 +111,8 @@ public class ReloadableMailSenderImpl implements ReloadableMailSender {
         JavaMailSenderImpl sender = new JavaMailSenderImpl();
         sender.setDefaultEncoding("UTF-8");
         sender.setHost(smtpParameters.getHost());
-        sender.setProtocol(smtpParameters.getProtocol().toString().toLowerCase());
+//        sender.setProtocol(smtpParameters.getTlsEnabled() ? "smtps" : "smtp");
+        sender.setProtocol("smtp");
         sender.setPort(smtpParameters.getPort());
         sender.setUsername(smtpParameters.getUsername());
         sender.setPassword(smtpParameters.getPassword());

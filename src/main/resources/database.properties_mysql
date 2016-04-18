@@ -1,13 +1,15 @@
 #Database/DBCP
-db.driverClassName=org.postgresql.Driver
-db.url=jdbc:postgresql://localhost/registrator_db
-db.username=postgres
-db.password=postgres
+#MySQL
+db.driverClassName=com.mysql.jdbc.Driver
+#db.url=jdbc:mysql://localhost/try
+db.url=jdbc:mysql://localhost/registrator_db?useUnicode=yes&amp;characterEncoding=UTF-8&amp;characterSetResults=UTF-8
+db.username=root
+db.password=root
 db.connectionProperties=useUnicode=yes;characterEncoding=utf8;
 
 
 # Hibernate
-hb.dialect=org.hibernate.dialect.PostgreSQLDialect
+hb.dialect=org.hibernate.dialect.MySQLDialect
 hb.sqlComments=false
 hb.formatSql=true
 #hb.showSql=true
