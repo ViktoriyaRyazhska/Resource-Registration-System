@@ -85,8 +85,7 @@
        </c:if>
 
       </c:forEach>
-      <th><input type="submit" id="bth-search"
-       class="btn btn-sm btn-primary" value="Пошук" /></th>
+      <th><input type="submit" id="bth-search" class="btn btn-sm btn-primary" value='<spring:message code="label.table.search"/>' /></th>
      </tr>
     </tfoot>
    </table>
@@ -138,7 +137,7 @@ jQuery(document).ready(function($) {
                        "sTitle" : "<spring:message code="${entry.value.title}" />",
                        "mData" : "action",
                        "bSortable": false,
-                       "defaultContent": '<button  class="btn btn-sm btn-primary" id="${entry.value.buttonId}">Профiль</button>'               
+                       "defaultContent": '<button  class="btn btn-sm btn-primary" id="${entry.value.buttonId}"><spring:message code="label.table.profile"/></button>'               
                       },
                   </c:if>
                   <c:if test="${entry.value.type eq 'role'}">

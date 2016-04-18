@@ -54,7 +54,7 @@
    code="label.modal.actions" /> <span class="caret"></span> </a>
  <ul class="dropdown-menu multi-level" role="menu"
   aria-labelledby="dropdownMenu">
-    <li><a href="#" class="unblock">Розблокувати</a></li>
+    <li><a href="#" class="unblock"><spring:message code="label.modal.unblock"/></a></li>
  </ul>
  </c:if>
  
@@ -64,8 +64,8 @@
    code="label.modal.actions" /> <span class="caret"></span> </a>
  <ul class="dropdown-menu multi-level" role="menu"
   aria-labelledby="dropdownMenu">
-    <li><a href="#" class="unblock">Зробити активними</a></li>
-    <li><a href="#" class="block">Заблокувати</a></li>
+    <li><a href="#" class="unblock"><spring:message code="label.modal.reactivate"/></a></li>
+    <li><a href="#" class="block"><spring:message code="label.modal.block"/></a></li>
  </ul>
  </c:if>
  </sec:authorize>
