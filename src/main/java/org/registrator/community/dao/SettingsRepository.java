@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface SettingsRepository extends JpaRepository<Settings, Integer> {
 
-    @Query("Select s From Settings s where not s.timeZone is NULL")
+    @Query("Select s From Settings s where not s.id is NULL")
     Settings getAllSettings();
 
 }
