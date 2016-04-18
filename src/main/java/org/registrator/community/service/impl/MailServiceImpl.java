@@ -1,53 +1,55 @@
 package org.registrator.community.service.impl;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-
 import org.apache.velocity.app.VelocityEngine;
+import org.registrator.community.entity.SmtpParameters;
+import org.registrator.community.mailer.ReloadableMailSender;
 import org.registrator.community.service.MailService;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
-import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+
 import static org.springframework.ui.velocity.VelocityEngineUtils.mergeTemplateIntoString;
 
 @Service
 public class MailServiceImpl implements MailService{
-	
+
 	public static final String SEND_FROM = "resources.registrator@gmail.com";
-	
+
 	public static final String CONFIRM_EMAIL_LETTER_PATH =  "/velocity/confirmEmail.vm";
 	public static final String RECOVER_PASSWORD_LETTER_PATH =  "/velocity/recoverPassword.vm";
-		
+
 	public static final String CONFIRM_EMAIL_SUBJECT =  "Заявка на реєстрацію";
 	public static final String RECOVER_PASSWORD_SUBJECT =  "Заявка на відновлення паролю";
 
     public static final String RESET_PASSWORD_LETTER_PATH =  "/velocity/resetPassword.vm";
 
     public static final String RESET_PASSWORD_SUBJECT =  "Ваш пароль скинуто адміном";
-	
-	
+
+
 	@Autowired
-	private JavaMailSender mailSender;
-	
+	private ReloadableMailSender mailSender;
+
 	@Autowired
     private VelocityEngine velocityEngine;
-	
+
 	@Autowired
     private Logger logger;
-	
+
 	@Override
 	@Async
 	public void sendComfirmEMail(String recepientEmail, String recepientName, String token, String url) {
-		
+
 		MimeMessagePreparator preparator = new MimeMessagePreparator() {
             public void prepare(MimeMessage mimeMessage) throws Exception {
                 MimeMessageHelper message = new MimeMessageHelper(mimeMessage);
@@ -73,7 +75,7 @@ public class MailServiceImpl implements MailService{
 	@Override
 	@Async
 	public void sendRecoveryPasswordMail(String recepientEmail, String recepientName, String token, String url) {
-		
+
 		MimeMessagePreparator preparator = new MimeMessagePreparator() {
             public void prepare(MimeMessage mimeMessage) throws Exception {
                 MimeMessageHelper message = new MimeMessageHelper(mimeMessage);
@@ -93,7 +95,7 @@ public class MailServiceImpl implements MailService{
         }
         catch(MailException e){
         	logger.error("Send mail exception to"+recepientEmail);
-        } 
+        }
 	}
 
     @Override
@@ -122,4 +124,26 @@ public class MailServiceImpl implements MailService{
         }
     }
 
+    @Override
+    public boolean testConnection(SmtpParameters parameters) {
+        return mailSender.testConnection(parameters);
+    }
+
+    private JavaMailSenderImpl getJavaMailSender(SmtpParameters smtpParameters) {
+        JavaMailSenderImpl sender = new JavaMailSenderImpl();
+        sender.setDefaultEncoding("UTF-8");
+        sender.setHost(smtpParameters.getHost());
+        sender.setProtocol(smtpParameters.getProtocol().toString().toLowerCase());
+        sender.setPort(smtpParameters.getPort());
+        sender.setUsername(smtpParameters.getUsername());
+        sender.setPassword(smtpParameters.getPassword());
+
+        Properties javaMailProperties = new Properties();
+        javaMailProperties.setProperty("mail.smtp.auth", "true");
+        javaMailProperties.setProperty("mail.smtp.starttls.enable", smtpParameters.getTlsEnabled() ? "true" : "false");
+        javaMailProperties.setProperty("mail.smtp.socketFactory.fallback", "true");
+        sender.setJavaMailProperties(javaMailProperties);
+
+        return sender;
+    }
 }

@@ -5,10 +5,12 @@ import org.registrator.community.dto.SettingsDTO;
 import org.registrator.community.entity.Settings;
 import org.registrator.community.entity.SmtpParameters;
 import org.registrator.community.enumeration.RegistrationMethod;
+import org.registrator.community.mailer.ReloadableMailSender;
 import org.registrator.community.service.SettingsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.TimeZone;
 
 /**
@@ -23,6 +25,9 @@ public class SettingsServiceImpl implements SettingsService {
     @Autowired
     private SettingsRepository settingsRepository;
 
+    @Autowired
+    private ReloadableMailSender mailSender;
+
     @Override
     public SettingsDTO getAllSettingsDTO() {
         Settings settings = settingsRepository.getAllSettings();
@@ -34,6 +39,7 @@ public class SettingsServiceImpl implements SettingsService {
     }
 
     @Override
+    @Transactional
     public Settings getAllSettings() {
         Settings result = settingsRepository.getAllSettings();
         if (result == null) {
@@ -43,15 +49,22 @@ public class SettingsServiceImpl implements SettingsService {
     }
 
     @Override
+    @Transactional
     public void saveAll(SettingsDTO settingsDTO) {
         Settings settings = getAllSettings();
         settings.setRegistrationMethod(RegistrationMethod.valueOf(settingsDTO.getRegistrationMethod()));
         settings.setTimeZone(TimeZone.getTimeZone(settingsDTO.getTimeZone()));
+        boolean needToRefreshSMTP = !settingsDTO.getSmtpParameters().equals(settings.getSmtpParameters());
         settings.setSmtpParameters(settingsDTO.getSmtpParameters());
         settingsRepository.save(settings);
+
+        if (needToRefreshSMTP) {
+            mailSender.applyNewParameters(settings.getSmtpParameters());
+        }
     }
 
     @Override
+    @Transactional
     public void setTimeZone(TimeZone timeZone) {
         Settings settings = getAllSettings();
         settings.setTimeZone(timeZone);
@@ -59,11 +72,13 @@ public class SettingsServiceImpl implements SettingsService {
     }
 
     @Override
+    @Transactional
     public TimeZone getTimeZone() {
         return settingsRepository.getAllSettings().getTimeZone();
     }
 
     @Override
+    @Transactional
     public void setRegistrationMethod(RegistrationMethod registrationMethod) {
         Settings settings = getAllSettings();
         settings.setRegistrationMethod(registrationMethod);
@@ -71,12 +86,18 @@ public class SettingsServiceImpl implements SettingsService {
     }
 
     @Override
+    @Transactional
     public RegistrationMethod getRegistrationMethod() {
         return getAllSettings().getRegistrationMethod();
     }
 
     @Override
+    @Transactional
     public SmtpParameters getSmtpParameters() {
-        return getAllSettings().getSmtpParameters();
+        SmtpParameters result = getAllSettings().getSmtpParameters();
+        if (result == null) {
+            result = new SmtpParameters();
+        }
+        return result;
     }
 }

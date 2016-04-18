@@ -1,6 +1,5 @@
 package org.registrator.community.entity;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.Column;
@@ -26,13 +25,14 @@ public class SmtpParameters {
     private Protocol protocol = Protocol.SMTP;
 
     @Column
-    @NotEmpty(message = "{msg.notEmptyField}")
     private int port = 465;
 
     @Column(length = 100)
+    @NotEmpty(message = "{msg.notEmptyField}")
     private String username = "";
 
     @Column(length = 20)
+    @NotEmpty(message = "{msg.notEmptyField}")
     private String password = "";
 
     @Column
@@ -86,5 +86,38 @@ public class SmtpParameters {
 
     public void setTlsEnabled(boolean enableTLS) {
         this.tlsEnabled = enableTLS;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof SmtpParameters)) {
+            return false;
+        }
+        SmtpParameters that = (SmtpParameters) obj;
+        return host.equals(that.getHost())
+                && port == that.getPort()
+                && username.equals(that.getUsername())
+                && password.equals(that.getPassword())
+                && protocol == that.getProtocol()
+                && tlsEnabled == that.getTlsEnabled();
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 17 + port;
+        result = 31*result + stringHashCode(host);
+        result = 31*result + stringHashCode(username);
+        result = 31*result + stringHashCode(password);
+        result = 31*result + protocol.hashCode();
+        result = 31*result + (tlsEnabled?1:0);
+
+        return result;
+    }
+
+    private int stringHashCode(String param) {
+        if (param != null) {
+            return param.hashCode();
+        }
+        return 0;
     }
 }

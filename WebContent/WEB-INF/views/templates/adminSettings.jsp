@@ -6,6 +6,12 @@
   .panel30 {
     max-width: 45%;
   }
+  label {
+    font-weight: normal !important;
+  }
+  .error{
+    color:red;
+  }
 </style>
 
 <div class="container">
@@ -70,12 +76,12 @@
         <div class="container">
           <div class="row">
             <div class="col-md-4">
-              <p><spring:message code="label.admin.settings.smtp.host" /></p>
-              <input id = "smtpHost" class="form-control" name="smtpParameters.host" value="${settings.smtpParameters.host}">
+              <label for="smtpHost"><spring:message code="label.admin.settings.smtp.host" /></label>
+              <input id = "smtpHost" class="form-control" name="smtpParameters.host"  required value="${settings.smtpParameters.host}">
             </div>
             <div class="col-md-1">
-              <p><spring:message code="label.admin.settings.smtp.port" /></p>
-              <input id = "smtpPort" class="form-control" name="smtpParameters.port" value="${settings.smtpParameters.port}">
+              <label for="smtpPort"><spring:message code="label.admin.settings.smtp.port" /></label>
+              <input id = "smtpPort" class="form-control numeric" name="smtpParameters.port" required value="${settings.smtpParameters.port}">
             </div>
             <div class="col-md-6">
               <br>
@@ -85,20 +91,27 @@
             </div>
           </div>
           <div class="row">
+            <div id="smtpHostError" class="col-md-4 hidden error"><spring:message code="msg.settings.timeZone.error"/></div>
+            <div id="smtpPortError" class="col-md-4 hidden error"><spring:message code="msg.settings.timeZone.error"/></div>
+          </div>
+          <div class="row">
             <div class="col-md-4">
-              <p><spring:message code="label.admin.settings.smtp.username" /></p>
-              <input id = "smtpUsername" class="form-control" name="smtpParameters.username" value="${settings.smtpParameters.username}">
+              <label for="smtpUsername"><spring:message code="label.admin.settings.smtp.username" /></label>
+              <input id = "smtpUsername" class="form-control" name="smtpParameters.username" required value="${settings.smtpParameters.username}">
             </div>
             <div class="col-md-4">
-              <p><spring:message code="label.admin.settings.smtp.password" /></p>
-              <input type="password" id = "smtpPassword" class="form-control" name="smtpParameters.password" value="${settings.smtpParameters.password}">
+              <label for="smtpPassword"><spring:message code="label.admin.settings.smtp.password" /></label>
+              <input type="password" id = "smtpPassword" class="form-control" name="smtpParameters.password" required value="${settings.smtpParameters.password}">
             </div>
             <div class="col-md-1">
-              <p> </p>
+              <br>
               <button id="checkSMTP" type="button" class="btn btn-success" ><spring:message code="label.admin.settings.smtp.check" /></button>
             </div>
           </div>
-
+          <div class="row">
+            <div id="smtpUsernameError" class="col-md-4 hidden"><spring:message code="msg.settings.timeZone.error"/></div>
+            <div id="smtpPasswordError" class="col-md-4 hidden"><spring:message code="msg.settings.timeZone.error"/></div>
+          </div>
         </div>
       </div>
     </div>
@@ -114,4 +127,5 @@
 
 <script src="<c:url value='/resource/js/adminSettings.js'/>"></script>
 <script src="<c:url value='/resource/js/lib/jquery.autocomplete.min.js'/>"></script>
+<script src="<c:url value='/resource/js/lib/jquery.numeric.min.js'/>"></script>
 <script src="<c:url value='/resource/js/timeZoneSuggestions.js'/>"></script>

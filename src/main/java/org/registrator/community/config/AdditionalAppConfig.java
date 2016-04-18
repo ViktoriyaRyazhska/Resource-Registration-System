@@ -6,6 +6,8 @@ import java.util.Properties;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.exception.VelocityException;
 import org.registrator.community.entity.SmtpParameters;
+import org.registrator.community.mailer.ReloadableMailSender;
+import org.registrator.community.mailer.ReloadableMailSenderImpl;
 import org.registrator.community.service.SettingsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -29,24 +31,8 @@ public class AdditionalAppConfig {
     private SettingsService settingsService;
 
     @Bean(name = "mailSender")
-    public JavaMailSender mailSender(){
-        SmtpParameters smtpParameters = settingsService.getSmtpParameters();
-
-        JavaMailSenderImpl sender = new JavaMailSenderImpl();
-        sender.setDefaultEncoding("UTF-8");
-        sender.setHost(smtpParameters.getHost());
-        sender.setProtocol(smtpParameters.getProtocol().toString().toLowerCase());
-        sender.setPort(smtpParameters.getPort());
-        sender.setUsername(smtpParameters.getUsername());
-        sender.setPassword(smtpParameters.getPassword());
-       
-        Properties javaMailProperties = new Properties();
-        javaMailProperties.setProperty("mail.smtp.auth", "true");
-        javaMailProperties.setProperty("mail.smtp.starttls.enable", smtpParameters.getTlsEnabled()?"true":"false");
-        javaMailProperties.setProperty("mail.smtp.socketFactory.fallback", "true");
-        sender.setJavaMailProperties(javaMailProperties);
-
-        return sender;
+    public ReloadableMailSender mailSender(){
+        return new ReloadableMailSenderImpl(settingsService.getSmtpParameters());
     }
     
     @Bean

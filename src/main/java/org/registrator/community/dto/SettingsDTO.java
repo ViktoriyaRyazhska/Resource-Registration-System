@@ -2,11 +2,16 @@ package org.registrator.community.dto;
 
 import org.registrator.community.entity.SmtpParameters;
 
+import javax.validation.constraints.NotNull;
+
 public class SettingsDTO {
+
     private String registrationMethod;
     private String timeZone;
     private boolean success;
     private boolean error;
+
+    @NotNull
     private SmtpParameters smtpParameters;
 
     public SettingsDTO() {}
