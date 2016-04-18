@@ -2,17 +2,6 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<style>
-  .panel30 {
-    max-width: 45%;
-  }
-  label {
-    font-weight: normal !important;
-  }
-  .error{
-    color:red;
-  }
-</style>
 
 <div class="container">
   <form:form id="сhangeReg" method="post" modelAttribute="settings"
@@ -124,6 +113,8 @@
 
 <link rel="stylesheet" type="text/css"
       href="<c:url value='/resource/css/suggestion.css'/>">
+<link rel="stylesheet" type="text/css"
+      href="<c:url value='/resource/css/system.css'/>">
 
 <script src="<c:url value='/resource/js/adminSettings.js'/>"></script>
 <script src="<c:url value='/resource/js/lib/jquery.autocomplete.min.js'/>"></script>
