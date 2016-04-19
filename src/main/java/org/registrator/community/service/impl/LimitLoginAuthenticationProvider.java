@@ -3,10 +3,12 @@ package org.registrator.community.service.impl;
 import java.sql.Timestamp;
 
 import org.registrator.community.entity.User;
+import org.registrator.community.enumeration.UserStatus;
 import org.registrator.community.service.UserService;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.authentication.AccountExpiredException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -40,11 +42,16 @@ public class LimitLoginAuthenticationProvider extends DaoAuthenticationProvider 
 
 		try {
 			User user = userService.findUserByLogin(authentication.getName());
-			boolean isAccountNonExpired = (user.getAccountNonExpired() == 1) ? true : false;
+			boolean isAccountNonExpired = (user.getAccountNonExpired() == 1);
 			Authentication auth = super.authenticate(authentication);
 
-			if (!isAccountNonExpired)
-				throw new LockedException("User Account is locked!");
+			if (!isAccountNonExpired){
+                throw new AccountExpiredException("User Account is expired!");
+                //throw new LockedException("User Account is locked!");
+            }
+            if (user.getStatus() == UserStatus.BLOCK ){
+                throw new LockedException("User Account is blocked!");
+            }
 			userService.resetFailAttempts(authentication.getName());
 			logger.info(authentication.getName() + " is authentificated successfully");
 			return auth;
@@ -52,16 +59,20 @@ public class LimitLoginAuthenticationProvider extends DaoAuthenticationProvider 
 		} catch (BadCredentialsException e) {
 			logger.error(authentication.getName() + " has entered wrong credentials");
 			userService.updateFailAttempts(authentication.getName());
-			String error = "You have entered wrong login or password.";
-			throw new BadCredentialsException(error);
+			//String error = "You have entered wrong login or password.";
+            String error = "BadCredentials";
+            //throw new BadCredentialsException(messages.getMessage("login.badCredentials"));
+            throw new BadCredentialsException(error);
+
 
 		} catch (LockedException e) {
 			String error = "";
 			User user = userService.findUserByLogin(authentication.getName());
 			if (user != null) {
 				Timestamp lastAttempts = user.getLastModified();
-				error = "User account is locked! <br><br>Username : " + authentication.getName()
-						+ "<br>Last Attempts : " + lastAttempts + "<br>You will be unlocked in 5 minutes ";
+				/*error = "User account is locked! <br><br>Username : " + authentication.getName()
+						+ "<br>Last Attempts : " + lastAttempts + "<br>You will be unlocked in 5 minutes ";*/
+                error = "Locked";
 			} else {
 				error = e.getMessage();
 			}
@@ -69,7 +80,8 @@ public class LimitLoginAuthenticationProvider extends DaoAuthenticationProvider 
 			throw new LockedException(error);
 		} catch (Exception e) {
 			logger.error("Something went wrong while "+authentication.getName()+" was trying to authentificate");
-			throw new BadCredentialsException("You have entered wrong login or password.");
+			//throw new BadCredentialsException("You have entered wrong login or password.");
+			throw new BadCredentialsException("BadCredentials");
 		}
 
 	}

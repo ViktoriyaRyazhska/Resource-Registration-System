@@ -33,6 +33,7 @@ public class SpringWebConfig extends WebMvcConfigurerAdapter {
     public MessageSource messageSource() {
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
         messageSource.setBasename("resource/massages/messages");
+        //messageSource.setBasename("resource/massages");
         messageSource.setDefaultEncoding("UTF-8");
         return messageSource;
     }
