@@ -88,6 +88,10 @@ public class SmtpParameters {
         this.tlsEnabled = enableTLS;
     }
 
+    public String getProtocolString() {
+        return protocol.toString().toLowerCase();
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof SmtpParameters)) {
