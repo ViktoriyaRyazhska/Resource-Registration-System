@@ -4,7 +4,7 @@ import org.registrator.community.entity.SmtpParameters;
 import org.springframework.mail.javamail.JavaMailSender;
 
 /**
- * Created by roman.golyuk on 18.04.2016.
+ * Mail sender with the ability to reload SMTP properties in atomic operation
  */
 public interface ReloadableMailSender extends JavaMailSender {
     boolean testConnection(SmtpParameters smtpParameters);

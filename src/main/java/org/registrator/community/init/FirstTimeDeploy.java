@@ -86,7 +86,7 @@ public class FirstTimeDeploy {
             DiscreteParameter discreteParameter1 = new DiscreteParameter(landType, "периметр", "м");
             discreteParameter1.setCalculatedParameter(CalculatedParameter.PERIMETER);
             DiscreteParameter discreteParameter2 = new DiscreteParameter(landType, "площа", "га");
-            discreteParameter1.setCalculatedParameter(CalculatedParameter.AREA);
+            discreteParameter2.setCalculatedParameter(CalculatedParameter.AREA);
             DiscreteParameter discreteParameter3 = new DiscreteParameter(radioType, "максимальна потужність", "мВт");
             DiscreteParameter discreteParameter4 = new DiscreteParameter(radioType, "напруженість", "мВт");
             LinearParameter linearParameter1 = new LinearParameter(radioType, "смуга радіочастот", "МГц");

@@ -1,6 +1,7 @@
 package org.registrator.community.mailer;
 
 import org.registrator.community.entity.SmtpParameters;
+import org.registrator.community.util.Throwables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.MailException;
@@ -17,7 +18,11 @@ import java.io.InputStream;
 import java.util.Properties;
 
 /**
- * Created by roman.golyuk on 18.04.2016.
+ * Mail sender with the ability to reload SMTP properties in atomic operation.
+ *
+ * This implementation is a decorator of JavaMailSender. Each time new SMTP parameters need to be applied
+ * new instance of JavaMailSender is created and assigned in atomic operation.
+ *
  */
 public class ReloadableMailSenderImpl implements ReloadableMailSender {
     private static final Logger logger = LoggerFactory.getLogger(ReloadableMailSenderImpl.class);
@@ -29,6 +34,7 @@ public class ReloadableMailSenderImpl implements ReloadableMailSender {
 
     @Override
     synchronized public void applyNewParameters(SmtpParameters smtpParameters) {
+        logger.debug("Applying new SMTP parameters");
         mailSender = createMailSender(smtpParameters);
     }
 
@@ -54,6 +60,7 @@ public class ReloadableMailSenderImpl implements ReloadableMailSender {
 
     @Override
     public void send(MimeMessagePreparator mimeMessagePreparator) throws MailException {
+        logger.debug("Applying new SMTP parameters");
         mailSender.send(mimeMessagePreparator);
     }
 
@@ -81,7 +88,8 @@ public class ReloadableMailSenderImpl implements ReloadableMailSender {
         boolean success;
         Transport transport = null;
         try {
-            String protocol = parameters.getProtocol().toString().toLowerCase();
+
+            String protocol = parameters.getProtocolString();
             transport = session.getTransport(protocol);
 
             transport.connect(parameters.getHost(), parameters.getPort(),
@@ -90,7 +98,7 @@ public class ReloadableMailSenderImpl implements ReloadableMailSender {
         } catch (MessagingException ex) {
             logger.warn("Couldn't connect to SMTP {}:{} with username {}, message: {}, root cause: {} ",
                     parameters.getHost(), parameters.getPort(), parameters.getUsername(),
-                    ex.getMessage(), getExceptionMessage(ex));
+                    ex.getMessage(), Throwables.getRootCause(ex).getMessage());
             success = false;
         } finally {
             if (transport != null) {
@@ -110,13 +118,14 @@ public class ReloadableMailSenderImpl implements ReloadableMailSender {
         JavaMailSenderImpl sender = new JavaMailSenderImpl();
         sender.setDefaultEncoding("UTF-8");
         sender.setHost(smtpParameters.getHost());
-//        sender.setProtocol(smtpParameters.getTlsEnabled() ? "smtps" : "smtp");
-        sender.setProtocol("smtp");
+        String protocol = smtpParameters.getTlsEnabled() ? "smtps" : "smtp";
+        sender.setProtocol(protocol);
         sender.setPort(smtpParameters.getPort());
         sender.setUsername(smtpParameters.getUsername());
         sender.setPassword(smtpParameters.getPassword());
 
         Properties javaMailProperties = new Properties();
+        javaMailProperties.setProperty("mail.transport.protocol", protocol);
         javaMailProperties.setProperty("mail.smtp.auth", "true");
         javaMailProperties.setProperty("mail.smtp.starttls.enable", smtpParameters.getTlsEnabled() ? "true" : "false");
         javaMailProperties.setProperty("mail.smtp.socketFactory.fallback", "true");
@@ -125,15 +134,4 @@ public class ReloadableMailSenderImpl implements ReloadableMailSender {
         return sender;
     }
 
-    private String getExceptionMessage(Throwable throwable) {
-        Throwable cause;
-        // get root cause of exception
-        if (throwable != null) {
-            while((cause = throwable.getCause()) != null) {
-                throwable = cause;
-            }
-            return throwable.getMessage();
-        }
-        return "";
-    }
 }
