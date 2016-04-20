@@ -12,6 +12,7 @@ import org.apache.velocity.app.VelocityEngine;
 import org.registrator.community.entity.SmtpParameters;
 import org.registrator.community.mailer.ReloadableMailSender;
 import org.registrator.community.service.MailService;
+import org.registrator.community.util.Throwables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,7 +94,7 @@ public class MailServiceImpl implements MailService{
         try {
             mailSender.send(preparator);
         } catch (MailException e) {
-            logger.error("Send mail exception to {}", recepientEmail);
+            logger.error("Send mail exception to {}, message {}", recepientEmail, Throwables.getRootCause(e));
         }
         
     }
