@@ -18,7 +18,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.ui.velocity.VelocityEngineFactoryBean;
 
 @Configuration
@@ -61,20 +61,16 @@ public class AdditionalAppConfig implements AsyncConfigurer {
         return factory.createVelocityEngine();
     }
     
-    @Bean
-    public ThreadPoolTaskScheduler taskScheduler() {
-        ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
-        scheduler.setPoolSize(5);
-        scheduler.setThreadNamePrefix("async_task-");
-        scheduler.setAwaitTerminationSeconds(300); // 300s = 5 minutes
-        scheduler.setWaitForTasksToCompleteOnShutdown(true);
-        return scheduler;
-    }
 
     @Override
     public Executor getAsyncExecutor() {
-        Executor executor = this.taskScheduler();
-        return executor;
+        ThreadPoolTaskExecutor threadPool = new ThreadPoolTaskExecutor();
+        threadPool.setCorePoolSize(5);
+        threadPool.setMaxPoolSize(5);
+        threadPool.setAwaitTerminationSeconds(300); // 300s = 5 minutes
+        threadPool.setThreadNamePrefix("async_task-");
+        threadPool.initialize();
+        return threadPool;
     }
 
     @Override
