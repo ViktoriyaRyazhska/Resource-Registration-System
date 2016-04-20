@@ -1,5 +1,6 @@
 package org.registrator.community.controller.error;
 
+import org.registrator.community.util.Throwables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -54,14 +55,10 @@ public class ErrorController {
 	
 
 	private String getExceptionMessage(Throwable throwable, Integer statusCode) {
-        Throwable cause;
-        // get root cause of exception
-        if (throwable != null) {
-            while((cause = throwable.getCause()) != null) {
-                throwable = cause;
-            }
-			return throwable.getMessage();
-		}
+        Throwable cause = Throwables.getRootCause(throwable);
+        if (cause != null) {
+            return cause.getMessage();
+        }
 		HttpStatus httpStatus = HttpStatus.valueOf(statusCode);
 		return httpStatus.getReasonPhrase();
 	}

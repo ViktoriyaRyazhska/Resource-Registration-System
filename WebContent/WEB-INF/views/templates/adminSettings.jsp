@@ -66,11 +66,11 @@
           <div class="row">
             <div class="col-md-4">
               <label for="smtpHost"><spring:message code="label.admin.settings.smtp.host" /></label>
-              <input id = "smtpHost" class="form-control" name="smtpParameters.host"  required value="${settings.smtpParameters.host}">
+              <input id = "smtpHost" class="form-control" name="smtpParameters.host"  value="${settings.smtpParameters.host}">
             </div>
             <div class="col-md-1">
               <label for="smtpPort"><spring:message code="label.admin.settings.smtp.port" /></label>
-              <input id = "smtpPort" class="form-control numeric" name="smtpParameters.port" required value="${settings.smtpParameters.port}">
+              <input id = "smtpPort" class="form-control numeric" name="smtpParameters.port" value="${settings.smtpParameters.port}">
             </div>
             <div class="col-md-6">
               <br>
@@ -86,11 +86,11 @@
           <div class="row">
             <div class="col-md-4">
               <label for="smtpUsername"><spring:message code="label.admin.settings.smtp.username" /></label>
-              <input id = "smtpUsername" class="form-control" name="smtpParameters.username" required value="${settings.smtpParameters.username}">
+              <input id = "smtpUsername" class="form-control" name="smtpParameters.username" value="${settings.smtpParameters.username}">
             </div>
             <div class="col-md-4">
               <label for="smtpPassword"><spring:message code="label.admin.settings.smtp.password" /></label>
-              <input type="password" id = "smtpPassword" class="form-control" name="smtpParameters.password" required value="${settings.smtpParameters.password}">
+              <input type="password" id = "smtpPassword" class="form-control" name="smtpParameters.password" value="${settings.smtpParameters.password}">
             </div>
             <div class="col-md-1">
               <br>
