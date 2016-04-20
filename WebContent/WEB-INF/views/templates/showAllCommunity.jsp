@@ -9,10 +9,14 @@
     <spring:message code="label.community.pagename" />
   </h4>
 </div>
-<p>
+<p class="pull-left">
   <a href="<c:url value='addCommunity'/>" class="btn btn-success"
     role="button"><spring:message code="label.community.add" /></a>
 </p>
+<div class="pull-right text-right">
+  <label for="inactiveCheckbox"><spring:message code="label.community.showHidden"/></label>
+  <input type="checkbox" id="inactiveCheckbox" style="position:relative;top:2px">
+</div>
 <table class="table table-striped table-bordered table-hover">
 
   <thead>
@@ -29,7 +33,7 @@
   <tbody>
     <c:if test="${not empty listOfTerritorialCommunity}">
       <c:forEach items="${listOfTerritorialCommunity}" var="commun">
-        <tr type="${commun.active}">
+        <tr class="commun" type="${commun.active}">
           <td>${commun.name}</td>
           <td>${commun.registrationNumber}</td>
           <td style="text-align: center; width: 100%;">

@@ -8,8 +8,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Type;
-
 @Entity
 @Table(name = "territorial_community")
 public class TerritorialCommunity implements Serializable {
@@ -27,7 +25,7 @@ public class TerritorialCommunity implements Serializable {
     @Column(name = "registrationNumber")
     private String registrationNumber;
     
-	@Column(name = "isActive", nullable = false)
+	@Column(name = "isActive", nullable = false, columnDefinition = "tinyInt default 1")
 	private Integer active = 1;
 
     public Integer getActive() {
