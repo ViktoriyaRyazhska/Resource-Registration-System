@@ -3,6 +3,7 @@ package org.registrator.community.service;
 import org.apache.velocity.app.VelocityEngine;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.modules.testng.PowerMockTestCase;
+import org.registrator.community.mailer.ReloadableMailSender;
 import org.registrator.community.service.impl.MailServiceImpl;
 
 import static org.mockito.Mockito.*;
@@ -42,7 +43,7 @@ public class MailServiceTest extends PowerMockTestCase {
     private MailService mailService = new MailServiceImpl();
 
     @Mock
-    private JavaMailSender mailSender;
+    private ReloadableMailSender mailSender;
 
     @Mock
     private VelocityEngine velocityEngine;

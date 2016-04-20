@@ -41,17 +41,7 @@
                 id="editcommunity" role="button"><spring:message
                   code="label.community.edit" /> </a>
             </div> <c:choose>
-              <c:when test="${commun.active eq 1}">
-                <div
-                  style="display: inline-block; margin: 2px auto; width: 45%; min-width: 94px;">
-                  <a
-                    href="deleteCommunity/${commun.territorialCommunityId}"
-                    class="btn btn-danger" style="width: 100%;"
-                    id="deletecommunity" role="button"><spring:message
-                      code="label.community.delete" /> </a>
-                </div>
-              </c:when>
-              <c:otherwise>
+              <c:when test="${commun.active eq 0}">
                 <div
                   style="display: inline-block; margin: 2px auto; width: 45%; min-width: 94px;">
                   <a
@@ -59,6 +49,16 @@
                     class="btn btn-warning" style="width: 100%;"
                     id="activecommunity" role="button"><spring:message
                       code="label.community.activate" /> </a>
+                </div>
+              </c:when>
+              <c:otherwise>
+                    <div
+                  style="display: inline-block; margin: 2px auto; width: 45%; min-width: 94px;">
+                  <a
+                    href="deleteCommunity/${commun.territorialCommunityId}"
+                    class="btn btn-danger" style="width: 100%;"
+                    id="deletecommunity" role="button"><spring:message
+                      code="label.community.delete" /> </a>
                 </div>
               </c:otherwise>
             </c:choose>
