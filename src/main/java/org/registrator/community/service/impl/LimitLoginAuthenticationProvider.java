@@ -49,9 +49,9 @@ public class LimitLoginAuthenticationProvider extends DaoAuthenticationProvider 
                 throw new AccountExpiredException("User Account is expired!");
                 //throw new LockedException("User Account is locked!");
             }
-            if (user.getStatus() == UserStatus.BLOCK ){
+            /*if (user.getStatus() == UserStatus.BLOCK ){
                 throw new LockedException("User Account is blocked!");
-            }
+            }*/
 			userService.resetFailAttempts(authentication.getName());
 			logger.info(authentication.getName() + " is authentificated successfully");
 			return auth;

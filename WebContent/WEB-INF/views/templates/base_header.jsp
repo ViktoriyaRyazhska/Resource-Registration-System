@@ -11,7 +11,7 @@
 </div>
 <div class="lang-container" id="header">
   <ul class="languages">
-    <a href="?lang=ua"><img
+    <a href="?lang=uk"><img
       src="<c:url value='/resource/img/lang/ua.png'/>"></a>
     <a href="?lang=ru"><img
       src="<c:url value='/resource/img/lang/ru.png'/>"></a>

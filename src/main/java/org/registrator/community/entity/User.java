@@ -111,7 +111,7 @@ public class User implements Serializable {
     @Column(name = "account_non_locked")
     private int accountNonLocked = 1;
 
-    @Column(name = "locked_till", nullable = false)
+    @Column(name = "locked_till", nullable = false, columnDefinition = "int default 0")
     private long lockedTill = 0;
 
     @Column(name = "credentials_non_expired")

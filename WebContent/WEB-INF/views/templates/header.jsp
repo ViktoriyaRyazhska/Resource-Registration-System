@@ -42,7 +42,7 @@
     </div>
     <div class="col-md-5 col-xs-6 hlanguage">
       <select id="changeLanguage" class="form-control" style="height: 30px">
-        <option value="ua">українська</option>
+        <option value="uk">українська</option>
         <option value="ru">русский</option>
         <option value="en">english</option>
       </select>

@@ -3,7 +3,6 @@
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 
 <div class="signin-container">
@@ -17,18 +16,6 @@
         action="${pageContext.request.contextPath}/login" method='POST'>
 
         <div style="color: red;">${sessionScope["SPRING_SECURITY_LAST_EXCEPTION"].message}</div>
-
-        <c:if test="${SPRING_SECURITY_LAST_EXCEPTION.message eq ('BadCredentials')}">
-        <c:set var="badCredentials"><spring:message code="login.badCredentials" /></c:set>
-        <div style="color: red;">${fn:replace(SPRING_SECURITY_LAST_EXCEPTION.message,
-          'BadCredentials', badCredentials)}</div>
-        </c:if>
-
-        <c:if test="${SPRING_SECURITY_LAST_EXCEPTION.message eq ('Locked')}">
-        <c:set var="locked"><spring:message code="login.Locked" /></c:set>
-        <div style="color: red;">${fn:replace(SPRING_SECURITY_LAST_EXCEPTION.message,
-            'Locked', locked)}</div>
-        </c:if>
 
         <c:if test="${not empty error}">
           <div class="error">${error}</div>
