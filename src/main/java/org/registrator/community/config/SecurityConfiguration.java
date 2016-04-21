@@ -21,6 +21,9 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+    private static final String[] RESOURCES_ALLOW_ANONYMOUS = {
+            "/forgot_password", "/password_recovery/**", "/register/**", "/help", "/faq"};
+
     @Autowired
     @Qualifier("userDetailsService")
     private UserDetailsService userDetailsService;
@@ -44,7 +47,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/error/**").permitAll()
-                .antMatchers("/forgot_password", "/register", "/help", "/faq").anonymous()
+                .antMatchers(RESOURCES_ALLOW_ANONYMOUS).anonymous()
                 .anyRequest().authenticated()
                     .and()
                 .formLogin()
