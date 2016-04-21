@@ -8,10 +8,11 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.validation.Validator;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.LocaleResolver;
+import org.springframework.web.servlet.config.annotation.AsyncSupportConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -22,9 +23,30 @@ import org.springframework.web.servlet.view.tiles3.TilesConfigurer;
 import org.springframework.web.servlet.view.tiles3.TilesViewResolver;
 
 @EnableWebMvc
+@EnableAsync
 @Configuration
 @ComponentScan({ "org.registrator.community.controller" })
 public class SpringWebConfig extends WebMvcConfigurerAdapter {
+
+    
+    
+    @Override
+    public void configureAsyncSupport(AsyncSupportConfigurer configurer) {
+        
+        
+        ThreadPoolTaskExecutor threadPool = new ThreadPoolTaskExecutor();
+        // load configuration from properties file if it exists, else load default
+        threadPool.setCorePoolSize(5);
+        threadPool.setMaxPoolSize(5);
+        threadPool.setAwaitTerminationSeconds(5);
+        threadPool.setThreadNamePrefix("pikaso");
+        threadPool.initialize();
+        
+        AsyncSupportConfigurer config = new AsyncSupportConfigurer();
+        config.setTaskExecutor(threadPool);
+        
+        super.configureAsyncSupport(configurer);
+    }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {

@@ -1,7 +1,6 @@
 package org.registrator.community.config.root;
 
 import org.registrator.community.config.AdditionalAppConfig;
-import org.registrator.community.config.AsyncConfig;
 import org.registrator.community.service.impl.CronService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
