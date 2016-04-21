@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service("userDetailsService")
 public class UserDetailServiceImpl implements UserDetailsService {
@@ -53,13 +54,34 @@ public class UserDetailServiceImpl implements UserDetailsService {
 	}
 	
 	private User buildUserForAuthentication(org.registrator.community.entity.User userEntity, List<GrantedAuthority> authorities) {
-		boolean isEnabled= (userEntity.getEnabled()==1)?true:false;
-		boolean isAccountNonExpired= (userEntity.getAccountNonExpired()==1)?true:false;
-		boolean isCredentialsNonExpired= (userEntity.getCredentialsNonExpired()==1)?true:false;
-		boolean isAccountNonLocked=(userEntity.getAccountNonLocked()==1)?true:false;
+		boolean isEnabled= (userEntity.getEnabled()==1);
+		boolean isAccountNonExpired= (userEntity.getAccountNonExpired()==1);
+		boolean isCredentialsNonExpired= (userEntity.getCredentialsNonExpired()==1);
+		//boolean isAccountNonLocked=(userEntity.getAccountNonLocked()==1);
+		boolean isAccountNonLocked=(timeToUnlockUser(userEntity) || userEntity.getAccountNonLocked()==1);
 		
 		return new User(userEntity.getLogin(), userEntity.getPassword(),isEnabled,isAccountNonExpired, isCredentialsNonExpired,
 				isAccountNonLocked,  authorities);
 	}
+
+    @Transactional
+	private boolean timeToUnlockUser(org.registrator.community.entity.User userEntity){
+
+        Long currentTime = System.currentTimeMillis();
+        Long lockedTill = userEntity.getLockedTill();
+
+        if(currentTime > lockedTill){
+
+            userEntity.setAccountNonLocked(1);
+            userEntity.setLockedTill(0);
+            userRepository.save(userEntity);
+            logger.info("Unlock user - {}", userEntity.getLogin());
+            return true;
+        }
+        else{
+            return false;
+        }
+
+    }
 	
 }

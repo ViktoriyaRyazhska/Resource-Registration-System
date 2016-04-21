@@ -50,13 +50,13 @@ public interface UserService {
 
     void createTomeAndRecourceNumber(UserDTO userDto);
 
-    public void updateFailAttempts(String login);
+    void updateFailAttempts(String login);
 
-    public void resetFailAttempts(String login);
+    void resetFailAttempts(String login);
 
-    public User findUserByLogin(String login);
+    User findUserByLogin(String login);
 
-    public void resetAllFailAttempts();
+    void resetAllFailAttempts();
     
     void delete(List<User> userList);
     

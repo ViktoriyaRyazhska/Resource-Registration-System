@@ -35,6 +35,7 @@ public class SpringWebConfig extends WebMvcConfigurerAdapter {
     public MessageSource messageSource() {
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
         messageSource.setBasename("resource/massages/messages");
+        //messageSource.setBasename("resource/massages");
         messageSource.setDefaultEncoding("UTF-8");
         return messageSource;
     }
@@ -42,7 +43,7 @@ public class SpringWebConfig extends WebMvcConfigurerAdapter {
     @Bean
     public LocaleResolver localeResolver() {
         CookieLocaleResolver clr = new CookieLocaleResolver();
-        clr.setDefaultLocale(new Locale("ua"));
+        clr.setDefaultLocale(new Locale("uk"));
         return clr;
     }
 
