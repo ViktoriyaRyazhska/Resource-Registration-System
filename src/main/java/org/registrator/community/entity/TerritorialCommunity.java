@@ -25,7 +25,7 @@ public class TerritorialCommunity implements Serializable {
     @Column(name = "registrationNumber")
     private String registrationNumber;
     
-	@Column(name = "isActive", nullable = false, columnDefinition = "tinyInt default 1")
+	@Column(name = "isActive", nullable = false, columnDefinition = "int default 1")
 	private Integer active = 1;
 
     public Integer getActive() {
