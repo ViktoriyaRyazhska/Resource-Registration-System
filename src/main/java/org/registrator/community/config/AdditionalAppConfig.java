@@ -15,18 +15,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.ui.velocity.VelocityEngineFactoryBean;
 
+
 @Configuration
-@EnableAsync
 @ComponentScan({"org.registrator.community.components", "org.registrator.community.dao"})
 @PropertySource(value = "classpath:mail.properties")
-public class AdditionalAppConfig implements AsyncConfigurer {
+public class AdditionalAppConfig {
 
     @Autowired
     private Environment env;
@@ -52,20 +54,6 @@ public class AdditionalAppConfig implements AsyncConfigurer {
     }
     
 
-    @Override
-    public Executor getAsyncExecutor() {
-        ThreadPoolTaskExecutor threadPool = new ThreadPoolTaskExecutor();
-        threadPool.setCorePoolSize(5);
-        threadPool.setMaxPoolSize(5);
-        threadPool.setAwaitTerminationSeconds(300); // 300s = 5 minutes
-        threadPool.setThreadNamePrefix("async_task-");
-        threadPool.initialize();
-        return threadPool;
-    }
-
-    @Override
-    public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
-        return new SimpleAsyncUncaughtExceptionHandler();
-    }
+    
 }
 
