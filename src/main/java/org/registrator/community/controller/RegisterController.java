@@ -74,7 +74,7 @@ public class RegisterController {
         emailConfirmService.sendConfirmEmailFirstTime(registrationForm.getLogin(), baseLink);
 
         logger.info("Successfully registered new user: " + registrationForm.getLogin());
-        return "redirect:/finish-registration";
+        return "finish-registration";
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
