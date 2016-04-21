@@ -6,6 +6,7 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.api.support.membermodification.MemberModifier;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.testng.PowerMockTestCase;
+import org.registrator.community.mailer.ReloadableMailSender;
 import org.registrator.community.service.impl.MailServiceImpl;
 import org.slf4j.Logger;
 
@@ -36,7 +37,7 @@ public class MailServiceTest extends PowerMockTestCase {
     private MailService mailService = new MailServiceImpl();
 
     @Mock
-    private JavaMailSender mailSender;
+    private ReloadableMailSender mailSender;
 
     @Mock
     private VelocityEngine velocityEngine;

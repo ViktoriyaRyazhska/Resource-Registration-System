@@ -9,10 +9,14 @@
     <spring:message code="label.community.pagename" />
   </h4>
 </div>
-<p>
+<p class="pull-left">
   <a href="<c:url value='addCommunity'/>" class="btn btn-success"
     role="button"><spring:message code="label.community.add" /></a>
 </p>
+<div class="pull-right text-right">
+  <label for="inactiveCheckbox"><spring:message code="label.community.showHidden"/></label>
+  <input type="checkbox" id="inactiveCheckbox" style="position:relative;top:2px">
+</div>
 <table class="table table-striped table-bordered table-hover">
 
   <thead>
@@ -29,7 +33,7 @@
   <tbody>
     <c:if test="${not empty listOfTerritorialCommunity}">
       <c:forEach items="${listOfTerritorialCommunity}" var="commun">
-        <tr type="${commun.active}">
+        <tr class="commun" type="${commun.active}">
           <td>${commun.name}</td>
           <td>${commun.registrationNumber}</td>
           <td style="text-align: center; width: 100%;">
@@ -41,17 +45,7 @@
                 id="editcommunity" role="button"><spring:message
                   code="label.community.edit" /> </a>
             </div> <c:choose>
-              <c:when test="${commun.active eq 1}">
-                <div
-                  style="display: inline-block; margin: 2px auto; width: 45%; min-width: 94px;">
-                  <a
-                    href="deleteCommunity/${commun.territorialCommunityId}"
-                    class="btn btn-danger" style="width: 100%;"
-                    id="deletecommunity" role="button"><spring:message
-                      code="label.community.delete" /> </a>
-                </div>
-              </c:when>
-              <c:otherwise>
+              <c:when test="${commun.active eq 0}">
                 <div
                   style="display: inline-block; margin: 2px auto; width: 45%; min-width: 94px;">
                   <a
@@ -59,6 +53,16 @@
                     class="btn btn-warning" style="width: 100%;"
                     id="activecommunity" role="button"><spring:message
                       code="label.community.activate" /> </a>
+                </div>
+              </c:when>
+              <c:otherwise>
+                    <div
+                  style="display: inline-block; margin: 2px auto; width: 45%; min-width: 94px;">
+                  <a
+                    href="deleteCommunity/${commun.territorialCommunityId}"
+                    class="btn btn-danger" style="width: 100%;"
+                    id="deletecommunity" role="button"><spring:message
+                      code="label.community.delete" /> </a>
                 </div>
               </c:otherwise>
             </c:choose>

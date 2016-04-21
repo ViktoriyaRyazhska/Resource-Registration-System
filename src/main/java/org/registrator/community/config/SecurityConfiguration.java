@@ -10,6 +10,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -39,14 +40,38 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        http.csrf().disable().formLogin().loginPage("/login").permitAll()
-
-                .failureUrl("/login?error").usernameParameter("login").passwordParameter("password").and().logout()
-                .logoutUrl("/logout").permitAll().logoutSuccessUrl("/login?logout").and().exceptionHandling()
-                .accessDeniedPage("/denied").and().authorizeRequests().and().rememberMe()
-                .rememberMeParameter("_spring_security_remember_me").tokenRepository(persistentTokenRepository())
+        http
+                .csrf().disable()
+                .authorizeRequests()
+                .antMatchers("/error/**").permitAll()
+                .antMatchers("/forgot_password", "/register", "/help", "/faq").anonymous()
+                .anyRequest().authenticated()
+                    .and()
+                .formLogin()
+                .loginPage("/login")
+                .permitAll()
+                .failureUrl("/login?error")
+                .usernameParameter("login")
+                .passwordParameter("password")
+                    .and()
+                .logout()
+                .logoutUrl("/logout")
+                .permitAll()
+                .logoutSuccessUrl("/login?logout")
+                    .and()
+                .exceptionHandling()
+                .accessDeniedPage("/denied")
+                    .and()
+                .rememberMe()
+                .rememberMeParameter("_spring_security_remember_me")
+                .tokenRepository(persistentTokenRepository())
                 .tokenValiditySeconds(87400);
 
+    }
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers("/resource/**");
     }
 
     @Bean

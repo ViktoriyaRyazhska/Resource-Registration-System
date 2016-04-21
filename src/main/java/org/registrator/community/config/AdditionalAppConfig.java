@@ -6,6 +6,10 @@ import java.util.concurrent.Executor;
 
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.exception.VelocityException;
+import org.registrator.community.entity.SmtpParameters;
+import org.registrator.community.mailer.ReloadableMailSender;
+import org.registrator.community.mailer.ReloadableMailSenderImpl;
+import org.registrator.community.service.SettingsService;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.aop.interceptor.SimpleAsyncUncaughtExceptionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,23 +34,12 @@ public class AdditionalAppConfig implements AsyncConfigurer {
     @Autowired
     private Environment env;
 
-    @Bean(name = "mailSender")
-    public JavaMailSender mailSender(){
-        JavaMailSenderImpl sender = new JavaMailSenderImpl();
-        sender.setDefaultEncoding("UTF-8");
-        sender.setHost("smtp.gmail.com");
-        sender.setProtocol("smtps");
-        sender.setPort(465);
-        sender.setUsername("resources.registrator@gmail.com");
-        sender.setPassword("m@!RljNg");
-       
-        Properties javaMailProperties = new Properties();
-        javaMailProperties.setProperty("mail.smtp.auth", "true");
-        javaMailProperties.setProperty("mail.smtp.starttls.enable", "true");
-        javaMailProperties.setProperty("mail.smtp.socketFactory.fallback", "true");
-        sender.setJavaMailProperties(javaMailProperties);
+    @Autowired
+    private SettingsService settingsService;
 
-        return sender;
+    @Bean(name = "mailSender")
+    public ReloadableMailSender mailSender(){
+        return new ReloadableMailSenderImpl(settingsService.getSmtpParameters());
     }
     
     @Bean

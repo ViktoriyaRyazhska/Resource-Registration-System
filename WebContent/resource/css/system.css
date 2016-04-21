@@ -182,3 +182,13 @@ body {
 #datatable td {
   vertical-align: middle;
 }
+
+.panel30 {
+  max-width: 45%;
+}
+label {
+  font-weight: normal !important;
+}
+.error{
+  color:red;
+}
