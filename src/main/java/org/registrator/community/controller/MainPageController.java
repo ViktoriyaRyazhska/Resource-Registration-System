@@ -2,6 +2,7 @@ package org.registrator.community.controller;
 
 import org.registrator.community.service.SettingsService;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,10 +15,10 @@ import javax.servlet.http.HttpSession;
 @Controller
 public class MainPageController {
 
+    private static final Logger logger = LoggerFactory.getLogger(MainPageController.class);
+
     @Autowired
-    Logger logger;
-    @Autowired
-    SettingsService settingsService;
+    private SettingsService settingsService;
 
     /**
      * This method return homepage if credentials are correct according to the

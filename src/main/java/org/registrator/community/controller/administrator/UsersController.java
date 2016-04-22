@@ -29,6 +29,7 @@ import org.registrator.community.service.search.TableSetting;
 import org.registrator.community.validator.MassUserOpsValidator;
 import org.registrator.community.validator.ResourceNumberJSONDTOValidator;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -50,8 +51,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping(value = "/administrator/users/")
 public class UsersController {
 
-    @Autowired
-    private Logger logger;
+    private static final Logger logger = LoggerFactory.getLogger(UsersController.class);
 
     @Autowired
     private CommunityService communityService;

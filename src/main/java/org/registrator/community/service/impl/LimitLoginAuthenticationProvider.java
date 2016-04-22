@@ -6,6 +6,7 @@ import org.registrator.community.entity.User;
 import org.registrator.community.enumeration.UserStatus;
 import org.registrator.community.service.UserService;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AccountExpiredException;
@@ -23,8 +24,7 @@ public class LimitLoginAuthenticationProvider extends DaoAuthenticationProvider 
 	@Autowired
 	UserService userService;
 
-	@Autowired
-	private Logger logger;
+	private static final Logger logger = LoggerFactory.getLogger(LimitLoginAuthenticationProvider.class);
 
 	@Autowired
 	private PasswordEncoder userPasswordEncoder;

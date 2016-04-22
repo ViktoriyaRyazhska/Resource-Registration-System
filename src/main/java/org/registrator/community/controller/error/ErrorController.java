@@ -15,7 +15,7 @@ import java.text.MessageFormat;
 @RequestMapping("/error/")
 public class ErrorController {
     
-    private Logger logger = LoggerFactory.getLogger(ErrorController.class);
+    private static final Logger logger = LoggerFactory.getLogger(ErrorController.class);
 
 
     /**

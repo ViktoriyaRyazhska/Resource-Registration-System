@@ -4,6 +4,7 @@ import org.registrator.community.dto.SettingsDTO;
 import org.registrator.community.service.MailService;
 import org.registrator.community.service.SettingsService;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -24,8 +25,7 @@ import java.util.TimeZone;
 @RequestMapping(value = "/administrator/")
 public class SettingsController {
 
-    @Autowired
-    private Logger logger;
+    private static final Logger logger = LoggerFactory.getLogger(SettingsController.class);
 
     @Autowired
     private SettingsService settingsService;

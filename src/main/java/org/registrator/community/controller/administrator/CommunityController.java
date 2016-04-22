@@ -10,6 +10,7 @@ import org.registrator.community.enumeration.CommunityStatus;
 import org.registrator.community.service.CommunityService;
 import org.registrator.community.validator.CommunityValidator;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -25,8 +26,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping(value = "/administrator/communities/")
 public class CommunityController {
     
-    @Autowired
-    private Logger logger;
+    private static final Logger logger = LoggerFactory.getLogger(CommunityController.class);
 
     @Autowired
     private CommunityService communityService;

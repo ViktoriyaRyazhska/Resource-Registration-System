@@ -28,7 +28,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 public class VerificationTokenServiceTest {
-    private Logger logger = LoggerFactory.getLogger(VerificationTokenServiceTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(VerificationTokenServiceTest.class);
     
 	@Mock
 	private VerificationTokenRepository verificationTokenRepository;
