@@ -2,11 +2,11 @@ package org.registrator.community.config.web;
 
 import java.util.Locale;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.validation.Validator;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.LocaleResolver;
@@ -24,18 +24,12 @@ import org.springframework.web.servlet.view.tiles3.TilesViewResolver;
 @ComponentScan({ "org.registrator.community.controller" })
 public class SpringWebConfig extends WebMvcConfigurerAdapter {
 
+    @Autowired
+    private MessageSource messageSource;
+
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/resource/**").addResourceLocations("/resource/");
-    }
-
-    @Bean
-    public MessageSource messageSource() {
-        ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
-        messageSource.setBasename("resource/massages/messages");
-        //messageSource.setBasename("resource/massages");
-        messageSource.setDefaultEncoding("UTF-8");
-        return messageSource;
     }
 
     @Bean
@@ -60,7 +54,7 @@ public class SpringWebConfig extends WebMvcConfigurerAdapter {
     @Bean
     public LocalValidatorFactoryBean validator() {
         LocalValidatorFactoryBean validatorFactoryBean = new LocalValidatorFactoryBean();
-        validatorFactoryBean.setValidationMessageSource(messageSource());
+        validatorFactoryBean.setValidationMessageSource(messageSource);
         return validatorFactoryBean;
     }
 

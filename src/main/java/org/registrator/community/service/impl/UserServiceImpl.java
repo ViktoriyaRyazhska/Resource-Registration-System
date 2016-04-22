@@ -55,8 +55,8 @@ public class UserServiceImpl implements UserService {
     private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
 
     private static final int MAX_ATTEMPTS = 2;
-    //private static final long LOCKING_TIME = 300000;
-    private static final long LOCKING_TIME = 60000;
+    private static final long LOCKING_TIME = 300000;
+    //private static final long LOCKING_TIME = 60000;
 
     @Autowired
     private UserRepository userRepository;
@@ -784,6 +784,7 @@ public class UserServiceImpl implements UserService {
         try {
             User user = userRepository.findUserByLogin(login);
             user.setAttempts(0);
+            user.setLockedTill(0);
             user.setLastModified(null);
         } catch (Exception e) {
             logger.error("Failed to resetFailAttempts() " + e);

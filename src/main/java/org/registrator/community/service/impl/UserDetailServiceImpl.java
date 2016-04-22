@@ -38,10 +38,10 @@ public class UserDetailServiceImpl implements UserDetailsService {
 			logger.error("User - {} - not found");
 			throw new UsernameNotFoundException("Помилка в паролі, чи емейлі");
 		}
-		else if(!userEntity.getStatus().toString().equals("ACTIVE")){
+/*		else if(!userEntity.getStatus().toString().equals("ACTIVE")){
 			logger.error("User - {} - incorect role");
 			throw new UsernameNotFoundException("Помилка в паролі, чи емейлі");
-		}
+		}*/
 		else{
 			logger.info("Requested user - {} - is found: ", userEntity.getLogin());
 		}
@@ -70,7 +70,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
         Long currentTime = System.currentTimeMillis();
         Long lockedTill = userEntity.getLockedTill();
 
-        if(currentTime > lockedTill){
+        if((lockedTill != 0) && currentTime > lockedTill){
 
             userEntity.setAccountNonLocked(1);
             userEntity.setLockedTill(0);

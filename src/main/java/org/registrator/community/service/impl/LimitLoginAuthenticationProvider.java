@@ -8,14 +8,19 @@ import org.registrator.community.service.UserService;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.authentication.AccountExpiredException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.RequestContextListener;
 
 @Component("authenticationProvider")
 public class LimitLoginAuthenticationProvider extends DaoAuthenticationProvider {
@@ -29,6 +34,9 @@ public class LimitLoginAuthenticationProvider extends DaoAuthenticationProvider 
 	@Autowired
 	private PasswordEncoder userPasswordEncoder;
 
+    @Autowired
+    private MessageSource messageSource;
+
 	@Autowired
 	@Qualifier("userDetailsService")
 	@Override
@@ -37,51 +45,60 @@ public class LimitLoginAuthenticationProvider extends DaoAuthenticationProvider 
 		super.setUserDetailsService(userDetailsService);
 	}
 
+    //@Transactional
 	@Override
 	public Authentication authenticate(Authentication authentication) {
 
+        User user = null;
 		try {
-			User user = userService.findUserByLogin(authentication.getName());
+			user = userService.findUserByLogin(authentication.getName());
 			boolean isAccountNonExpired = (user.getAccountNonExpired() == 1);
 			Authentication auth = super.authenticate(authentication);
 
-			if (!isAccountNonExpired){
-                throw new AccountExpiredException("User Account is expired!");
-                //throw new LockedException("User Account is locked!");
-            }
-            /*if (user.getStatus() == UserStatus.BLOCK ){
-                throw new LockedException("User Account is blocked!");
+			/*if (!isAccountNonExpired){
+                System.out.println("AccountExpiredException");
+                throw new AccountExpiredException(messageSource.getMessage("label.expired", null, LocaleContextHolder.getLocale()));
             }*/
+
+            if (user.getStatus() == UserStatus.BLOCK) {
+                System.out.println("UserStatus.BLOCK");
+                throw new DisabledException(messageSource.getMessage("label.blocked", null, LocaleContextHolder.getLocale()));
+            }
+            if (user.getStatus() == UserStatus.NOTCOMFIRMED) {
+                throw new DisabledException(messageSource.getMessage("label.nonConfirmed", null, LocaleContextHolder.getLocale()));
+            }
+            if (user.getStatus() == UserStatus.INACTIVE) {
+                throw new DisabledException(messageSource.getMessage("label.inactive", null, LocaleContextHolder.getLocale()));
+            }
+
 			userService.resetFailAttempts(authentication.getName());
-			logger.info(authentication.getName() + " is authentificated successfully");
+			logger.debug(authentication.getName() + " is authentificated successfully");
 			return auth;
-
-		} catch (BadCredentialsException e) {
-			logger.error(authentication.getName() + " has entered wrong credentials");
-			userService.updateFailAttempts(authentication.getName());
-			//String error = "You have entered wrong login or password.";
-            String error = "BadCredentials";
-            //throw new BadCredentialsException(messages.getMessage("login.badCredentials"));
-            throw new BadCredentialsException(error);
-
 
 		} catch (LockedException e) {
 			String error = "";
-			User user = userService.findUserByLogin(authentication.getName());
-			if (user != null) {
-				Timestamp lastAttempts = user.getLastModified();
-				/*error = "User account is locked! <br><br>Username : " + authentication.getName()
-						+ "<br>Last Attempts : " + lastAttempts + "<br>You will be unlocked in 5 minutes ";*/
-                error = "Locked";
-			} else {
-				error = e.getMessage();
-			}
-			logger.error(authentication.getName() + " is blocked at : "+user.getLastModified());
+			user = userService.findUserByLogin(authentication.getName());
+
+            if (user != null) {
+                Timestamp lastAttempts = user.getLastModified();
+                error = lastAttempts + messageSource.getMessage("label.locked", null, LocaleContextHolder.getLocale());
+                logger.error(authentication.getName() + " is locked at : "+user.getLastModified());
+            } else {
+                error = e.getMessage();
+            }
 			throw new LockedException(error);
-		} catch (Exception e) {
+		} catch (BadCredentialsException e) {
+            logger.error(authentication.getName() + " has entered wrong credentials");
+            userService.updateFailAttempts(authentication.getName());
+			System.out.println("user.getAccountNonLocked() = " + user.getAccountNonLocked());
+            if (user != null && user.getAccountNonLocked() == 0) {
+                throw new LockedException(messageSource.getMessage("label.locked", null, LocaleContextHolder.getLocale()));
+            }
+            throw new BadCredentialsException(messageSource.getMessage("label.badCredentials", null, LocaleContextHolder.getLocale()));
+
+        } catch (Exception e) {
 			logger.error("Something went wrong while "+authentication.getName()+" was trying to authentificate");
-			//throw new BadCredentialsException("You have entered wrong login or password.");
-			throw new BadCredentialsException("BadCredentials");
+			throw new BadCredentialsException("Authentication error");
 		}
 
 	}
