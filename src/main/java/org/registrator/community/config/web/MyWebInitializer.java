@@ -5,6 +5,7 @@ import javax.servlet.Filter;
 
 import org.registrator.community.config.AdditionalAppConfig;
 import org.registrator.community.config.AspectConfig;
+import org.registrator.community.config.AsyncConfig;
 import org.registrator.community.config.LoggingConfig;
 import org.registrator.community.config.SecurityConfiguration;
 import org.registrator.community.config.root.DevelopmentConfiguration;

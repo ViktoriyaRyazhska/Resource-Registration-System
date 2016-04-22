@@ -23,30 +23,9 @@ import org.springframework.web.servlet.view.tiles3.TilesConfigurer;
 import org.springframework.web.servlet.view.tiles3.TilesViewResolver;
 
 @EnableWebMvc
-@EnableAsync
 @Configuration
 @ComponentScan({ "org.registrator.community.controller" })
 public class SpringWebConfig extends WebMvcConfigurerAdapter {
-
-    
-    
-    @Override
-    public void configureAsyncSupport(AsyncSupportConfigurer configurer) {
-        
-        
-        ThreadPoolTaskExecutor threadPool = new ThreadPoolTaskExecutor();
-        // load configuration from properties file if it exists, else load default
-        threadPool.setCorePoolSize(5);
-        threadPool.setMaxPoolSize(5);
-        threadPool.setAwaitTerminationSeconds(5);
-        threadPool.setThreadNamePrefix("pikaso");
-        threadPool.initialize();
-        
-        AsyncSupportConfigurer config = new AsyncSupportConfigurer();
-        config.setTaskExecutor(threadPool);
-        
-        super.configureAsyncSupport(configurer);
-    }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {

@@ -1,6 +1,6 @@
 package org.registrator.community.config.root;
 
-import org.registrator.community.config.AdditionalAppConfig;
+import org.registrator.community.config.AsyncConfig;
 import org.registrator.community.service.impl.CronService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -8,8 +8,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
-import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -19,7 +17,7 @@ import javax.persistence.EntityManagerFactory;
 @ComponentScan({"org.registrator.community.dto",
     "org.registrator.community.service","org.registrator.community.validator"})
 @EnableTransactionManagement
-//@Import({AdditionalAppConfig.class, AsyncConfig.class})
+@Import(AsyncConfig.class)
 public class SpringRootConfig {
 
     @Bean(name = "transactionManager")
