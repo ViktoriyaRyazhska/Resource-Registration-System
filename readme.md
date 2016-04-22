@@ -27,12 +27,21 @@ Team members
   LV-166 Java:
     Expert: Khohlov Oleksandr
     Lector: Yaroslav Garasym 
-Team:
+  Team:
     Oleksiy Kirkach
     Andriy Palyga
     Andriy Chypurko
     Bohdan Koroliuk
     Anna Novosiadlo
+  LV-175 Java:
+    Expert: Victoria Seniuk
+    Lector: Yaroslav Garasym
+  Team:
+    Andrii Mykytchyn
+    Anton Tsyhanenko
+    Pavlo Antentyk
+    Roman Holiuk
+    Roman Volykh
 
 It is necessary to configure the MySQL server for the correct work with cyrillic characters.
 Please check do You server configuration file (my.ini for Windows or my.cnf for Unix-based system) have the following settings:
@@ -49,6 +58,17 @@ init-connect='SET NAMES utf8'
 character-set-server = utf8
 
 All database settings You can change in database.properties file.
+
+To set up an e-mail sending profile
+1. login as user with administrator privileges.
+2. Go to Settings page.
+3. Enter SMTP parameters, for example to set up Gmail account you may use following parameters
+    Server: smtp.gmail.com
+    Port and protocol: 465 and SMTPS protocol or 587 and SMTP
+    Enable TLS: true
+    User name: full Gmail username with @gmail.com
+    Password: Gmail account password
+
 
 Google codestyle guide
 https://google.github.io/styleguide/javaguide.html

@@ -2,11 +2,10 @@ package org.registrator.community.service.impl;
 
 import org.registrator.community.dao.SettingsRepository;
 import org.registrator.community.dto.SettingsDTO;
+import org.registrator.community.dto.SmtpParametersDTO;
 import org.registrator.community.entity.Settings;
 import org.registrator.community.entity.SmtpParameters;
 import org.registrator.community.enumeration.RegistrationMethod;
-import org.registrator.community.mailer.ReloadableMailSender;
-import org.registrator.community.service.MailService;
 import org.registrator.community.service.SettingsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,7 +31,7 @@ public class SettingsServiceImpl implements SettingsService {
         SettingsDTO settingsDTO = new SettingsDTO();
         settingsDTO.setRegistrationMethod(settings.getRegistrationMethod().toString());
         settingsDTO.setTimeZone(settings.getTimeZone().getID());
-        settingsDTO.setSmtpParameters(settings.getSmtpParameters());
+        settingsDTO.setSmtpParameters(SmtpParametersDTO.from(settings.getSmtpParameters()));
         return settingsDTO;
     }
 
@@ -52,7 +51,7 @@ public class SettingsServiceImpl implements SettingsService {
         Settings settings = getAllSettings();
         settings.setRegistrationMethod(RegistrationMethod.valueOf(settingsDTO.getRegistrationMethod()));
         settings.setTimeZone(TimeZone.getTimeZone(settingsDTO.getTimeZone()));
-        settings.setSmtpParameters(settingsDTO.getSmtpParameters());
+        settings.setSmtpParameters(SmtpParameters.from(settingsDTO.getSmtpParameters()));
         settingsRepository.save(settings);
     }
 

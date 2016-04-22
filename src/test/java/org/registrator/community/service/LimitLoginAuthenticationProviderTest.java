@@ -252,7 +252,7 @@ public class LimitLoginAuthenticationProviderTest {
 		authenticationProviderService.authenticate(auth);
 	}
 
-	@Test(dataProvider = "GeneratorForExpiredAccounts", priority = 3, expectedExceptions = LockedException.class)
+	@Test(dataProvider = "GeneratorForExpiredAccounts", priority = 3, expectedExceptions = {LockedException.class, BadCredentialsException.class})
 	public void testForAccountExpiredException(Authentication auth) {
 		authenticationProviderService.authenticate(auth);
 	}
