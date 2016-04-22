@@ -10,9 +10,7 @@ public class SettingsDTO {
     private String timeZone;
     private boolean success;
     private boolean error;
-
-    @NotNull
-    private SmtpParameters smtpParameters;
+    private SmtpParametersDTO smtpParametersDTO;
 
     public SettingsDTO() {}
 
@@ -48,11 +46,12 @@ public class SettingsDTO {
         return error;
     }
 
-    public void setSmtpParameters(SmtpParameters smtpParameters) {
-        this.smtpParameters = smtpParameters;
+    public void setSmtpParameters(SmtpParametersDTO smtpParameters) {
+        this.smtpParametersDTO = smtpParameters;
     }
 
-    public SmtpParameters getSmtpParameters() {
-        return smtpParameters;
+    public SmtpParametersDTO getSmtpParameters() {
+        return smtpParametersDTO;
     }
+
 }

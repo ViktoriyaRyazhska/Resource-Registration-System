@@ -1,5 +1,6 @@
 package org.registrator.community.service;
 
+import org.registrator.community.dto.SmtpParametersDTO;
 import org.registrator.community.entity.SmtpParameters;
 
 public interface MailService {
@@ -10,7 +11,7 @@ public interface MailService {
 
 	void sendResetedPasswordMail(String recepientEmail, String recepientName, String login, String password);
 
-    boolean testConnection(SmtpParameters parameters);
+    boolean testConnection(SmtpParametersDTO parameters);
 
 	void applyNewParameters(SmtpParameters smtpParameters);
 }
