@@ -76,8 +76,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private TomeRepository tomeRepository;
 
-    @Autowired
-    private Logger logger;
+    private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Autowired
     private PasswordEncoder userPasswordEncoder;

@@ -46,10 +46,6 @@ public class ResourceLinearValueServiceTest{
 
     private ResourceLinearValue resourceValue;
 
-    private Logger logger = LoggerFactory.getLogger("");
-
-    private static final String BEGIN = "begin test";
-    private static final String END = "end test";
     private static final double VALUE_SEARCH = 47.0;
     private static final Integer ID_PARAMETER = 47;
 

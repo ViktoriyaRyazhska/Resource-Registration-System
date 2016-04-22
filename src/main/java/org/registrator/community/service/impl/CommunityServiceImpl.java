@@ -13,14 +13,14 @@ import org.registrator.community.enumeration.CommunityStatus;
 import org.registrator.community.service.CommunityService;
 import org.registrator.community.service.UserService;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class CommunityServiceImpl implements CommunityService{
 
-    @Autowired
-    private Logger logger;
+    private static final Logger logger = LoggerFactory.getLogger(CommunityServiceImpl.class);
     
     @Autowired
     private CommunityRepository communityRepository;

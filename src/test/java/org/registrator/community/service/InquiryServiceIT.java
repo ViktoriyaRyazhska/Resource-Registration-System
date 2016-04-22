@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.registrator.community.config.LoggingConfig;
 import org.registrator.community.config.root.SpringRootConfig;
 import org.registrator.community.config.root.TestingConfiguration;
 import org.registrator.community.dao.InquiryRepository;
@@ -21,8 +20,8 @@ import org.registrator.community.entity.User;
 import org.registrator.community.enumeration.InquiryType;
 import org.registrator.community.enumeration.ResourceStatus;
 import org.registrator.community.enumeration.RoleType;
-import org.registrator.community.service.InquiryService;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -33,10 +32,9 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 @ActiveProfiles("testing")
-@ContextConfiguration(classes = { TestingConfiguration.class, LoggingConfig.class, SpringRootConfig.class })
+@ContextConfiguration(classes = { TestingConfiguration.class, SpringRootConfig.class })
 public class InquiryServiceIT extends AbstractTestNGSpringContextTests {
-	@Autowired
-	private Logger logger;
+	private static final Logger logger = LoggerFactory.getLogger(InquiryServiceIT.class);
 	@Autowired
 	private InquiryRepository inquiryRepository;
 	@Autowired

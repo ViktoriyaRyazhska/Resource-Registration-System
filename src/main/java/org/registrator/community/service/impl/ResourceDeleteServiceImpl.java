@@ -4,6 +4,7 @@ import org.registrator.community.dao.ResourceRepository;
 import org.registrator.community.entity.Resource;
 import org.registrator.community.service.ResourceDeleteService;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,8 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ResourceDeleteServiceImpl implements ResourceDeleteService {
 
-	@Autowired
-	private Logger logger;
+	private static final Logger logger = LoggerFactory.getLogger(ResourceDeleteServiceImpl.class);
 	@Autowired
 	private ResourceRepository resourceRepository;
 	

@@ -50,7 +50,6 @@ public class ResourceDiscreteValueServiceTest {
     private static final double VALUE_SEARCH = 47.0;
     private static final Integer ID_PARAMETER = 47;
 
-    private Logger logger;
     private ResourceDiscreteValue resourceValue;
     private String resourceIdentifier = "test";
     private Resource resource;
@@ -59,8 +58,6 @@ public class ResourceDiscreteValueServiceTest {
     public void initMocks() throws Exception {
         valueService = new ResourceDiscreteValueServiceImpl();
         MockitoAnnotations.initMocks(this);
-
-        logger = LoggerFactory.getLogger("");
 
         when(parameterRepository.findByDiscreteParameterId(ID_PARAMETER)).thenReturn(parameter);
 

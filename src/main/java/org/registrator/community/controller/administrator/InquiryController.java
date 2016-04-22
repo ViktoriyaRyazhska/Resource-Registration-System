@@ -14,6 +14,7 @@ import org.registrator.community.service.InquiryService;
 import org.registrator.community.service.PrintService;
 import org.registrator.community.service.UserService;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -39,12 +40,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @RequestMapping(value = "/inquiry/add/")
 public class InquiryController {
 
-    @Autowired
-    private Logger logger;
+    private static final Logger logger = LoggerFactory.getLogger(InquiryController.class);
+
     @Autowired
     private InquiryService inquiryService;
+
     @Autowired
     private PrintService printService;
+
     @Autowired
     private UserService userService;
 

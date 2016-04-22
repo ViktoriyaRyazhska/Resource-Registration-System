@@ -4,7 +4,6 @@ import java.io.*;
 import java.util.Arrays;
 
 import com.itextpdf.text.DocumentException;
-import org.registrator.community.config.LoggingConfig;
 import org.registrator.community.config.root.SpringRootConfig;
 import org.registrator.community.config.root.TestingConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,7 @@ import org.testng.annotations.Test;
 import static org.testng.Assert.assertEquals;
 
 @ActiveProfiles("testing")
-@ContextConfiguration(classes={TestingConfiguration.class,LoggingConfig.class,SpringRootConfig.class})
+@ContextConfiguration(classes={TestingConfiguration.class,SpringRootConfig.class})
 public class PrintServiceIT extends AbstractTestNGSpringContextTests {
 
     @Autowired

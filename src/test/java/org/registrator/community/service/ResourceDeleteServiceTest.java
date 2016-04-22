@@ -26,16 +26,12 @@ public class ResourceDeleteServiceTest {
     @Mock
     private ResourceRepository resourceRepository;
 
-    private Logger logger;
+    private static final Logger logger = LoggerFactory.getLogger(ResourceDeleteServiceTest.class);
 
     @BeforeMethod
     public void init() throws IllegalAccessException{
 
         MockitoAnnotations.initMocks(this);
-
-        // inject logger into tested service
-        logger = LoggerFactory.getLogger("");
-        MemberModifier.field(ResourceDeleteServiceImpl.class, "logger").set(resourceDeleteService, logger);
 
     }
 

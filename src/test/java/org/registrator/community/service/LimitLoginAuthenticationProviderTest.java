@@ -43,7 +43,7 @@ public class LimitLoginAuthenticationProviderTest {
 	@InjectMocks
 	private DaoAuthenticationProvider authenticationProviderService = new LimitLoginAuthenticationProvider();
 
-	private Logger logger = LoggerFactory.getLogger(authenticationProviderService.getClass());
+	private static final Logger logger = LoggerFactory.getLogger(LimitLoginAuthenticationProviderTest.class);
 	private List<User> userList = new ArrayList<User>();
 	private static final int DESIRED_RESOURCES = 10;
 

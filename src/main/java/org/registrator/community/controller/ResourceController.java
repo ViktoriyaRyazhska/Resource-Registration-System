@@ -12,6 +12,7 @@ import org.registrator.community.exceptions.ResourceEntityNotFound;
 import org.registrator.community.service.*;
 import org.registrator.community.validator.ResourceDTOValidator;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -28,8 +29,7 @@ import java.util.*;
 @RequestMapping(value = "/registrator/resource")
 public class ResourceController {
 
-    @Autowired
-    private Logger logger;
+    private static final Logger logger = LoggerFactory.getLogger(ResourceController.class);
 
     @Autowired
     private ResourceDTOValidator validator;
