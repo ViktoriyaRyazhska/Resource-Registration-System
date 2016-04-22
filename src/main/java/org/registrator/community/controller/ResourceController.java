@@ -10,7 +10,6 @@ import org.registrator.community.dto.json.SearchResultJson;
 import org.registrator.community.entity.*;
 import org.registrator.community.exceptions.ResourceEntityNotFound;
 import org.registrator.community.service.*;
-import org.registrator.community.utils.HttpUtils;
 import org.registrator.community.validator.ResourceDTOValidator;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -147,7 +146,7 @@ public class ResourceController {
      */
     @ExceptionHandler(ResourceEntityNotFound.class)
     public ModelAndView handleResourceEntityNotFound(HttpServletRequest request, ResourceEntityNotFound exception) {
-        logger.warn("Request: " + HttpUtils.getFullRequestURL(request)
+        logger.warn("Request: " + request.getRequestURL()
                 + " raised " + exception.getClass().getName());
 
         ModelAndView mav = new ModelAndView();
