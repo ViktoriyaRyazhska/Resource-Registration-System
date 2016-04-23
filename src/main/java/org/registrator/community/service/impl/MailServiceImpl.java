@@ -11,6 +11,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import org.apache.velocity.app.VelocityEngine;
+import org.registrator.community.dto.SmtpParametersDTO;
 import org.registrator.community.entity.SmtpParameters;
 import org.registrator.community.mailer.ReloadableMailSender;
 import org.registrator.community.service.MailService;
@@ -19,7 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.scheduling.annotation.Async;
@@ -135,8 +135,8 @@ public class MailServiceImpl implements MailService{
     }
 
     @Override
-    public boolean testConnection(SmtpParameters parameters) {
-        return mailSender.testConnection(parameters);
+    public boolean testConnection(SmtpParametersDTO parameters) {
+        return mailSender.testConnection(SmtpParameters.from(parameters));
     }
 
     @Override

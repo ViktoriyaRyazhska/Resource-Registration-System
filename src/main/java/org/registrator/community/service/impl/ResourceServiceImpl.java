@@ -44,6 +44,7 @@ import org.registrator.community.service.ResourceService;
 import org.registrator.community.service.SettingsService;
 import org.registrator.community.service.UserService;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -63,8 +64,7 @@ import javax.transaction.Transactional;
 @Service
 public class ResourceServiceImpl implements ResourceService {
 
-    @Autowired
-    private Logger logger;
+    private static final Logger logger = LoggerFactory.getLogger(ResourceServiceImpl.class);
 
     @Autowired
     private ResourceRepository resourceRepository;

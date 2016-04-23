@@ -43,17 +43,11 @@ public class CommunityServiceTest {
 	@Mock
     private UserService userService;
 	
-	private Logger logger;
+	private static final Logger logger = LoggerFactory.getLogger(CommunityServiceTest.class);
 
 	@BeforeMethod
     public void init() throws IllegalArgumentException, IllegalAccessException {
         MockitoAnnotations.initMocks(this);
-        
-        // inject logger into tested service
-        logger = LoggerFactory.getLogger("");
-        MemberModifier
-            .field(CommunityServiceImpl.class, "logger")
-            .set(communityService, logger);
         
         tc = new TerritorialCommunity();
         tc.setName(NAME);

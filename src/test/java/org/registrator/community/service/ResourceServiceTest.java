@@ -97,7 +97,7 @@ public class ResourceServiceTest   {
     @Mock
     private ResourceFindByParams resourceFindByParams;
 
-    private Logger logger;
+    private static final Logger logger = LoggerFactory.getLogger(ResourceDiscreteValueServiceTest.class);
 	private String ownerLogin = "user";
     private LinearParameter linearParameter;
     private ResourceLinearValue linearValue;
@@ -122,12 +122,6 @@ public class ResourceServiceTest   {
         resourceService = new ResourceServiceImpl();
 
         MockitoAnnotations.initMocks(this);
-
-        // inject logger into tested service
-        logger = LoggerFactory.getLogger("");
-        MemberModifier
-        	.field(resourceService.getClass(), "logger")
-            .set(resourceService, logger);
 
         // mock dependencies of ResourceService
     	validResource = mock(Resource.class);

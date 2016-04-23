@@ -17,7 +17,6 @@ import javax.persistence.EntityManagerFactory;
 @ComponentScan({"org.registrator.community.dto",
     "org.registrator.community.service","org.registrator.community.validator"})
 @EnableTransactionManagement
-@Import(AsyncConfig.class)
 public class SpringRootConfig {
 
     @Bean(name = "transactionManager")

@@ -4,13 +4,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.registrator.community.config.LoggingConfig;
 import org.registrator.community.config.root.SpringRootConfig;
 import org.registrator.community.config.root.TestingConfiguration;
 import org.registrator.community.dao.VerificationTokenRepository;
 import org.registrator.community.entity.VerificationToken;
 import org.registrator.community.enumeration.TokenType;
-import org.registrator.community.service.VerificationTokenService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,14 +20,14 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 @ActiveProfiles("testing")
-@ContextConfiguration(classes = { TestingConfiguration.class, LoggingConfig.class, SpringRootConfig.class })
+@ContextConfiguration(classes = { TestingConfiguration.class, SpringRootConfig.class })
 public class VerificationTokenServiceIT extends AbstractTestNGSpringContextTests {
 	@Autowired
 	private VerificationTokenRepository verificationTokenRepository;
 	@Autowired
 	private VerificationTokenService verificationTokenService;
 	
-	private Logger logger = LoggerFactory.getLogger(VerificationTokenService.class);
+	private static final Logger logger = LoggerFactory.getLogger(VerificationTokenService.class);
 	private Date date = new Date();
 	private List<VerificationToken> cTokenList = new ArrayList<VerificationToken>();
 	private static final int DESIRED_RESOURCES = 10;

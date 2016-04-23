@@ -3,6 +3,7 @@ package org.registrator.community.service;
 import java.util.List;
 import java.util.Map;
 
+import org.registrator.community.dto.SmtpParametersDTO;
 import org.registrator.community.entity.SmtpParameters;
 
 public interface MailService {
@@ -15,7 +16,7 @@ public interface MailService {
 	
 	void sendBatchResetedPasswordMail(List<Map<String, Object>> listTemplateVariables);
 
-    boolean testConnection(SmtpParameters parameters);
+    boolean testConnection(SmtpParametersDTO parameters);
 
 	void applyNewParameters(SmtpParameters smtpParameters);
 }

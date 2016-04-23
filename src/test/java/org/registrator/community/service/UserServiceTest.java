@@ -187,7 +187,6 @@ public class UserServiceTest {
 	@BeforeMethod
 	public void beforeMethod() throws IllegalArgumentException, IllegalAccessException {
 		MockitoAnnotations.initMocks(this);
-		MemberModifier.field(userService.getClass(), "logger").set(userService, LoggerFactory.getLogger(UserServiceTest.class));
 
 		// initialize test data before each method
 		Role roleUser = new Role(RoleType.USER, "description");

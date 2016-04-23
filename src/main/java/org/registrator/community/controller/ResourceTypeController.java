@@ -5,6 +5,7 @@ import java.util.List;
 import org.registrator.community.entity.ResourceType;
 import org.registrator.community.service.ResourceTypeService;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping(value = "/registrator/resourcetypes/")
 public class ResourceTypeController {
 
-    @Autowired
-    private Logger logger;
+    private static final Logger logger = LoggerFactory.getLogger(ResourceTypeController.class);
     @Autowired
     private ResourceTypeService resourceTypeService;
     
