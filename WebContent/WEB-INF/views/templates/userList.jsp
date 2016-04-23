@@ -8,8 +8,16 @@
  href="<c:url value='/resource/css/suggestion.css'/>">
 <link rel="stylesheet" type="text/css"
  href="<c:url value='/resource/css/cssload.css'/>">
-<script
- src="<c:url value='/resource/js/lib/jquery.autocomplete.min.js'/>"></script>
+  <link rel="stylesheet" type="text/css"
+ href="https://cdn.datatables.net/1.10.11/css/jquery.dataTables.min.css">
+ <link rel="stylesheet" type="text/css"
+ href="https://cdn.datatables.net/responsive/2.0.2/css/responsive.dataTables.min.css">
+<script src="<c:url value='/resource/js/lib/jquery.autocomplete.min.js'/>"></script>
+ <script src="https://cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
+ <script src="https://cdn.datatables.net/responsive/2.0.2/js/dataTables.responsive.min.js"></script>
+ <script src="<c:url value='/resource/js/asearch_row.js'/>"></script>
+
+
 <c:if test="${not empty tableSetting.script}">
  <script src="<c:url value='/resource/js/${tableSetting.script}.js'/>"></script>
 </c:if>
@@ -24,11 +32,11 @@
    </h4>
   </div>
 
-  <div class="dataTable_wrapper">
+  <div class="dataTable_wrapper" style="overflow:hidden;">
    <tiles:insertAttribute name="baseActionsMenu" />
 
    <table id="example"
-    class="table table-striped table-bordered table-hover">
+    class="table table-striped table-bordered table-hover" width="100%">
     <thead>
      <tr>
       <c:forEach items="${tableSetting.columns}" var="entry">
@@ -41,7 +49,7 @@
       <c:forEach items="${tableSetting.columns}" var="entry"
        varStatus="status">
        <c:if test="${entry.value.type eq 'search'}">
-        <th>
+        <th class="search_element">
          <div class="form-group">
           <div class="col-md-12" style="padding: 0">
            <input type="hidden" id="searchTypeIndex${entry.key}"
@@ -53,11 +61,15 @@
         </th>
        </c:if>
        <c:if test="${entry.value.type eq 'status'}">
-        <th>
+        <th class="search_element">
          <div class="form-group">
           <div class="col-md-12" style="padding: 0">
            <input type="hidden" id="searchTypeIndex${entry.key}"
             name="category" value="statusType" /> 
+            
+            <div id="toggle_dt">
+  Click here
+</div>
             
             <input maxlength="50"
             id="inputIndex${entry.key}" class="form-control"
@@ -67,7 +79,7 @@
         </th>
        </c:if>
        <c:if test="${entry.value.type eq 'role'}">
-        <th>
+        <th class="search_element">
          <div class="form-group">
             <input type="hidden" id="searchTypeIndex${entry.key}"
             name="category" value="roleType" /> 
@@ -85,7 +97,7 @@
        </c:if>
 
       </c:forEach>
-      <th><input type="submit" id="bth-search" class="btn btn-sm btn-primary" value='<spring:message code="label.table.search"/>' /></th>
+      <th class="search_element"><input type="submit" id="bth-search" class="btn btn-sm btn-primary" value='<spring:message code="label.table.search"/>' /></th>
      </tr>
     </tfoot>
    </table>
@@ -102,6 +114,8 @@ var actions = $("#actionList");
 jQuery(document).ready(function($) {
     table = $('#example').DataTable({
          "searching": false,
+         "bSortCellsTop": true,
+         "responsive": true,
          "bSort" : true,
          "bDestroy": true,
          "order": [[ 3, "asc" ]],
@@ -162,7 +176,6 @@ jQuery(document).ready(function($) {
                       },
                  </c:if>
               </c:forEach>
-              
              ],
              "ajax": {
                 "url":"${tableSetting.url}",
