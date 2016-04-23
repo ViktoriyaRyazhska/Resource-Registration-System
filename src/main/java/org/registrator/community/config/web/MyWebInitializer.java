@@ -5,6 +5,7 @@ import javax.servlet.Filter;
 
 import org.registrator.community.config.AdditionalAppConfig;
 import org.registrator.community.config.AspectConfig;
+import org.registrator.community.config.AsyncConfig;
 import org.registrator.community.config.SecurityConfiguration;
 import org.registrator.community.config.root.DevelopmentConfiguration;
 import org.registrator.community.config.root.SpringRootConfig;
@@ -14,6 +15,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
+
 public class MyWebInitializer extends
         AbstractAnnotationConfigDispatcherServletInitializer  {
 
@@ -21,7 +23,7 @@ public class MyWebInitializer extends
     protected Class<?>[] getRootConfigClasses() {
         return new Class[] { SpringRootConfig.class,DevelopmentConfiguration.class
                 ,TestingConfiguration.class ,SecurityConfiguration.class
-                , AdditionalAppConfig.class };
+                , AdditionalAppConfig.class, AsyncConfig.class };
     }
 
     @Override
@@ -36,7 +38,6 @@ public class MyWebInitializer extends
 
     @Override
     protected Filter[] getServletFilters() {
-
         CharacterEncodingFilter characterEncodingFilter = new CharacterEncodingFilter();
         characterEncodingFilter.setEncoding("UTF-8");
         characterEncodingFilter.setForceEncoding(true);

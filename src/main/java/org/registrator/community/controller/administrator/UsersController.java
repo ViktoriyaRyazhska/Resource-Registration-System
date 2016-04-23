@@ -50,7 +50,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 @RequestMapping(value = "/administrator/users/")
 public class UsersController {
-
     private static final Logger logger = LoggerFactory.getLogger(UsersController.class);
 
     @Autowired
@@ -70,10 +69,10 @@ public class UsersController {
     private TableSettingsFactory tableSettingsFactory;
 
     @Autowired
-    ResourceNumberJSONDTOValidator resourceNumberValidator;
+    private ResourceNumberJSONDTOValidator resourceNumberValidator;
     
     @Autowired
-    MassUserOpsValidator massUserOpsValidator;
+    private MassUserOpsValidator massUserOpsValidator;
 
     /**
      * Controller for showing information about user
