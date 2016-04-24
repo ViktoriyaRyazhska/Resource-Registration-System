@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
@@ -39,6 +40,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(authenticationProvider);
     }
+    
+    @Override
+    protected UserDetailsService userDetailsService() {
+        return userDetailsService;
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -51,6 +57,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                     .and()
                 .formLogin()
+                .successHandler(savedRequestAwareAuthenticationSuccessHandler())
                 .loginPage("/login")
                 .permitAll()
                 .failureUrl("/login?error")
@@ -82,5 +89,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         JdbcTokenRepositoryImpl tokenRepositoryImpl = new JdbcTokenRepositoryImpl();
         tokenRepositoryImpl.setDataSource(dataSource);
         return tokenRepositoryImpl;
+    }
+    
+    @Bean
+    public SavedRequestAwareAuthenticationSuccessHandler 
+                savedRequestAwareAuthenticationSuccessHandler() {
+        
+               SavedRequestAwareAuthenticationSuccessHandler auth 
+                    = new SavedRequestAwareAuthenticationSuccessHandler();
+        auth.setTargetUrlParameter("targetUrl");
+        return auth;
     }
 }
