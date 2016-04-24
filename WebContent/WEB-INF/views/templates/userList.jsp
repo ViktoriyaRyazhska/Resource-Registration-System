@@ -4,18 +4,20 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c'%>
 
-<link rel="stylesheet" type="text/css"
- href="<c:url value='/resource/css/suggestion.css'/>">
-<link rel="stylesheet" type="text/css"
- href="<c:url value='/resource/css/cssload.css'/>">
+<%-- styles --%>
   <link rel="stylesheet" type="text/css"
- href="https://cdn.datatables.net/1.10.11/css/jquery.dataTables.min.css">
- <link rel="stylesheet" type="text/css"
- href="https://cdn.datatables.net/responsive/2.0.2/css/responsive.dataTables.min.css">
-<script src="<c:url value='/resource/js/lib/jquery.autocomplete.min.js'/>"></script>
- <script src="https://cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
- <script src="https://cdn.datatables.net/responsive/2.0.2/js/dataTables.responsive.min.js"></script>
- <script src="<c:url value='/resource/js/asearch_row.js'/>"></script>
+      href="<c:url value='/resource/css/suggestion.css'/>">
+  <link rel="stylesheet" type="text/css"
+      href="<c:url value='/resource/css/cssload.css'/>">
+  <link rel="stylesheet" type="text/css"
+      href="<c:url value='/resource/css/jquery.dataTables.min.css'/>">
+  <link rel="stylesheet" type="text/css"
+      href="<c:url value='/resource/css/responsive.dataTables.min.css'/>">
+<%-- scripts --%>
+  <script src="<c:url value='/resource/js/lib/jquery.autocomplete.min.js'/>"></script>
+  <script src="<c:url value='/resource/js/lib/jquery.dataTables.min.js'/>"></script>
+  <script src="<c:url value='/resource/js/lib/dataTables.responsive.min.js'/>"></script>
+  <script src="<c:url value='/resource/js/asearch_row.js'/>"></script>
 
 
 <c:if test="${not empty tableSetting.script}">
