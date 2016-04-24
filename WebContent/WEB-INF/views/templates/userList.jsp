@@ -215,7 +215,7 @@ jQuery(document).ready(function($) {
     }
     
     table.on( 'responsive-resize', function ( e, datatable, columns ) {
-      // calculate hidden the columns
+      // calculate hidden columns
       var count = columns.reduce( function (a,b) {
           return b === false ? a+1 : a;
       }, 0 );

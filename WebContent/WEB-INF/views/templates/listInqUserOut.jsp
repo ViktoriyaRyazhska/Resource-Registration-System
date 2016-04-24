@@ -6,7 +6,15 @@
 <%@ taglib prefix="sec"
   uri="http://www.springframework.org/security/tags"%>
 
-<script src="<c:url value='/resource/js/deleteProcuration.js'/>"></script>
+<%-- styles --%> 
+  <link rel="stylesheet" type="text/css"
+      href="<c:url value='/resource/css/jquery.dataTables.min.css'/>">
+  <link rel="stylesheet" type="text/css"
+      href="<c:url value='/resource/css/responsive.dataTables.min.css'/>">
+<%-- scripts --%> 
+  <script src="<c:url value='/resource/js/lib/jquery.dataTables.min.js'/>"></script>
+  <script src="<c:url value='/resource/js/lib/dataTables.responsive.min.js'/>"></script>
+  <script src="<c:url value='/resource/js/deleteProcuration.js'/>"></script>
 
 <div style="text-align: center;">
   <h4>
@@ -15,7 +23,7 @@
 </div>
 
 
-<table id="datatable" class="table display">
+<table id="datatable" class="display">
   <thead>
     <tr>
       <th><spring:message code="label.inquiry.date" /></th>
@@ -23,7 +31,7 @@
       <sec:authorize access="hasRole('USER')">
         <th><spring:message code="label.resource.registrator" /></th>
       </sec:authorize>
-      <th hidden="true"><spring:message
+      <th hidden="true" class="never"><spring:message
           code="label.inquiry.inquiryType" /></th>
       <th><spring:message code="label.resource.identifier" /></th>
       <th><spring:message code="label.restype.actions" /></th>
@@ -48,23 +56,23 @@
               ${inquiryUserOut.resourceIdentifier} </a></td>
           <td>
             <div class="block">
-              <sec:authorize access="hasRole('REGISTRATOR')">
-                <a
-                  href="<c:url value='/inquiry/add/delete/${inquiryUserOut.inquiryId}' />"
-                  class="btn btn-danger" role="button"
-                  id="deleteInquiry"> <spring:message
-                    code="label.restype.delete" /></a>
-              </sec:authorize>
+<%--               <sec:authorize access="hasRole('REGISTRATOR')"> --%>
+<!--                 <a -->
+<%--                   href="<c:url value='/inquiry/add/delete/${inquiryUserOut.inquiryId}' />" --%>
+<!--                   class="btn btn-danger" role="button" -->
+<%--                   id="deleteInquiry"> <spring:message --%>
+<%--                     code="label.restype.delete" /></a> --%>
+<%--               </sec:authorize> --%>
               <a
                 href="<c:url value='/inquiry/add/printOutput/${inquiryUserOut.inquiryId}' />"
                 class="btn btn-primary" role="button"> <spring:message
                   code="label.inquiry.print" /></a>
-              <sec:authorize access="hasRole('REGISTRATOR')">
-                <a
-                  href="<c:url value='/inquiry/add/printExtract/${inquiryUserOut.inquiryId}' />"
-                  class="btn btn-primary" role="button"> <spring:message
-                    code="label.inquiry.printExtract" /></a>
-              </sec:authorize>
+<%--               <sec:authorize access="hasRole('REGISTRATOR')"> --%>
+<!--                 <a -->
+<%--                   href="<c:url value='/inquiry/add/printExtract/${inquiryUserOut.inquiryId}' />" --%>
+<%--                   class="btn btn-primary" role="button"> <spring:message --%>
+<%--                     code="label.inquiry.printExtract" /></a> --%>
+<%--               </sec:authorize> --%>
 
             </div>
           </td>
@@ -74,9 +82,45 @@
   </tbody>
 </table>
 
+<style>
+.nowrap {
+/*     white-space: nowrap; */
+}
+
+</style>
+
 <script type="text/javascript">
-<!--
-$("#datatable").DataTable();
-//-->
+jQuery(document).ready(function($) {
+  table = $('#datatable').DataTable({
+    "responsive": true,
+    "ordering": false,
+    "bAutoWidth": false,
+    "columnDefs": [
+        { responsivePriority: 1, targets: 0 }, 
+        { responsivePriority: 2, targets: -2 } // object registration number
+    ]
+  });
+  
+  table.on( 'responsive-resize', function ( e, datatable, columns ) {
+      // change detail view
+      if($('.dtr-data .nowrap').length>0){
+        $('.dtr-data .nowrap').removeClass('nowrap');
+      }
+  });
+  
+  table.on( 'responsive-display', function ( e, datatable, row, showHide, update ) {
+    if($('.dtr-data .nowrap').length>0){
+      $('.dtr-data .nowrap').removeClass('nowrap');
+    }
+  } );
+  
+  
+  
+});
+
+
+
+
+
 </script>
 
