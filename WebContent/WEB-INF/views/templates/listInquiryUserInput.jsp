@@ -71,6 +71,8 @@
 
 </table>
 
+<div style="clear:both"></div>
+
 <script type="text/javascript">
 jQuery(document).ready(function($) {
   table = $('#datatable').DataTable({

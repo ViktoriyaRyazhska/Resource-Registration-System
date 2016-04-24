@@ -22,6 +22,7 @@
   </h4>
 </div>
 
+<div style="width: 90%; margin: 0 auto;">
 
 <table id="datatable" class="display">
   <thead>
@@ -55,24 +56,28 @@
             href="<c:url value='/registrator/resource/get?id={inquiryUserOut.resourceIdentifier}' />">
               ${inquiryUserOut.resourceIdentifier} </a></td>
           <td>
-            <div class="block">
-<%--               <sec:authorize access="hasRole('REGISTRATOR')"> --%>
-<!--                 <a -->
-<%--                   href="<c:url value='/inquiry/add/delete/${inquiryUserOut.inquiryId}' />" --%>
-<!--                   class="btn btn-danger" role="button" -->
-<%--                   id="deleteInquiry"> <spring:message --%>
-<%--                     code="label.restype.delete" /></a> --%>
-<%--               </sec:authorize> --%>
-              <a
+            <%-- .nowrap is defined inside system.css --%>
+            <div class="block nowrap">
+              <sec:authorize access="hasRole('REGISTRATOR')">
+                <%-- .inq-act is defined inside system.css --%>
+                <a
+                  href="<c:url value='/inquiry/add/delete/${inquiryUserOut.inquiryId}' />"
+                  class="btn btn-danger inq-act" role="button"
+                  id="deleteInquiry"> <spring:message
+                    code="label.restype.delete" /></a> 
+             </sec:authorize> 
+             <%-- .inq-act is defined inside system.css --%>
+             <a
                 href="<c:url value='/inquiry/add/printOutput/${inquiryUserOut.inquiryId}' />"
-                class="btn btn-primary" role="button"> <spring:message
-                  code="label.inquiry.print" /></a>
-<%--               <sec:authorize access="hasRole('REGISTRATOR')"> --%>
-<!--                 <a -->
-<%--                   href="<c:url value='/inquiry/add/printExtract/${inquiryUserOut.inquiryId}' />" --%>
-<%--                   class="btn btn-primary" role="button"> <spring:message --%>
-<%--                     code="label.inquiry.printExtract" /></a> --%>
-<%--               </sec:authorize> --%>
+                class="btn btn-primary inq-act" role="button"> <spring:message
+                   code="label.inquiry.print" /></a>
+             <sec:authorize access="hasRole('REGISTRATOR')">
+                <%-- .inq-act is defined inside system.css --%>
+                <a
+                  href="<c:url value='/inquiry/add/printExtract/${inquiryUserOut.inquiryId}' />"
+                  class="btn btn-primary inq-act" role="button"> <spring:message
+                     code="label.inquiry.printExtract" /></a>
+             </sec:authorize> 
 
             </div>
           </td>
@@ -82,12 +87,9 @@
   </tbody>
 </table>
 
-<style>
-.nowrap {
-/*     white-space: nowrap; */
-}
+</div>
 
-</style>
+<div style="clear:both"></div>
 
 <script type="text/javascript">
 jQuery(document).ready(function($) {
@@ -95,25 +97,21 @@ jQuery(document).ready(function($) {
     "responsive": true,
     "ordering": false,
     "bAutoWidth": false,
+    "bSortCellsTop": true,
     "columnDefs": [
         { responsivePriority: 1, targets: 0 }, 
         { responsivePriority: 2, targets: -2 } // object registration number
     ]
   });
   
-  table.on( 'responsive-resize', function ( e, datatable, columns ) {
-      // change detail view
-      if($('.dtr-data .nowrap').length>0){
-        $('.dtr-data .nowrap').removeClass('nowrap');
-      }
-  });
-  
   table.on( 'responsive-display', function ( e, datatable, row, showHide, update ) {
     if($('.dtr-data .nowrap').length>0){
       $('.dtr-data .nowrap').removeClass('nowrap');
+      $('.inq-act').addClass('detail-view');
+    } else {
+      $('.inq-act').removeClass('detail-view');
     }
-  } );
-  
+  });
   
   
 });

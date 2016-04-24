@@ -34,7 +34,7 @@
    </h4>
   </div>
 
-  <div class="dataTable_wrapper" style="overflow:hidden;">
+  <div class="dataTable_wrapper" style="margin-bottom: 32px;">
    <tiles:insertAttribute name="baseActionsMenu" />
 
    <table id="example"
@@ -108,6 +108,8 @@
  </c:if>
 
 </div>
+
+<div style="clear:both"></div>
 
 <script>
 var table;
@@ -231,5 +233,7 @@ jQuery(document).ready(function($) {
     });
     
 });
+
+
 
 </script>

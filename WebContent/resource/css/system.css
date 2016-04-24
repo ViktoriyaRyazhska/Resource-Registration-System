@@ -197,3 +197,11 @@ label {
   font-size: 2em;
   cursor: pointer;
 }
+
+.nowrap {
+   white-space: nowrap; 
+}
+.detail-view {
+  margin-top: 2px;
+  width: 100%;
+}
