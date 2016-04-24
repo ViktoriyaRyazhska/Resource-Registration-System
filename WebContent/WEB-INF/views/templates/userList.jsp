@@ -45,7 +45,7 @@
      </tr>
     </thead>
     <tfoot style="display: table-header-group">
-     <tr>
+     <tr class="searchable">
       <c:forEach items="${tableSetting.columns}" var="entry"
        varStatus="status">
        <c:if test="${entry.value.type eq 'search'}">
@@ -67,12 +67,12 @@
            <input type="hidden" id="searchTypeIndex${entry.key}"
             name="category" value="statusType" /> 
             
-            <div id="toggle_dt">
-  Click here
-</div>
+           <div id="toggle_dt">
+            <%-- search-toggle is defined inside system.css --%>
+            <span class="glyphicon glyphicon-align-justify search-toggle hidden" aria-hidden="true"></span>
+           </div>
             
-            <input maxlength="50"
-            id="inputIndex${entry.key}" class="form-control"
+           <input maxlength="50" id="inputIndex${entry.key}" class="form-control"
             type="hidden" value="${statusType}" />
           </div>
          </div>
@@ -97,7 +97,7 @@
        </c:if>
 
       </c:forEach>
-      <th class="search_element"><input type="submit" id="bth-search" class="btn btn-sm btn-primary" value='<spring:message code="label.table.search"/>' /></th>
+      <th class="search_element"><input type="submit" id="bth-search" class="btn btn-sm btn-primary" value='<spring:message code="label.table.search"/>'/></th>
      </tr>
     </tfoot>
    </table>
@@ -177,6 +177,10 @@ jQuery(document).ready(function($) {
                  </c:if>
               </c:forEach>
              ],
+             "columnDefs": [
+                          { responsivePriority: 1, targets: 0 },
+                          { responsivePriority: 2, targets: -1 }
+             ],
              "ajax": {
                 "url":"${tableSetting.url}",
                 "type":"POST",
@@ -184,7 +188,7 @@ jQuery(document).ready(function($) {
                 contentType: 'application/json; charset=utf-8',
                 "data": function ( data ) {
                   addSearchValue(data);
-                $("#example_wrapper").prepend(actions);
+                  $("#example_wrapper").prepend(actions);
                   return JSON.stringify(data);
                 }
             }
@@ -193,15 +197,37 @@ jQuery(document).ready(function($) {
     $("#example_wrapper").prepend(actions);
     
     function addSearchValue(data) {
-        data.tableName = '${tableSetting.tableName}';
-        console.log("data.tableName = "+data.tableName);
-        for (var i = 0; i < data.columns.length; i++) {
-            column = data.columns[i];
-            column.search.compareSign = $('#searchTypeIndex'+i).val();
-            column.search.value = $('#inputIndex'+i).val();
-        }
+      data.tableName = '${tableSetting.tableName}';
+      console.log("data.tableName = "+data.tableName);
+      for (var i = 0; i < data.columns.length; i++) {
+          column = data.columns[i];
+          column.search.compareSign = $('#searchTypeIndex'+i).val();
+          column.search.value = $('#inputIndex'+i).val();
+          // additional row for mobile version, x - extended menu
+          if($('#searchTypeIndex'+i+'x').length > 0){
+            column.search.compareSign = $('#searchTypeIndex'+i+'x').val();
+            column.search.value = $('#inputIndex'+i+'x').val();
+          }
+          
+      }
     }
-  
+    
+    table.on( 'responsive-resize', function ( e, datatable, columns ) {
+      // calculate hidden the columns
+      var count = columns.reduce( function (a,b) {
+          return b === false ? a+1 : a;
+      }, 0 );
+      // show / hide toggle button
+      if(count>0){
+        $('#toggle_dt > .glyphicon').removeClass('hidden');
+      }else{
+        $('#toggle_dt > .glyphicon').addClass('hidden');
+        removeExtSearchFields();
+      }
+      // signal event
+      $( document ).trigger( "table-resize-event" );
+    });
     
 });
+
 </script>

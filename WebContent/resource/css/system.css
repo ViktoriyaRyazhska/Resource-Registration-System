@@ -192,3 +192,8 @@ label {
 .error{
   color:red;
 }
+
+.search-toggle {
+  font-size: 2em;
+  cursor: pointer;
+}
