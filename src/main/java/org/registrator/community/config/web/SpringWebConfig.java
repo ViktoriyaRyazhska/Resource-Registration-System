@@ -27,28 +27,24 @@ public class SpringWebConfig extends WebMvcConfigurerAdapter {
     @Autowired
     private MessageSource messageSource;
 
+    @Autowired
+    private LocaleChangeInterceptor localeChangeInterceptor;
+
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/resource/**").addResourceLocations("/resource/");
     }
 
-    @Bean
-    public LocaleResolver localeResolver() {
-        CookieLocaleResolver clr = new CookieLocaleResolver();
-        clr.setDefaultLocale(new Locale("uk"));
-        return clr;
-    }
-
-    @Bean
+/*    @Bean
     public LocaleChangeInterceptor localeChangeInterceptor() {
         LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();
         localeChangeInterceptor.setParamName("lang");
         return localeChangeInterceptor;
-    }
+    }*/
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(localeChangeInterceptor());
+        registry.addInterceptor(localeChangeInterceptor);
     }
 
     @Bean

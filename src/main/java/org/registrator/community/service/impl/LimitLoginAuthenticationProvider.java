@@ -56,10 +56,10 @@ public class LimitLoginAuthenticationProvider extends DaoAuthenticationProvider 
 			boolean isAccountNonExpired = (user.getAccountNonExpired() == 1);
 			Authentication auth = super.authenticate(authentication);
 
-			/*if (!isAccountNonExpired){
+			if (!isAccountNonExpired){
                 System.out.println("AccountExpiredException");
                 throw new AccountExpiredException(messageSource.getMessage("label.expired", null, LocaleContextHolder.getLocale()));
-            }*/
+            }
 
             if (user.getStatus() == UserStatus.BLOCK) {
                 System.out.println("UserStatus.BLOCK");
