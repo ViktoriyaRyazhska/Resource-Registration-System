@@ -16,49 +16,56 @@
  */
 package org.registrator.community.controller;
 
-import org.apache.juli.logging.Log;
-import org.apache.juli.logging.LogFactory;
-import org.springframework.stereotype.Controller;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.context.request.RequestContextHolder;
 
 import javax.websocket.*;
+import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-@ServerEndpoint(value = "/websocket/chat")
+@ServerEndpoint(value = "/websocket/chat/{sessionId}")
+@PreAuthorize("hasRole('ROLE_ANONYMOUS') or hasRole('ROLE_ADMIN')")
 public class ChatAnnotation {
 
-    private static final Log log = LogFactory.getLog(ChatAnnotation.class);
+    private static final Logger logger = LoggerFactory.getLogger(ChatAnnotation.class);
 
-    private static final String GUEST_PREFIX = "Guest";
-    private static final AtomicInteger connectionIds = new AtomicInteger(0);
-    private static final Set<ChatAnnotation> connections =
-            new CopyOnWriteArraySet<ChatAnnotation>();
+    private static final Map<String, List<ChatAnnotation>> connections = new ConcurrentHashMap<>();
 
-    private final String nickname;
+    private String sessionId;
     private Session session;
 
     public ChatAnnotation() {
-        nickname = GUEST_PREFIX + connectionIds.getAndIncrement();
+
     }
 
-
     @OnOpen
-    public void start(Session session) {
+    public void start(@PathParam("sessionId") String sessionId, Session session) {
         this.session = session;
-        connections.add(this);
-        String message = String.format("* %s %s", nickname, "has joined.");
+        this.sessionId = sessionId;
+
+        List<ChatAnnotation> list = connections.get(sessionId);
+        if (list == null) {
+            list = new CopyOnWriteArrayList<>();
+        }
+        list.add(this);
+        connections.put(sessionId, list);
+        String message = String.format("* %s %s", this.sessionId, "has joined.");
         broadcast(message);
     }
 
 
     @OnClose
     public void end() {
-        connections.remove(this);
+        connections.remove(sessionId);
         String message = String.format("* %s %s",
-                nickname, "has disconnected.");
+                sessionId, "has disconnected.");
         broadcast(message);
     }
 
@@ -73,27 +80,29 @@ public class ChatAnnotation {
 
     @OnError
     public void onError(Throwable t) throws Throwable {
-        log.error("Chat Error: " + t.toString(), t);
+        logger.error("Chat Error: " + t.toString(), t);
     }
 
 
     private static void broadcast(String msg) {
-        for (ChatAnnotation client : connections) {
-            try {
-                synchronized (client) {
-                    client.session.getBasicRemote().sendText(msg);
-                }
-            } catch (IOException e) {
-                log.debug("Chat Error: Failed to send message to client", e);
-                connections.remove(client);
+        for (Map.Entry<String, List<ChatAnnotation>> clientEntry : connections.entrySet()) {
+            for (ChatAnnotation client: clientEntry.getValue()) {
                 try {
-                    client.session.close();
-                } catch (IOException e1) {
-                    // Ignore
+                    synchronized (client) {
+                        client.session.getBasicRemote().sendText(msg);
+                    }
+                } catch (IOException e) {
+                    logger.debug("Chat Error: Failed to send message to client", e);
+                    connections.remove(client.sessionId);
+                    try {
+                        client.session.close();
+                    } catch (IOException e1) {
+                        // Ignore
+                    }
+                    String message = String.format("* %s %s",
+                            client.sessionId, "has been disconnected.");
+                    broadcast(message);
                 }
-                String message = String.format("* %s %s",
-                        client.nickname, "has been disconnected.");
-                broadcast(message);
             }
         }
     }

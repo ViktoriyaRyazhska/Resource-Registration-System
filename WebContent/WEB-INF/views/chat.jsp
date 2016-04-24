@@ -1,4 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+         pageEncoding="UTF-8"%>
+<%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c'%>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <!--
   Licensed to the Apache Software Foundation (ASF) under one or more
   contributor license agreements.  See the NOTICE file distributed with
@@ -18,7 +21,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
     <title>Apache Tomcat WebSocket Examples: Chat</title>
-    <style type="text/css"><![CDATA[
+    <script src="<c:url value='/resource/js/lib/jquery-1.12.0.min.js'/>"></script>
+    <style type="text/css">
         input#chat {
             width: 410px
         }
@@ -41,8 +45,10 @@
             padding: 0;
             margin: 0;
         }
-    ]]></style>
-    <script type="application/javascript"><![CDATA[
+    </style>
+    <script type="application/javascript">
+        sessionID = '${pageContext.session.id}';
+
         var Chat = {};
 
         Chat.socket = null;
@@ -77,11 +83,11 @@
         });
 
         Chat.initialize = function() {
-            if (window.location.protocol == 'http:') {
-                Chat.connect('ws://' + window.location.host + '/registrator/websocket/chat');
-            } else {
-                Chat.connect('wss://' + window.location.host + '/registrator/websocket/chat');
+            var wsProtocol = 'ws://';
+            if (window.location.protocol == 'https:') {
+                wsProtocol = 'wss://';
             }
+            Chat.connect(wsProtocol + window.location.host + '/registrator/websocket/chat/' + sessionID);
         };
 
         Chat.sendMessage = (function() {
@@ -117,7 +123,7 @@
             }
         }, false);
 
-    ]]></script>
+    </script>
 </head>
 <body>
 <div class="noscript"><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Websockets rely on Javascript being enabled. Please enable

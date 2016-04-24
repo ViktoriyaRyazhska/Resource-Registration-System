@@ -262,4 +262,7 @@
 
  <definition name="errorPage404" template="/WEB-INF/views/error/errorPage404.jsp">
  </definition>
+
+ <definition name="chat" template="/WEB-INF/views/chat.jsp">
+ </definition>
 </tiles-definitions>
