@@ -39,6 +39,7 @@ import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * <p>This class works with PDF documents. It has methods to generate : </p>
@@ -79,6 +80,7 @@ public class PrintServiceImpl implements PrintService {
 	 * </p>
 	 */
 
+    @Transactional
 	@Override
 	public ByteArrayOutputStream printProcuration(Integer inquiryId) throws IOException, DocumentException {
 
@@ -285,6 +287,7 @@ public class PrintServiceImpl implements PrintService {
 	 * creates pdf document "Витяг"
 	 * </p>
 	 */
+    @Transactional
 	@Override
 	public ByteArrayOutputStream printExtract(Integer inquiryId) throws IOException, DocumentException{
 
@@ -973,6 +976,7 @@ public class PrintServiceImpl implements PrintService {
 	 * </p>
 	 */
 
+    @Transactional
 	@Override
 	public ByteArrayOutputStream printProcurationOnSubmitInfo(Integer inquiryId) throws DocumentException, IOException{
 
