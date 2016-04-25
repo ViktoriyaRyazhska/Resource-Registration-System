@@ -1,38 +1,29 @@
 package org.registrator.community.service;
 
-import org.testng.annotations.Test;
-
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.List;
-
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.registrator.community.dao.UserRepository;
-import org.slf4j.Logger;
-import org.registrator.community.entity.Address;
-import org.registrator.community.entity.PassportInfo;
 import org.registrator.community.entity.Role;
-import org.registrator.community.entity.TerritorialCommunity;
 import org.registrator.community.entity.User;
 import org.registrator.community.enumeration.RoleType;
 import org.registrator.community.enumeration.UserStatus;
 import org.registrator.community.service.impl.CronService;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CronServiceTest {
 	@InjectMocks
 	private CronService cronService = new CronService();
 	@Mock
 	private UserRepository userRepository;
-	@Mock
-	private Logger logger;
-	
+
 	@BeforeMethod
 	public void beforeMethod() {
 		MockitoAnnotations.initMocks(this);

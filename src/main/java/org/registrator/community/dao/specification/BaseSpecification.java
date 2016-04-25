@@ -22,7 +22,7 @@ public class BaseSpecification<T> implements Specification<T> {
 
   private final String searchType;
   
-  private Logger logger = LoggerFactory.getLogger(BaseSpecification.class);
+  private static final Logger logger = LoggerFactory.getLogger(BaseSpecification.class);
 
   public BaseSpecification(String searchField, String searchValue, String searchType) {
     this.searchField = searchField;

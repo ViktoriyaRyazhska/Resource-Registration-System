@@ -4,7 +4,6 @@ import org.registrator.community.entity.SmtpParameters;
 import org.registrator.community.util.Throwables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -119,14 +118,13 @@ public class ReloadableMailSenderImpl implements ReloadableMailSender {
         JavaMailSenderImpl sender = new JavaMailSenderImpl();
         sender.setDefaultEncoding("UTF-8");
         sender.setHost(smtpParameters.getHost());
-        String protocol = smtpParameters.getTlsEnabled() ? "smtps" : "smtp";
-        sender.setProtocol(protocol);
+        sender.setProtocol(smtpParameters.getProtocolString());
         sender.setPort(smtpParameters.getPort());
         sender.setUsername(smtpParameters.getUsername());
         sender.setPassword(smtpParameters.getPassword());
 
         Properties javaMailProperties = new Properties();
-        javaMailProperties.setProperty("mail.transport.protocol", protocol);
+        javaMailProperties.setProperty("mail.transport.protocol", smtpParameters.getProtocolString());
         javaMailProperties.setProperty("mail.smtp.auth", "true");
         javaMailProperties.setProperty("mail.smtp.starttls.enable", smtpParameters.getTlsEnabled() ? "true" : "false");
         javaMailProperties.setProperty("mail.smtp.socketFactory.fallback", "true");

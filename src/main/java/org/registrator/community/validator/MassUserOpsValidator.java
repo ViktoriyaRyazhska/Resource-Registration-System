@@ -13,6 +13,7 @@ import org.registrator.community.enumeration.RoleType;
 import org.registrator.community.enumeration.UIMessages;
 import org.registrator.community.service.CommunityService;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -29,8 +30,7 @@ public class MassUserOpsValidator implements Validator {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private Logger logger;
+    private static final Logger logger = LoggerFactory.getLogger(MassUserOpsValidator.class);
 
     private List<User> userList = new ArrayList<User>();
     private List<Class<?>> supportedClasses = new ArrayList<Class<?>>();

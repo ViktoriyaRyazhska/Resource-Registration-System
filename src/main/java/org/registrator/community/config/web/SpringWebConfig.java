@@ -2,14 +2,17 @@ package org.registrator.community.config.web;
 
 import java.util.Locale;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.validation.Validator;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.LocaleResolver;
+import org.springframework.web.servlet.config.annotation.AsyncSupportConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -24,33 +27,43 @@ import org.springframework.web.servlet.view.tiles3.TilesViewResolver;
 @ComponentScan({ "org.registrator.community.controller" })
 public class SpringWebConfig extends WebMvcConfigurerAdapter {
 
-    @Autowired
-    private MessageSource messageSource;
-
-    @Autowired
-    private LocaleChangeInterceptor localeChangeInterceptor;
-
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/resource/**").addResourceLocations("/resource/");
     }
 
-/*    @Bean
+    @Bean
+    public MessageSource messageSource() {
+        ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
+        messageSource.setBasename("resource/massages/messages");
+        //messageSource.setBasename("resource/massages");
+        messageSource.setDefaultEncoding("UTF-8");
+        return messageSource;
+    }
+
+    @Bean
+    public LocaleResolver localeResolver() {
+        CookieLocaleResolver clr = new CookieLocaleResolver();
+        clr.setDefaultLocale(new Locale("uk"));
+        return clr;
+    }
+
+    @Bean
     public LocaleChangeInterceptor localeChangeInterceptor() {
         LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();
         localeChangeInterceptor.setParamName("lang");
         return localeChangeInterceptor;
-    }*/
+    }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(localeChangeInterceptor);
+        registry.addInterceptor(localeChangeInterceptor());
     }
 
     @Bean
     public LocalValidatorFactoryBean validator() {
         LocalValidatorFactoryBean validatorFactoryBean = new LocalValidatorFactoryBean();
-        validatorFactoryBean.setValidationMessageSource(messageSource);
+        validatorFactoryBean.setValidationMessageSource(messageSource());
         return validatorFactoryBean;
     }
 

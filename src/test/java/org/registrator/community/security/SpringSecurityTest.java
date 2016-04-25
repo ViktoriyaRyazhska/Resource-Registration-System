@@ -5,7 +5,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.RunWith;
-import org.registrator.community.config.LoggingConfig;
 import org.registrator.community.config.root.SpringRootConfig;
 import org.registrator.community.config.root.TestingConfiguration;
 import org.registrator.community.service.PrintService;
@@ -13,6 +12,7 @@ import org.registrator.community.service.ResourceService;
 import org.registrator.community.service.ResourceTypeService;
 import org.registrator.community.service.UserService;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -24,12 +24,10 @@ import java.io.IOException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ActiveProfiles("testing")
-@ContextConfiguration(classes={TestingConfiguration.class,LoggingConfig.class,SpringRootConfig.class})
+@ContextConfiguration(classes={TestingConfiguration.class,SpringRootConfig.class})
 public class SpringSecurityTest {
 
-
-	@Autowired
-    private Logger logger;
+    private static final Logger logger = LoggerFactory.getLogger(SpringSecurityTest.class);
 	
 	@Autowired
 	public UserService userService;

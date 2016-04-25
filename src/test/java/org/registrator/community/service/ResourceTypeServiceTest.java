@@ -51,7 +51,7 @@ public class ResourceTypeServiceTest {
 	@InjectMocks
 	private ResourceTypeService resourceTypeService = new ResourceTypeServiceImpl();
 
-	private Logger logger = LoggerFactory.getLogger(resourceTypeService.getClass());
+	private static final Logger logger = LoggerFactory.getLogger(ResourceTypeServiceImpl.class);
 	private static final int DESIRED_RESOURCES = 10;
 	private int resId = 0;
 

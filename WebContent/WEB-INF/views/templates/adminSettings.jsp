@@ -72,7 +72,22 @@
               <label for="smtpPort"><spring:message code="label.admin.settings.smtp.port" /></label>
               <input id = "smtpPort" class="form-control numeric" name="smtpParameters.port" value="${settings.smtpParameters.port}">
             </div>
-            <div class="col-md-6">
+            <div class="col-md-3">
+              <label for="smtpProtocol"><spring:message code="label.admin.settings.smtp.protocol" /></label>
+              <select id="smtpProtocol" class="form-control" name="smtpParameters.protocol">
+              <c:choose>
+                <c:when test="${settings.smtpParameters.protocol eq 'SMTP'}">
+                  <option value="SMTP" selected>SMTP</option>
+                  <option value="SMTPS">SMTPS</option>
+                </c:when>
+                <c:otherwise>
+                  <option value="SMTP">SMTP</option>
+                  <option value="SMTPS" selected>SMTPS</option>
+                </c:otherwise>
+              </c:choose>
+              </select>
+            </div>
+            <div class="col-md-4">
               <br>
               <div class="checkbox" style="padding-left: 70px;"><form:checkbox path="smtpParameters.tlsEnabled" value="${settings.smtpParameters.tlsEnabled}"/>
                 <label for="smtpParameters.tlsEnabled1"><spring:message code="label.admin.settings.smtp.tls" /> </label>

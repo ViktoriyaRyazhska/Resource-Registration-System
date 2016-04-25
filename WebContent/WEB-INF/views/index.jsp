@@ -1,6 +1,10 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib uri="http://java.sun.com/jstl/core" prefix="c"%>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<jsp:useBean id="now" class="java.util.Date" />
+<fmt:formatDate var="year" value="${now}" pattern="yyyy" />
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -66,6 +70,6 @@
     height="300px">
 
   <button>Show more about this resource...</button>
-  <footer class="footer">Copyright Softserve 2015</footer>
+  <footer class="footer">Copyright Softserve ${year}</footer>
 </body>
 </html>

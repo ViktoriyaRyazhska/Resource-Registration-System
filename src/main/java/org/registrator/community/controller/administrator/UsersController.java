@@ -1,7 +1,7 @@
 package org.registrator.community.controller.administrator;
 
 import java.util.List;
-import java.util.Map;
+import java.util.Locale;
 
 import javax.validation.Valid;
 
@@ -24,13 +24,14 @@ import org.registrator.community.service.CommunityService;
 import org.registrator.community.service.RoleService;
 import org.registrator.community.service.UserService;
 import org.registrator.community.service.search.BaseSearchService;
-import org.registrator.community.service.search.TableColumnSetting;
 import org.registrator.community.service.search.TableSetting;
 import org.registrator.community.validator.MassUserOpsValidator;
 import org.registrator.community.validator.ResourceNumberJSONDTOValidator;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -49,9 +50,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 @RequestMapping(value = "/administrator/users/")
 public class UsersController {
-
-    @Autowired
-    private Logger logger;
+    private static final Logger logger = LoggerFactory.getLogger(UsersController.class);
 
     @Autowired
     private CommunityService communityService;
@@ -70,10 +69,13 @@ public class UsersController {
     private TableSettingsFactory tableSettingsFactory;
 
     @Autowired
-    ResourceNumberJSONDTOValidator resourceNumberValidator;
+    private ResourceNumberJSONDTOValidator resourceNumberValidator;
     
     @Autowired
-    MassUserOpsValidator massUserOpsValidator;
+    private MassUserOpsValidator massUserOpsValidator;
+    
+    @Autowired
+    private MessageSource messageSource;
 
     /**
      * Controller for showing information about user
@@ -209,8 +211,15 @@ public class UsersController {
         massUserOpsValidator.validate(roleTypeJson, result);
 
         if (result.hasErrors()) {
-            ObjectError objectError = result.getGlobalError();  
-            String msg = objectError.getCode();
+            ObjectError objectError;
+            String msg;
+            if (result.getGlobalErrorCount() > 0) {
+                objectError = result.getGlobalError();
+                msg = objectError.getCode();
+            } else {
+                objectError = result.getFieldError();
+                msg = objectError.getDefaultMessage();
+            }
     		ResponseEntity<String> response = new ResponseEntity<String>(msg, HttpStatus.BAD_REQUEST);
             
             logger.debug("end");
@@ -231,10 +240,16 @@ public class UsersController {
         
         logger.debug("begin");
         massUserOpsValidator.validate(communityParamJson, result);
-        
         if (result.hasErrors()) {
-            ObjectError objectError = result.getGlobalError();  
-            String msg = objectError.getCode();
+            ObjectError objectError;
+            String msg;
+            if (result.getGlobalErrorCount() > 0) {
+                objectError = result.getGlobalError();
+                msg = objectError.getCode();
+            } else {
+                objectError = result.getFieldError();
+                msg = objectError.getDefaultMessage();
+            }
     		ResponseEntity<String> response = new ResponseEntity<String>(msg, HttpStatus.BAD_REQUEST);
             logger.debug("end");
             return response;

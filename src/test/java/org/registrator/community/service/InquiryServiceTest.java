@@ -51,7 +51,7 @@ public class InquiryServiceTest {
 	@InjectMocks
 	private InquiryService inquiryService = new InquiryServiceImpl();
 
-	private Logger logger = LoggerFactory.getLogger(inquiryService.getClass());
+	private static final Logger logger = LoggerFactory.getLogger(InquiryServiceImpl.class);
 	private Date date = new Date();
 	private static final int DESIRED_RESOURCES = 10;
 	private int inquiryId = 0;

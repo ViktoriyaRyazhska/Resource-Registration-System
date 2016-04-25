@@ -1,6 +1,10 @@
 package org.registrator.community.entity;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.registrator.community.dto.SmtpParametersDTO;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -86,6 +90,17 @@ public class SmtpParameters {
 
     public void setTlsEnabled(boolean enableTLS) {
         this.tlsEnabled = enableTLS;
+    }
+
+    public static SmtpParameters from(SmtpParametersDTO smtpParameters) {
+        SmtpParameters result = new SmtpParameters();
+        result.host = smtpParameters.getHost();
+        result.username = smtpParameters.getUsername();
+        result.password = smtpParameters.getPassword();
+        result.protocol = Protocol.valueOf(smtpParameters.getProtocol());
+        result.port = Integer.valueOf(smtpParameters.getPort());
+
+        return result;
     }
 
     public String getProtocolString() {

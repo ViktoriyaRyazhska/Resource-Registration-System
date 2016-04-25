@@ -4,6 +4,7 @@ import org.registrator.community.dto.SettingsDTO;
 import org.registrator.community.service.MailService;
 import org.registrator.community.service.SettingsService;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.util.HashMap;
@@ -23,8 +25,7 @@ import java.util.TimeZone;
 @RequestMapping(value = "/administrator/")
 public class SettingsController {
 
-    @Autowired
-    private Logger logger;
+    private static final Logger logger = LoggerFactory.getLogger(SettingsController.class);
 
     @Autowired
     private SettingsService settingsService;
@@ -44,7 +45,9 @@ public class SettingsController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/settings", method = RequestMethod.GET)
     public String showSettings(Model model) {
-        model.addAttribute("settings", settingsService.getAllSettingsDTO());
+        if (!model.containsAttribute("settings")) {
+            model.addAttribute("settings", settingsService.getAllSettingsDTO());
+        }
         return "adminSettings";
     }
 
@@ -58,10 +61,10 @@ public class SettingsController {
     @RequestMapping(value = "/settings", method = RequestMethod.POST)
     public String changeSettings(@Valid @ModelAttribute SettingsDTO settings,
                                  BindingResult result,
-                                 Model model) {
+                                 RedirectAttributes redirectAttributes) {
         logger.debug("start changing settings");
 
-        model.addAttribute("settings", settings);
+        redirectAttributes.addFlashAttribute("settings", settings);
         timeZoneValidator.validate(settings, result);
         if (result.hasErrors()) {
             settings.setError(true);
@@ -80,8 +83,8 @@ public class SettingsController {
 
         logger.info("settings are successfully changed");
         settings.setSuccess(true);
-        model.addAttribute("settings", settings);
-        return "adminSettings";
+        redirectAttributes.addFlashAttribute("settings", settings);
+        return "redirect:settings";
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")

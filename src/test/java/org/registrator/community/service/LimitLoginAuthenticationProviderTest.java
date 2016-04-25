@@ -43,7 +43,7 @@ public class LimitLoginAuthenticationProviderTest {
 	@InjectMocks
 	private DaoAuthenticationProvider authenticationProviderService = new LimitLoginAuthenticationProvider();
 
-	private Logger logger = LoggerFactory.getLogger(authenticationProviderService.getClass());
+	private static final Logger logger = LoggerFactory.getLogger(LimitLoginAuthenticationProviderTest.class);
 	private List<User> userList = new ArrayList<User>();
 	private static final int DESIRED_RESOURCES = 10;
 
@@ -252,7 +252,7 @@ public class LimitLoginAuthenticationProviderTest {
 		authenticationProviderService.authenticate(auth);
 	}
 
-	@Test(dataProvider = "GeneratorForExpiredAccounts", priority = 3, expectedExceptions = LockedException.class)
+	@Test(dataProvider = "GeneratorForExpiredAccounts", priority = 3, expectedExceptions = {LockedException.class, BadCredentialsException.class})
 	public void testForAccountExpiredException(Authentication auth) {
 		authenticationProviderService.authenticate(auth);
 	}
