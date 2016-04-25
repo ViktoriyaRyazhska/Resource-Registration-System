@@ -44,6 +44,7 @@
 <script src="<c:url value='/resource/js/scripts.js'/>"></script>
 <!-- Our own css -->
 <link rel="stylesheet" href="<c:url value='/resource/css/system.css'/>">
+<link rel="stylesheet" href="<c:url value='/resource/css/messages.css'/>">
 
 </head>
 <body>

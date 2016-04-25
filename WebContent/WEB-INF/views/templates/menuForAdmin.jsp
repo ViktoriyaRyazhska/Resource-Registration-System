@@ -1,6 +1,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c'%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <nav class="navbar navbar-default" id="menubaradmin">
   <div class="container-fluid">
@@ -60,3 +61,16 @@
         });
 </script>
 
+<sec:authorize access="hasRole('ROLE_ADMIN')">
+  <script type="application/javascript">
+    //TODO RG change this to get id from server or using Spring WebSocket capability
+    sessionID = '${pageContext.session.id}';
+  </script>
+  <script src="<c:url value='/resource/js/webSocketMessaging.js'/>"></script>
+  <%--<link rel="stylesheet" href="<c:url value='/resource/css/messages.css'/>">--%>
+  <style>
+    .close-popup {
+      background-image: url("<c:url value='/resource/img/close.svg'/>");
+    }
+  </style>
+</sec:authorize>

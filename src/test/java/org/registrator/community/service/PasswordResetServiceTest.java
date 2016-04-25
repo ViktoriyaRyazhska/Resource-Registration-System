@@ -37,6 +37,8 @@ public class PasswordResetServiceTest {
     private String login = "firstLogin";
     private User user;
 
+    private String sessionId = "sessionID";
+
     @BeforeMethod
     public void init() {
         MockitoAnnotations.initMocks(this);
@@ -51,12 +53,12 @@ public class PasswordResetServiceTest {
 
         when(userService.findUserByLogin(login)).thenReturn(user);
 
-        passwordChangeService.batchPasswordReset(batch);
+        passwordChangeService.batchPasswordReset(batch, sessionId);
 
         verify(userService).findUserByLogin(login);
         verify(userPasswordEncoder).encode(anyString());
         verify(userService).updateUser(user);
-        verify(mailService).sendBatchResetedPasswordMail(Mockito.anyList());
+        verify(mailService).sendBatchResetedPasswordMail(Mockito.anyList(), sessionId);
     }
 
     @Test
@@ -64,12 +66,12 @@ public class PasswordResetServiceTest {
 
         when(userService.findUserByLogin(login)).thenReturn(null);
 
-        passwordChangeService.batchPasswordReset(batch);
+        passwordChangeService.batchPasswordReset(batch, sessionId);
 
         verify(userService).findUserByLogin(login);
         verify(userPasswordEncoder, never()).encode(anyString());
         verify(userService, never()).updateUser(user);
-        verify(mailService, never()).sendBatchResetedPasswordMail(Mockito.anyList());
+        verify(mailService, never()).sendBatchResetedPasswordMail(Mockito.anyList(), sessionId);
     }
 
     @Test
