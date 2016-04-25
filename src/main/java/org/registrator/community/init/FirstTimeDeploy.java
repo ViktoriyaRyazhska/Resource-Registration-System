@@ -4,16 +4,24 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.registrator.community.components.SpringApplicationContext;
+import org.registrator.community.dao.CommunityRepository;
 import org.registrator.community.dao.DiscreteParameterRepository;
 import org.registrator.community.dao.SettingsRepository;
-import org.registrator.community.entity.*;
+import org.registrator.community.entity.Address;
+import org.registrator.community.entity.DiscreteParameter;
+import org.registrator.community.entity.LinearParameter;
+import org.registrator.community.entity.PassportInfo;
+import org.registrator.community.entity.ResourceType;
+import org.registrator.community.entity.Role;
+import org.registrator.community.entity.Settings;
+import org.registrator.community.entity.TerritorialCommunity;
+import org.registrator.community.entity.User;
 import org.registrator.community.enumeration.CalculatedParameter;
 import org.registrator.community.enumeration.RoleType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -130,6 +138,19 @@ public class FirstTimeDeploy {
         if (settings == null) {
             settings = new Settings();
             settingsRepository.save(settings);
+        }
+        
+        // delete after a few builds
+        CommunityRepository communityRepository = SpringApplicationContext.getBean(CommunityRepository.class);
+        if(communityRepository.count() > 0){
+            TerritorialCommunity commun = communityRepository.findByName("Україна");
+            if(commun != null && commun.getActive() == null){
+                List<TerritorialCommunity> communityList = communityRepository.findAll();
+                for(TerritorialCommunity community : communityList){
+                    community.setActive(1);
+                }
+                communityRepository.save(communityList);
+            }
         }
 
     }

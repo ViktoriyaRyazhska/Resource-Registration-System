@@ -6,7 +6,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 public class CommunityParamJson {
     @NotEmpty
-    @Pattern(regexp = "^[\\w]{4,30}$")
+    @Pattern(regexp = "^[a-zA-Z0-9,]+$", message = "typeMismatch")
     private String login;
     @NotEmpty
     private String communityId;
