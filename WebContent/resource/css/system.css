@@ -28,7 +28,7 @@ body {
 }
 
 #menubaruser, #menubarreg, #menubaradmin, #menubarcom {
-  height: 40px;
+  min-height: 20px;
   line-height: 40px;
   vertical-align: middle;
 }
@@ -40,7 +40,7 @@ body {
 .dropdown {
   position: relative;
 }
-
+/* 
 .dropdown_menu {
   display: none;
   list-style: none;
@@ -63,7 +63,7 @@ body {
 
 .dropdown_menu a:hover {
   color: #000;
-}
+} */
 
 #footer {
   margin-top: 20px;
