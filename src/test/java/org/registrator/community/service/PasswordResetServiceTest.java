@@ -15,6 +15,7 @@ import org.testng.annotations.Test;
 
 
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -58,7 +59,7 @@ public class PasswordResetServiceTest {
         verify(userService).findUserByLogin(login);
         verify(userPasswordEncoder).encode(anyString());
         verify(userService).updateUser(user);
-        verify(mailService).sendBatchResetedPasswordMail(Mockito.anyList(), sessionId);
+        verify(mailService).sendBatchResetedPasswordMail(Mockito.anyList(), eq(sessionId));
     }
 
     @Test
@@ -71,7 +72,7 @@ public class PasswordResetServiceTest {
         verify(userService).findUserByLogin(login);
         verify(userPasswordEncoder, never()).encode(anyString());
         verify(userService, never()).updateUser(user);
-        verify(mailService, never()).sendBatchResetedPasswordMail(Mockito.anyList(), sessionId);
+        verify(mailService, never()).sendBatchResetedPasswordMail(Mockito.anyList(), eq(sessionId));
     }
 
     @Test
