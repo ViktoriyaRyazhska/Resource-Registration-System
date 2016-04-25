@@ -41,7 +41,7 @@
 
   <tbody>
     <c:if test="${not empty listInquiryUserOut}">
-
+        
       <c:forEach items="${listInquiryUserOut}" var="inquiryUserOut">
         <tr>
           <fmt:formatDate value="${inquiryUserOut.date}"
@@ -112,13 +112,7 @@ jQuery(document).ready(function($) {
       $('.inq-act').removeClass('detail-view');
     }
   });
-  
-  
+
 });
-
-
-
-
-
 </script>
 

@@ -384,9 +384,11 @@ function createDataTable(json) {
     var date = jQuery.i18n.prop('msg.date');
     var details = jQuery.i18n.prop('msg.more');
 
-    $("#searchResult").html('<table id="datatable" class="table table-striped table-bordered" cellspacing="0"></table>');
+    $("#searchResult").html('<table id="datatable" class="table table-striped table-bordered" cellspacing="0" style="width: 100%;"></table>');
     oTable = $('#datatable').DataTable({
+      "responsive" : true,
       "aaData" : json,
+      "bAutoWidth": false,
       "aoColumns" : [ {
         "sTitle" : description,
         "mData" : "resourceDescription"

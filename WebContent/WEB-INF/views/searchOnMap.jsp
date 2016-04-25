@@ -3,10 +3,20 @@
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 
 
-<link rel="stylesheet" type="text/css"
-  href="<c:url value='/resource/css/cssload.css'/>">
-<link rel="stylesheet" type="text/css"
-  href="<c:url value='/resource/css/searchOnMap.css'/>">
+<%-- styles --%> 
+  <link rel="stylesheet" type="text/css"
+    href="<c:url value='/resource/css/jquery.dataTables.min.css'/>">
+  <link rel="stylesheet" type="text/css"
+    href="<c:url value='/resource/css/responsive.dataTables.min.css'/>">
+  <link rel="stylesheet" type="text/css"
+    href="<c:url value='/resource/css/cssload.css'/>">
+  <link rel="stylesheet" type="text/css"
+    href="<c:url value='/resource/css/searchOnMap.css'/>">
+<%-- scripts --%> 
+  <script src="<c:url value='/resource/js/lib/jquery.dataTables.min.js'/>"></script>
+  <script src="<c:url value='/resource/js/lib/dataTables.responsive.min.js'/>"></script>
+  <script src="http://maps.googleapis.com/maps/api/js?libraries=drawing,places,geometry&sensor=false"></script>
+  <script type="text/javascript" src="<c:url value='/resource/js/searchOnMap.js'/>"></script>
 
 <div class="container"
   style="margin-bottom: 25px; line-height: 28px; vertical-align: top;">
@@ -168,7 +178,7 @@
     </c:if>
   </div>
 </div>
-<div class="container" id="searchResult"></div>
+<div class="container" id="searchResult" class="col-md-12"></div>
 <div id="paginationDiv" class="col-md-12"></div>
 <div id="resTypeFilter" class="col-md-12"></div>
 <div id="map_canvas" class="container" style="height: 700px;"></div>
@@ -179,29 +189,3 @@
     style="width: 300px;" type="text"
     placeholder=<spring:message code="label.menu.searchOnMap"/>>
 </p>
-
-<%--AJAX Loader for the dark display--%>
-<div id="dark_bg">
-  <div class="windows8">
-    <div class="wBall" id="wBall_1">
-      <div class="wInnerBall"></div>
-    </div>
-    <div class="wBall" id="wBall_2">
-      <div class="wInnerBall"></div>
-    </div>
-    <div class="wBall" id="wBall_3">
-      <div class="wInnerBall"></div>
-    </div>
-    <div class="wBall" id="wBall_4">
-      <div class="wInnerBall"></div>
-    </div>
-    <div class="wBall" id="wBall_5">
-      <div class="wInnerBall"></div>
-    </div>
-  </div>
-</div>
-
-<script
-  src="http://maps.googleapis.com/maps/api/js?libraries=drawing,places,geometry&sensor=false"></script>
-<script type="text/javascript"
-  src="<c:url value='/resource/js/searchOnMap.js'/>"></script>
