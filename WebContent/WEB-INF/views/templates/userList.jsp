@@ -4,12 +4,22 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c'%>
 
-<link rel="stylesheet" type="text/css"
- href="<c:url value='/resource/css/suggestion.css'/>">
-<link rel="stylesheet" type="text/css"
- href="<c:url value='/resource/css/cssload.css'/>">
-<script
- src="<c:url value='/resource/js/lib/jquery.autocomplete.min.js'/>"></script>
+<%-- styles --%>
+  <link rel="stylesheet" type="text/css"
+      href="<c:url value='/resource/css/suggestion.css'/>">
+  <link rel="stylesheet" type="text/css"
+      href="<c:url value='/resource/css/cssload.css'/>">
+  <link rel="stylesheet" type="text/css"
+      href="<c:url value='/resource/css/jquery.dataTables.min.css'/>">
+  <link rel="stylesheet" type="text/css"
+      href="<c:url value='/resource/css/responsive.dataTables.min.css'/>">
+<%-- scripts --%>
+  <script src="<c:url value='/resource/js/lib/jquery.autocomplete.min.js'/>"></script>
+  <script src="<c:url value='/resource/js/lib/jquery.dataTables.min.js'/>"></script>
+  <script src="<c:url value='/resource/js/lib/dataTables.responsive.min.js'/>"></script>
+  <script src="<c:url value='/resource/js/asearch_row.js'/>"></script>
+
+
 <c:if test="${not empty tableSetting.script}">
  <script src="<c:url value='/resource/js/${tableSetting.script}.js'/>"></script>
 </c:if>
@@ -24,11 +34,11 @@
    </h4>
   </div>
 
-  <div class="dataTable_wrapper">
+  <div class="dataTable_wrapper" style="margin-bottom: 32px;">
    <tiles:insertAttribute name="baseActionsMenu" />
 
    <table id="example"
-    class="table table-striped table-bordered table-hover">
+    class="table table-striped table-bordered table-hover" width="100%">
     <thead>
      <tr>
       <c:forEach items="${tableSetting.columns}" var="entry">
@@ -37,11 +47,11 @@
      </tr>
     </thead>
     <tfoot style="display: table-header-group">
-     <tr>
+     <tr class="searchable">
       <c:forEach items="${tableSetting.columns}" var="entry"
        varStatus="status">
        <c:if test="${entry.value.type eq 'search'}">
-        <th>
+        <th class="search_element">
          <div class="form-group">
           <div class="col-md-12" style="padding: 0">
            <input type="hidden" id="searchTypeIndex${entry.key}"
@@ -53,21 +63,25 @@
         </th>
        </c:if>
        <c:if test="${entry.value.type eq 'status'}">
-        <th>
+        <th class="search_element">
          <div class="form-group">
           <div class="col-md-12" style="padding: 0">
            <input type="hidden" id="searchTypeIndex${entry.key}"
             name="category" value="statusType" /> 
             
-            <input maxlength="50"
-            id="inputIndex${entry.key}" class="form-control"
+           <div id="toggle_dt">
+            <%-- search-toggle is defined inside system.css --%>
+            <span class="glyphicon glyphicon-align-justify search-toggle hidden" aria-hidden="true"></span>
+           </div>
+            
+           <input maxlength="50" id="inputIndex${entry.key}" class="form-control"
             type="hidden" value="${statusType}" />
           </div>
          </div>
         </th>
        </c:if>
        <c:if test="${entry.value.type eq 'role'}">
-        <th>
+        <th class="search_element">
          <div class="form-group">
             <input type="hidden" id="searchTypeIndex${entry.key}"
             name="category" value="roleType" /> 
@@ -85,7 +99,7 @@
        </c:if>
 
       </c:forEach>
-      <th><input type="submit" id="bth-search" class="btn btn-sm btn-primary" value='<spring:message code="label.table.search"/>' /></th>
+      <th class="search_element"><input type="submit" id="bth-search" class="btn btn-sm btn-primary" value='<spring:message code="label.table.search"/>'/></th>
      </tr>
     </tfoot>
    </table>
@@ -95,6 +109,8 @@
 
 </div>
 
+<div style="clear:both"></div>
+
 <script>
 var table;
 var actions = $("#actionList");
@@ -102,6 +118,8 @@ var actions = $("#actionList");
 jQuery(document).ready(function($) {
     table = $('#example').DataTable({
          "searching": false,
+         "bSortCellsTop": true,
+         "responsive": true,
          "bSort" : true,
          "bDestroy": true,
          "order": [[ 3, "asc" ]],
@@ -162,7 +180,10 @@ jQuery(document).ready(function($) {
                       },
                  </c:if>
               </c:forEach>
-              
+             ],
+             "columnDefs": [
+                          { responsivePriority: 1, targets: 0 },
+                          { responsivePriority: 2, targets: -1 }
              ],
              "ajax": {
                 "url":"${tableSetting.url}",
@@ -171,7 +192,7 @@ jQuery(document).ready(function($) {
                 contentType: 'application/json; charset=utf-8',
                 "data": function ( data ) {
                   addSearchValue(data);
-                $("#example_wrapper").prepend(actions);
+                  $("#example_wrapper").prepend(actions);
                   return JSON.stringify(data);
                 }
             }
@@ -180,15 +201,39 @@ jQuery(document).ready(function($) {
     $("#example_wrapper").prepend(actions);
     
     function addSearchValue(data) {
-        data.tableName = '${tableSetting.tableName}';
-        console.log("data.tableName = "+data.tableName);
-        for (var i = 0; i < data.columns.length; i++) {
-            column = data.columns[i];
-            column.search.compareSign = $('#searchTypeIndex'+i).val();
-            column.search.value = $('#inputIndex'+i).val();
-        }
+      data.tableName = '${tableSetting.tableName}';
+      console.log("data.tableName = "+data.tableName);
+      for (var i = 0; i < data.columns.length; i++) {
+          column = data.columns[i];
+          column.search.compareSign = $('#searchTypeIndex'+i).val();
+          column.search.value = $('#inputIndex'+i).val();
+          // additional row for mobile version, x - extended menu
+          if($('#searchTypeIndex'+i+'x').length > 0){
+            column.search.compareSign = $('#searchTypeIndex'+i+'x').val();
+            column.search.value = $('#inputIndex'+i+'x').val();
+          }
+          
+      }
     }
-  
+    
+    table.on( 'responsive-resize', function ( e, datatable, columns ) {
+      // calculate hidden columns
+      var count = columns.reduce( function (a,b) {
+          return b === false ? a+1 : a;
+      }, 0 );
+      // show / hide toggle button
+      if(count>0){
+        $('#toggle_dt > .glyphicon').removeClass('hidden');
+      }else{
+        $('#toggle_dt > .glyphicon').addClass('hidden');
+        removeExtSearchFields();
+      }
+      // signal event
+      $( document ).trigger( "table-resize-event" );
+    });
     
 });
+
+
+
 </script>

@@ -6,7 +6,15 @@
 <%@ taglib prefix="sec"
   uri="http://www.springframework.org/security/tags"%>
 
-<script src="<c:url value='/resource/js/deleteProcuration.js'/>"></script>
+<%-- styles --%> 
+  <link rel="stylesheet" type="text/css"
+      href="<c:url value='/resource/css/jquery.dataTables.min.css'/>">
+  <link rel="stylesheet" type="text/css"
+      href="<c:url value='/resource/css/responsive.dataTables.min.css'/>">
+<%-- scripts --%> 
+  <script src="<c:url value='/resource/js/lib/jquery.dataTables.min.js'/>"></script>
+  <script src="<c:url value='/resource/js/lib/dataTables.responsive.min.js'/>"></script>
+  <script src="<c:url value='/resource/js/deleteProcuration.js'/>"></script>
 
 <div style="text-align: center;">
   <h4>
@@ -14,8 +22,9 @@
   </h4>
 </div>
 
+<div style="width: 90%; margin: 0 auto;">
 
-<table id="datatable" class="table display">
+<table id="datatable" class="display">
   <thead>
     <tr>
       <th><spring:message code="label.inquiry.date" /></th>
@@ -23,7 +32,7 @@
       <sec:authorize access="hasRole('USER')">
         <th><spring:message code="label.resource.registrator" /></th>
       </sec:authorize>
-      <th hidden="true"><spring:message
+      <th hidden="true" class="never"><spring:message
           code="label.inquiry.inquiryType" /></th>
       <th><spring:message code="label.resource.identifier" /></th>
       <th><spring:message code="label.restype.actions" /></th>
@@ -32,7 +41,7 @@
 
   <tbody>
     <c:if test="${not empty listInquiryUserOut}">
-
+        
       <c:forEach items="${listInquiryUserOut}" var="inquiryUserOut">
         <tr>
           <fmt:formatDate value="${inquiryUserOut.date}"
@@ -47,24 +56,28 @@
             href="<c:url value='/registrator/resource/get?id={inquiryUserOut.resourceIdentifier}' />">
               ${inquiryUserOut.resourceIdentifier} </a></td>
           <td>
-            <div class="block">
+            <%-- .nowrap is defined inside system.css --%>
+            <div class="block nowrap">
               <sec:authorize access="hasRole('REGISTRATOR')">
+                <%-- .inq-act is defined inside system.css --%>
                 <a
                   href="<c:url value='/inquiry/add/delete/${inquiryUserOut.inquiryId}' />"
-                  class="btn btn-danger" role="button"
+                  class="btn btn-danger inq-act" role="button"
                   id="deleteInquiry"> <spring:message
-                    code="label.restype.delete" /></a>
-              </sec:authorize>
-              <a
+                    code="label.restype.delete" /></a> 
+             </sec:authorize> 
+             <%-- .inq-act is defined inside system.css --%>
+             <a
                 href="<c:url value='/inquiry/add/printOutput/${inquiryUserOut.inquiryId}' />"
-                class="btn btn-primary" role="button"> <spring:message
-                  code="label.inquiry.print" /></a>
-              <sec:authorize access="hasRole('REGISTRATOR')">
+                class="btn btn-primary inq-act" role="button"> <spring:message
+                   code="label.inquiry.print" /></a>
+             <sec:authorize access="hasRole('REGISTRATOR')">
+                <%-- .inq-act is defined inside system.css --%>
                 <a
                   href="<c:url value='/inquiry/add/printExtract/${inquiryUserOut.inquiryId}' />"
-                  class="btn btn-primary" role="button"> <spring:message
-                    code="label.inquiry.printExtract" /></a>
-              </sec:authorize>
+                  class="btn btn-primary inq-act" role="button"> <spring:message
+                     code="label.inquiry.printExtract" /></a>
+             </sec:authorize> 
 
             </div>
           </td>
@@ -74,9 +87,32 @@
   </tbody>
 </table>
 
+</div>
+
+<div style="clear:both"></div>
+
 <script type="text/javascript">
-<!--
-$("#datatable").DataTable();
-//-->
+jQuery(document).ready(function($) {
+  table = $('#datatable').DataTable({
+    "responsive": true,
+    "ordering": false,
+    "bAutoWidth": false,
+    "bSortCellsTop": true,
+    "columnDefs": [
+        { responsivePriority: 1, targets: 0 }, 
+        { responsivePriority: 2, targets: -2 } // object registration number
+    ]
+  });
+  
+  table.on( 'responsive-display', function ( e, datatable, row, showHide, update ) {
+    if($('.dtr-data .nowrap').length>0){
+      $('.dtr-data .nowrap').removeClass('nowrap');
+      $('.inq-act').addClass('detail-view');
+    } else {
+      $('.inq-act').removeClass('detail-view');
+    }
+  });
+
+});
 </script>
 
