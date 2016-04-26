@@ -42,6 +42,10 @@ public class SettingsServiceImpl implements SettingsService {
             synchronized (this) {
                 if (currentSettings == null) {
                     currentSettings = settingsRepository.getAllSettings();
+                    //TODO RG move this 'if' in repository
+                    if (currentSettings == null) {
+                        currentSettings = new Settings();
+                    }
                 }
             }
         }
