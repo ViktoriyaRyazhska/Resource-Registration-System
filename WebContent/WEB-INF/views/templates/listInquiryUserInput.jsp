@@ -58,7 +58,7 @@
             <div class="block">
               <a
                 href="<c:url value='/inquiry/add/printdata/${inquiryUser.inquiryId}' />"
-                class="btn btn-primary" role="button"> <spring:message
+                class="btn btn-primary" role="button" target="_blank" > <spring:message
                   code="label.inquiry.print" /></a>
             </div>
           </td>

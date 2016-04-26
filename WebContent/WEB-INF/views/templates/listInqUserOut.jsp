@@ -69,13 +69,13 @@
              <%-- .inq-act is defined inside system.css --%>
              <a
                 href="<c:url value='/inquiry/add/printOutput/${inquiryUserOut.inquiryId}' />"
-                class="btn btn-primary inq-act" role="button"> <spring:message
+                class="btn btn-primary inq-act" role="button" target="_blank" > <spring:message
                    code="label.inquiry.print" /></a>
              <sec:authorize access="hasRole('REGISTRATOR')">
                 <%-- .inq-act is defined inside system.css --%>
                 <a
                   href="<c:url value='/inquiry/add/printExtract/${inquiryUserOut.inquiryId}' />"
-                  class="btn btn-primary inq-act" role="button"> <spring:message
+                  class="btn btn-primary inq-act" role="button" target="_blank" > <spring:message
                      code="label.inquiry.printExtract" /></a>
              </sec:authorize> 
 
