@@ -29,7 +29,8 @@
         </h4>
         <div class="form-group">
           <label for="login"><spring:message code="label.login" /></label>
-          <select id="login" name="login" class="form-control" required>
+          <select id="login" name="login" class="form-control" SIZE="8"
+             required>
             <%-- If single user in current email --%>
             <c:choose>
               <c:when test="${loginListSize < 2}">
