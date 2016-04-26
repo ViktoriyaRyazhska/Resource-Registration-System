@@ -15,6 +15,7 @@ import org.registrator.community.dto.SmtpParametersDTO;
 import org.registrator.community.entity.SmtpParameters;
 import org.registrator.community.mailer.ReloadableMailSender;
 import org.registrator.community.service.MailService;
+import org.registrator.community.service.SettingsService;
 import org.registrator.community.util.LocalizationConst;
 import org.registrator.community.websocket.MessagingService;
 import org.registrator.community.util.Throwables;
@@ -54,8 +55,11 @@ public class MailServiceImpl implements MailService{
     @Autowired
     private MessagingService messagingService;
 
-	
-	@Override
+    @Autowired
+    private SettingsService settingsService;
+
+
+    @Override
 	@Async
 	public void sendComfirmEMail(String recepientEmail, String recepientName, String login, String token, String url) {
 	    logger.debug("Method asynchronously starts it Thread: {}", Thread.currentThread().getName());
@@ -143,7 +147,8 @@ public class MailServiceImpl implements MailService{
 
     @Override
     public boolean testConnection(SmtpParametersDTO parameters) {
-        return mailSender.testConnection(SmtpParameters.from(parameters));
+
+        return mailSender.testConnection(settingsService.parseSmtpParameters(parameters));
     }
 
     @Override
