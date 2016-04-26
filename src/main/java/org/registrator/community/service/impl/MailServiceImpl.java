@@ -15,6 +15,7 @@ import org.registrator.community.dto.SmtpParametersDTO;
 import org.registrator.community.entity.SmtpParameters;
 import org.registrator.community.mailer.ReloadableMailSender;
 import org.registrator.community.service.MailService;
+import org.registrator.community.util.LocalizationConst;
 import org.registrator.community.websocket.MessagingService;
 import org.registrator.community.util.Throwables;
 import org.slf4j.Logger;
@@ -121,7 +122,7 @@ public class MailServiceImpl implements MailService{
         } catch (MailException e) {
             Throwable cause = Throwables.getRootCause(e);
             logger.error("Send mail exception, message {}", cause.getMessage(), e);
-            messagingService.sendMessage(ownerSessionId, "Error when sending email " + cause.getMessage());
+            messagingService.sendMessage(ownerSessionId, LocalizationConst.WS_SMTP_ERROR);
         }
         logger.info("Method asynchronously complete it Thread: {}", Thread.currentThread().getName());
     }

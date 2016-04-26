@@ -1,21 +1,7 @@
-/*
- *  Licensed to the Apache Software Foundation (ASF) under one or more
- *  contributor license agreements.  See the NOTICE file distributed with
- *  this work for additional information regarding copyright ownership.
- *  The ASF licenses this file to You under the Apache License, Version 2.0
- *  (the "License"); you may not use this file except in compliance with
- *  the License.  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- */
+
 package org.registrator.community.websocket;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.registrator.community.components.SpringApplicationContext;
 import org.registrator.community.util.Throwables;
 import org.slf4j.Logger;
@@ -60,8 +46,16 @@ public class MessageEndpointImpl implements MessageEndpoint {
 
 
     @OnMessage
-    public void incoming(String message) {
-        messagingService.processMessage(httpSessionId, message);
+    public void incoming(String jsonMessage) {
+        ObjectMapper mapper = new ObjectMapper();
+        Message message = null;
+        try {
+            message = mapper.readValue(jsonMessage, Message.class);
+            messagingService.processMessage(httpSessionId, message);
+        } catch (IOException e) {
+            LOG.error("Couldn't read message from WebSocket client, message {}, reason {}",
+                    jsonMessage, Throwables.getRootCause(e).getMessage(), e);
+        }
     }
 
 
@@ -71,9 +65,10 @@ public class MessageEndpointImpl implements MessageEndpoint {
     }
 
     @Override
-    public void sendMessage(String message) throws IOException {
+    public void sendMessage(Message message) throws IOException {
         try {
-            session.getBasicRemote().sendText(message);
+            ObjectMapper mapper = new ObjectMapper();
+            session.getBasicRemote().sendText(mapper.writeValueAsString(message));
         } catch (IOException e) {
             LOG.warn("Sending WebSocket message failed, connection closed. Root cause: {}",
                     Throwables.getRootCause(e).getMessage());

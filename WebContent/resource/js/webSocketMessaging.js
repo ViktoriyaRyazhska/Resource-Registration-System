@@ -5,88 +5,124 @@ $(document).ready(function () {
     });
 
     messageWindow = new MessageWindow();
-    messageWindow.header("TEST");
     $('#changeLanguage').popover('show');
-    messageWindow.hide();
 
-    var Chat = {};
+    var Messenger = {};
 
-    Chat.socket = null;
+    Messenger.socket = null;
 
-    Chat.connect = (function (host) {
+    Messenger.connect = (function (host) {
         if ('WebSocket' in window) {
-            Chat.socket = new WebSocket(host);
+            Messenger.socket = new WebSocket(host);
         } else if ('MozWebSocket' in window) {
-            Chat.socket = new MozWebSocket(host);
+            Messenger.socket = new MozWebSocket(host);
         } else {
             console.log('Error: WebSocket is not supported by this browser.');
             return;
         }
 
-        Chat.socket.onopen = function () {
+        Messenger.socket.onopen = function () {
             console.log('Info: WebSocket connection opened.');
         };
 
-        Chat.socket.onclose = function () {
+        Messenger.socket.onclose = function () {
             console.log('Info: WebSocket closed.');
         };
 
-        Chat.socket.onmessage = function (message) {
-            console.log('WebSocket message: ' + message.data);
-            messageWindow.text(message.data);
-            messageWindow.show();
+        Messenger.socket.onmessage = function (message) {
+            console.log('Got message: ' + message.data);
+            messageWindow.processMessage(JSON.parse(message.data));
         };
     });
 
-    Chat.initialize = function () {
+    $("#messageClose").click(function () {
+        messageWindow.close();
+            console.log("sending message");
+        var message = messageWindow.message;
+        message.command = "CLOSE";
+        Messenger.socket.send(JSON.stringify(message));
+    });
+
+    Messenger.initialize = function () {
         var wsProtocol = 'ws://';
         if (window.location.protocol == 'https:') {
             wsProtocol = 'wss://';
         }
-        Chat.connect(wsProtocol + window.location.host + '/registrator/websocket/messages/' + sessionID);
+        Messenger.connect(wsProtocol + window.location.host + baseUrl.trim() + 'websocket/messages/' + sessionID);
     };
 
-    Chat.sendMessage = (function () {
-        var message = document.getElementById('chat').value;
-        if (message != '') {
-            Chat.socket.send(message);
-            document.getElementById('chat').value = '';
-        }
-    });
-
-    Chat.initialize();
+    Messenger.initialize();
 
 });
 
 function MessageWindow(fOnClose){
-    MessageWindow.prototype.messageId = -1;
+    this.message = undefined;
+    this.onClose = fOnClose;
+    this.messagePool = [];
 
-    $("#messageClose").click(function () {
-        $('#messageView').hide();
-        if (fOnClose) {
-
-        }
-    })
 }
 
 MessageWindow.prototype = {
-    header : function header(data) {
+    title : function title(data) {
         $('#messageTitle').text(data);
+    },
+
+    text: function text(data) {
+        $('#messageText').text(data);
+    },
+
+    visible: function visible() {
+        return $('#messageView').is(':visible');
+    },
+
+    show: function show(message) {
+        this.message = message;
+        this.title(jQuery.i18n.prop(message.title));
+        this.text(jQuery.i18n.prop(message.text));
+        $('#messageView').show();
+    },
+
+    close: function close() {
+        $('#messageView').hide();
+        //if (this.onClose) {
+        //    this.onClose(this.message);
+        //}
+        var message = this.messagePool.pop();
+        if (message != undefined) {
+            this.show(message);
+        }
+    },
+
+
+    //onClose: function (callback, message) {
+    //    console.log('callback from prototype');
+    //    callback(this, message)
+    //},
+
+    processMessage: function processMessage(message) {
+        if (message.command === "SHOW") {
+            if (this.visible()) {
+                this.messagePool.push(message);
+            } else {
+                this.show(message);
+            }
+        } else if (message.command === "CLOSE") {
+            if (this.message.id === message.id) {
+                this.close();
+            } else {
+                var index = -1;
+                for(var i = 0; i < this.messagePool.length; i++) {
+                    if (message.id === this.messagePool[i].id) {
+                        index = i;
+                        break;
+                    }
+                }
+                if (index > -1) {
+                    this.messagePool.splice(index, 1);
+                }
+            }
+        }
+
     }
-};
 
-MessageWindow.prototype.text = function (data) {
-    $('#messageText').text(data);
-};
-
-MessageWindow.prototype.hide = function () {
-    $('#messageView').hide();
-};
-
-MessageWindow.prototype.isHidden = function () {
-    return !$('#messageView').is(':visible');
-};
-
-MessageWindow.prototype.show = function () {
-    $('#messageView').show();
 };

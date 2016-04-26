@@ -23,7 +23,7 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private static final String[] RESOURCES_ALLOW_ANONYMOUS = {
-            "/forgot_password", "/password_recovery/**", "/register/**", "/help", "/faq", "/chat", "/websocket/**"};
+            "/forgot_password", "/password_recovery/**", "/register/**", "/help", "/faq"};
 
     @Autowired
     @Qualifier("userDetailsService")
@@ -51,22 +51,22 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         http
                 .csrf().disable()
-//                .authorizeRequests()
-//                .antMatchers("/error/**").permitAll()
-//                .antMatchers(RESOURCES_ALLOW_ANONYMOUS).anonymous()
-//                .anyRequest().authenticated()
-//                    .and()
+                .authorizeRequests()
+                .antMatchers("/error/**").permitAll()
+                .antMatchers(RESOURCES_ALLOW_ANONYMOUS).anonymous()
+                .anyRequest().authenticated()
+                    .and()
                 .formLogin()
                 .successHandler(savedRequestAwareAuthenticationSuccessHandler())
                 .loginPage("/login")
-//                .permitAll()
+                .permitAll()
                 .failureUrl("/login?error")
                 .usernameParameter("login")
                 .passwordParameter("password")
                     .and()
                 .logout()
                 .logoutUrl("/logout")
-//                .permitAll()
+                .permitAll()
                 .logoutSuccessUrl("/login?logout")
                     .and()
                 .exceptionHandling()

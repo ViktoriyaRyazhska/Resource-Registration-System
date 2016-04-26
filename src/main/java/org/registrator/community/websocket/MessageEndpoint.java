@@ -3,10 +3,10 @@ package org.registrator.community.websocket;
 import java.io.IOException;
 
 /**
- * Created by roman.golyuk on 26.04.2016.
+ * Transport messages to client
  */
 public interface MessageEndpoint {
-    void sendMessage(String message) throws IOException;
+    void sendMessage(Message message) throws IOException;
 
     String getHttpSessionId();
 }
