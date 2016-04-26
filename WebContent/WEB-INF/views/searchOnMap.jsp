@@ -20,68 +20,112 @@
 
 <div class="container"
   style="margin-bottom: 25px; line-height: 28px; vertical-align: top;">
-  <div class="col-sm-12 controls">
-    <span id="searchByPointButton"
-      class="btn btn-primary toggle-button col-sm-3">
-      <h4>
+  <h3>
+        <spring:message code="label.menu.resources" />
+  </h3>
+  <div class="col-xs-12 controls">
+    <div id="searchByPointButton"
+      class="btn btn-primary toggle-button col-sm-3 col-xs-12">
         <spring:message code="label.search.byCoordinate" />
-      </h4>
-    </span> <span id="searchByAreaButton"
-      class="btn btn-primary toggle-button col-sm-3">
-      <h4>
+    </div> 
+    <div id="searchByAreaButton"
+      class="btn btn-primary toggle-button col-sm-3 col-xs-12">
         <spring:message code="label.search.byRegion" />
-      </h4>
-    </span> <span id="searchByParameterButton"
-      class="btn btn-primary toggle-button col-sm-3">
-      <h4>
+    </div> 
+    <div id="searchByParameterButton"
+      class="btn btn-primary toggle-button col-sm-3 col-xs-12">
         <spring:message code="label.search.byParameter" />
-      </h4>
-    </span>
+    </div>
   </div>
+  <div class="clearfix"></div>
   <div id="searchByPointDiv" class="col-md-12 searchDiv">
     <p>
       <spring:message code="label.search.byCoordinate.massage" />
       :
     </p>
-
-    <div class="col-sm-5" style="padding-bottom: 5px;">
-      <label class="col-sm-3" style="padding-top: 6px; margin: 0;">
-        <spring:message code="label.resource.latitude" />:
-      </label> <input type="text" class="latitudeDegrees form-control"
-        placeholder="<spring:message
-                    code="label.resource.coordinates.degrees" />"
-        style="width: 90px; display: inline-block;"> ° <input
-        type="text" class="latitudeMinutes form-control"
-        placeholder="<spring:message
-                    code="label.resource.coordinates.minutes" />"
-        style="width: 75px; display: inline-block;"> ' <input
-        type="text" class="latitudeSeconds form-control"
-        placeholder="<spring:message
-                    code="label.resource.coordinates.seconds" />"
-        style="width: 125px; display: inline-block;"> "
+    <div class="col-lg-6 ">
+        <fieldset>
+          <legend>
+            <label> 
+              <spring:message code="label.resource.latitude" />:
+            </label>
+          </legend>
+          <%-- .top-margin is declared in system.css --%>
+          <div class="col-lg-4 top-margin">
+              <div class="input-group">
+               <input type="text" class="latitudeDegrees form-control"
+                  placeholder="<spring:message code="label.resource.coordinates.degrees" />"
+               >
+              <span class="input-group-addon">°</span>
+              </div>
+          </div>
+          <%-- .top-margin is declared in system.css --%>
+          <div class="col-lg-4 top-margin">
+              <div class="input-group">
+              <input type="text" class="latitudeMinutes form-control"
+                  placeholder="<spring:message code="label.resource.coordinates.minutes" />"
+               >
+              <span class="input-group-addon">'</span>
+              </div>
+          </div>
+          <%-- .top-margin is declared in system.css --%>
+          <div class="col-lg-4 top-margin">
+              <div class="input-group">
+                <input type="text" class="latitudeSeconds form-control"
+                  placeholder="<spring:message code="label.resource.coordinates.seconds" />"
+               >
+              <span class="input-group-addon">"</span>
+              </div>
+          </div>
+      </fieldset>
     </div>
-    <div class="col-sm-5" style="padding-bottom: 5px;">
-      <label class="col-sm-3" style="padding-top: 6px; margin: 0;"><spring:message
-          code="label.resource.longitude" />: </label> <input type="text"
-        class="longitudeDegrees form-control"
-        placeholder="<spring:message
-                    code="label.resource.coordinates.degrees" />"
-        style="width: 90px; display: inline-block;"> ° <input
-        type="text" class="longitudeMinutes form-control"
-        placeholder="<spring:message
-                    code="label.resource.coordinates.minutes" />"
-        style="width: 75px; display: inline-block;"> ' <input
-        type="text" class="longitudeSeconds form-control"
-        placeholder="<spring:message
-                    code="label.resource.coordinates.seconds" />"
-        style="width: 125px; display: inline-block;"> "
+    <div class="col-lg-6">
+        <fieldset>
+          <legend>
+            <label> 
+              <spring:message code="label.resource.longitude" />:
+            </label>
+          </legend>
+          <%-- .top-margin is declared in system.css --%>
+          <div class="col-lg-4 top-margin">
+              <div class="input-group">
+               <input type="text" class="longitudeDegrees form-control pikaso"
+              placeholder="<spring:message code="label.resource.coordinates.degrees" />"
+              >
+              <span class="input-group-addon">°</span>
+              </div>
+          </div>
+          <%-- .top-margin is declared in system.css --%>
+          <div class="col-lg-4 top-margin">
+              <div class="input-group">
+              <input type="text" class="longitudeMinutes form-control pikaso"
+              placeholder="<spring:message
+              code="label.resource.coordinates.minutes" />"
+              >
+              <span class="input-group-addon">'</span>
+              </div>
+          </div>
+          <%-- .top-margin is declared in system.css --%>
+          <div class="col-lg-4 top-margin">
+              <div class="input-group">
+                <input type="text" class="longitudeSeconds form-control pikaso"
+              placeholder="<spring:message
+              code="label.resource.coordinates.seconds" />"
+              >
+              <span class="input-group-addon">"</span>
+              </div>
+          </div>
+          </fieldset>
     </div>
-    <div class="col-sm-2">
-      <button id="searchOnMapButton" class="btn btn-success">
+    <%-- .top-margin is declared in system.css --%>
+    <div class="col-xs-12 top-margin">
+      <button id="searchOnMapButton" class="btn btn-success col-xs-12">
         <spring:message code="label.menu.search" />
       </button>
     </div>
   </div>
+  
+  
   <div id="searchByAreaDiv" class="col-md-12 searchDiv">
     <p>
       <spring:message code="label.search.byRegion.massage" />

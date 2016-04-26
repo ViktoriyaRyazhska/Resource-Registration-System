@@ -130,6 +130,13 @@ body {
   margin: 0;
 }
 
+.controls .btn {
+  font-size: 1.5em;
+  margin: 2px 5px;
+  padding: 0 2px;
+  
+}
+
 #mapManual {
   font-style: italic;
   font-size: 15px;
@@ -204,4 +211,7 @@ label {
 .detail-view {
   margin-top: 2px;
   width: 100%;
+}
+.top-margin {
+    margin: 5px 0 0 0;
 }
