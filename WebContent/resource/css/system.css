@@ -27,6 +27,7 @@ body {
   display: flex;
 }
 
+
 #menubaruser, #menubarreg, #menubaradmin, #menubarcom {
   height: 40px;
   line-height: 40px;
@@ -214,4 +215,7 @@ label {
 }
 .top-margin {
     margin: 5px 0 0 0;
+}
+.bottom-line {
+  border-bottom: 2px solid black;
 }

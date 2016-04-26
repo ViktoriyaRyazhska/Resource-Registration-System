@@ -132,7 +132,8 @@
       <spring:message code="label.search.byRegion.massage" />
       :
     </p>
-    <h3 style="border-bottom: 2px solid black;"><spring:message code="label.search.coordinate" /> 1</h3>
+    <%-- .bottom-line is declared in system.css --%>
+    <h3 class="bottom-line"><spring:message code="label.search.coordinate" /> 1</h3>
     <div id="first_point">
       <div class="col-lg-6 ">
           <fieldset>
@@ -209,7 +210,8 @@
         </fieldset>
       </div>
     </div>
-    <h3 style="border-bottom: 2px solid black;"><spring:message code="label.search.coordinate" /> 2</h3>
+    <%-- .bottom-line is declared in system.css --%>
+    <h3 class="bottom-line"><spring:message code="label.search.coordinate" /> 2</h3>
     <div id="second_point">
       <div class="col-lg-6 ">
           <fieldset>
