@@ -18,32 +18,26 @@ public class LocaleConfigurerFilter extends OncePerRequestFilter {
     private LocaleResolver localeResolver;
 
     protected void initFilterBean() throws ServletException {
-/*        WebApplicationContext wac = WebApplicationContextUtils.getRequiredWebApplicationContext(
-                getServletContext());*/
-        WebApplicationContext wac = WebApplicationContextUtils.getWebApplicationContext(getServletContext());
+        WebApplicationContext wac = WebApplicationContextUtils.getRequiredWebApplicationContext(
+                getServletContext());
         Map resolvers = wac.getBeansOfType(LocaleResolver.class);
         if (resolvers.size()==1) {
             localeResolver = (LocaleResolver) resolvers.values().iterator().next();
         }
-
     }
 
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
 
-        System.out.print(" BEFORE = " + LocaleContextHolder.getLocale());
-
         if (localeResolver!=null) {
             Locale locale = localeResolver.resolveLocale(request);
             LocaleContextHolder.setLocale(locale);
         }
 
-        System.out.println(" AFTER = " + LocaleContextHolder.getLocale());
-
         chain.doFilter(request, response);
 
-/*        if (localeResolver!=null) {
+        /*if (localeResolver!=null) {
             LocaleContextHolder.resetLocaleContext();
         }*/
     }

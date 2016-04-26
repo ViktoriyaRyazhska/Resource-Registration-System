@@ -1,7 +1,6 @@
 package org.registrator.community.config.root;
 
 import org.registrator.community.config.AdditionalAppConfig;
-import org.registrator.community.config.AsyncConfig;
 import org.registrator.community.service.impl.CronService;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -13,10 +12,8 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.web.context.request.RequestContextListener;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
-import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 
 import javax.persistence.EntityManagerFactory;
 import java.util.Locale;
@@ -50,13 +47,6 @@ public class SpringRootConfig {
         CookieLocaleResolver clr = new CookieLocaleResolver();
         clr.setDefaultLocale(new Locale("uk"));
         return clr;
-    }
-
-    @Bean
-    public LocaleChangeInterceptor localeChangeInterceptor() {
-        LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();
-        localeChangeInterceptor.setParamName("lang");
-        return localeChangeInterceptor;
     }
 
     @Bean

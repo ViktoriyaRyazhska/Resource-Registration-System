@@ -44,14 +44,8 @@ public class MyWebInitializer extends
         characterEncodingFilter.setEncoding("UTF-8");
         characterEncodingFilter.setForceEncoding(true);
 
-/*        RequestContextFilter requestContextFilter = new RequestContextFilter();
-        requestContextFilter.setThreadContextInheritable(true);
-        return new Filter[]{characterEncodingFilter, requestContextFilter};*/
-
         LocaleConfigurerFilter localeConfigurerFilter = new LocaleConfigurerFilter();
         return new Filter[]{characterEncodingFilter, localeConfigurerFilter};
-
-        //return new Filter[]{characterEncodingFilter};
     }
 
     @Override
