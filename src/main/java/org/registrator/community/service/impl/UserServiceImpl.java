@@ -55,8 +55,7 @@ public class UserServiceImpl implements UserService {
     private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
 
     private static final int MAX_ATTEMPTS = 2;
-    //private static final long LOCKING_TIME = 300000;
-    private static final long LOCKING_TIME = 60000;
+    private static final long LOCKING_TIME = 300000;// 5 min.
 
     @Autowired
     private UserRepository userRepository;
@@ -745,7 +744,6 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public void updateFailAttempts(String login) {
-        //Calendar calendar = Calendar.getInstance();
 
         try {
             User user = userRepository.findUserByLogin(login);
@@ -759,8 +757,6 @@ public class UserServiceImpl implements UserService {
 
                 if (user.getAttempts() + 1 > MAX_ATTEMPTS) {
                     user.setAccountNonLocked(0);
-                    //System.out.println("calendar.getTimeInMillis() + LOCKING_TIME = " + calendar.getTimeInMillis() + LOCKING_TIME);
-                    //user.setLockedTill(calendar.getTimeInMillis() + LOCKING_TIME);
                     user.setLockedTill(System.currentTimeMillis() + LOCKING_TIME);
                 }
 
@@ -783,6 +779,7 @@ public class UserServiceImpl implements UserService {
         try {
             User user = userRepository.findUserByLogin(login);
             user.setAttempts(0);
+            user.setLockedTill(0);
             user.setLastModified(null);
         } catch (Exception e) {
             logger.error("Failed to resetFailAttempts() " + e);
