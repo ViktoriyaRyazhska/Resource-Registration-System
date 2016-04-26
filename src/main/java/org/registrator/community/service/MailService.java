@@ -14,7 +14,7 @@ public interface MailService {
 
 	void sendResetedPasswordMail(String recepientEmail, String recepientName, String login, String password);
 	
-	void sendBatchResetedPasswordMail(List<Map<String, Object>> listTemplateVariables);
+	void sendBatchResetedPasswordMail(List<Map<String, Object>> listTemplateVariables, String ownerSessionId);
 
     boolean testConnection(SmtpParametersDTO parameters);
 

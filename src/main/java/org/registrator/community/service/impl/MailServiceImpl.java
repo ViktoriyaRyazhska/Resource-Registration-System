@@ -15,6 +15,8 @@ import org.registrator.community.dto.SmtpParametersDTO;
 import org.registrator.community.entity.SmtpParameters;
 import org.registrator.community.mailer.ReloadableMailSender;
 import org.registrator.community.service.MailService;
+import org.registrator.community.util.LocalizationConst;
+import org.registrator.community.websocket.MessagingService;
 import org.registrator.community.util.Throwables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +50,9 @@ public class MailServiceImpl implements MailService{
 	
 	@Autowired
     private VelocityEngine velocityEngine;
+
+    @Autowired
+    private MessagingService messagingService;
 
 	
 	@Override
@@ -103,7 +108,7 @@ public class MailServiceImpl implements MailService{
     
     @Override
     @Async
-    public void sendBatchResetedPasswordMail(List<Map<String, Object>> listTemplateVariables){
+    public void sendBatchResetedPasswordMail(List<Map<String, Object>> listTemplateVariables, String ownerSessionId){
         logger.debug("Method asynchronously starts it Thread: {}", Thread.currentThread().getName());
         List<MimeMessagePreparator> preparators = new ArrayList<MimeMessagePreparator>(listTemplateVariables.size());
         // prepare messages
@@ -115,7 +120,9 @@ public class MailServiceImpl implements MailService{
         try {
             mailSender.send(preparators.toArray(new MimeMessagePreparator[preparators.size()]));
         } catch (MailException e) {
-            logger.error("Send mail exception, message {}", Throwables.getRootCause(e));
+            Throwable cause = Throwables.getRootCause(e);
+            logger.error("Send mail exception, message {}", cause.getMessage(), e);
+            messagingService.sendMessage(ownerSessionId, LocalizationConst.WS_SMTP_ERROR);
         }
         logger.info("Method asynchronously complete it Thread: {}", Thread.currentThread().getName());
     }

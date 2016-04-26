@@ -20,7 +20,11 @@ import java.util.Locale;
 
 @Configuration
 @ComponentScan({"org.registrator.community.dto",
-    "org.registrator.community.service","org.registrator.community.validator"})
+    "org.registrator.community.service",
+    "org.registrator.community.validator",
+    "org.registrator.community.websocket"
+})
+
 @EnableTransactionManagement
 @Import(AdditionalAppConfig.class)
 public class SpringRootConfig {
