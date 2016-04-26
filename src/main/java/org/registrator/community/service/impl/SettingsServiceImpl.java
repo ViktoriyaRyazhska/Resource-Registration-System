@@ -25,9 +25,11 @@ public class SettingsServiceImpl implements SettingsService {
     @Autowired
     private SettingsRepository settingsRepository;
 
+    private static volatile Settings currentSettings;
+
     @Override
     public SettingsDTO getAllSettingsDTO() {
-        Settings settings = settingsRepository.getAllSettings();
+        Settings settings = getCurrentSettings();
         SettingsDTO settingsDTO = new SettingsDTO();
         settingsDTO.setRegistrationMethod(settings.getRegistrationMethod().toString());
         settingsDTO.setTimeZone(settings.getTimeZone().getID());
@@ -35,20 +37,21 @@ public class SettingsServiceImpl implements SettingsService {
         return settingsDTO;
     }
 
-    @Override
-    @Transactional
-    public Settings getAllSettings() {
-        Settings result = settingsRepository.getAllSettings();
-        if (result == null) {
-            result = new Settings();
+    private Settings getCurrentSettings() {
+        if (currentSettings == null) {
+            synchronized (this) {
+                if (currentSettings == null) {
+                    currentSettings = settingsRepository.getAllSettings();
+                }
+            }
         }
-        return result;
+        return currentSettings;
     }
 
     @Override
     @Transactional
-    public void saveAll(SettingsDTO settingsDTO) {
-        Settings settings = getAllSettings();
+    public synchronized void saveAll(SettingsDTO settingsDTO) {
+        Settings settings = getCurrentSettings();
         settings.setRegistrationMethod(RegistrationMethod.valueOf(settingsDTO.getRegistrationMethod()));
         settings.setTimeZone(TimeZone.getTimeZone(settingsDTO.getTimeZone()));
         settings.setSmtpParameters(SmtpParameters.from(settingsDTO.getSmtpParameters()));
@@ -57,38 +60,45 @@ public class SettingsServiceImpl implements SettingsService {
 
     @Override
     @Transactional
-    public void setTimeZone(TimeZone timeZone) {
-        Settings settings = getAllSettings();
+    public synchronized void setTimeZone(TimeZone timeZone) {
+        Settings settings = getCurrentSettings();
         settings.setTimeZone(timeZone);
         settingsRepository.save(settings);
     }
 
     @Override
-    @Transactional
     public TimeZone getTimeZone() {
-        return settingsRepository.getAllSettings().getTimeZone();
+        return getCurrentSettings().getTimeZone();
     }
 
     @Override
     @Transactional
-    public void setRegistrationMethod(RegistrationMethod registrationMethod) {
-        Settings settings = getAllSettings();
+    public synchronized void setRegistrationMethod(RegistrationMethod registrationMethod) {
+        Settings settings = getCurrentSettings();
         settings.setRegistrationMethod(registrationMethod);
         settingsRepository.save(settings);
     }
 
     @Override
-    @Transactional
     public RegistrationMethod getRegistrationMethod() {
-        return getAllSettings().getRegistrationMethod();
+        return getCurrentSettings().getRegistrationMethod();
     }
 
     @Override
-    @Transactional
     public SmtpParameters getSmtpParameters() {
-        SmtpParameters result = getAllSettings().getSmtpParameters();
+        SmtpParameters result = getCurrentSettings().getSmtpParameters();
         if (result == null) {
             result = new SmtpParameters();
+        }
+        return result;
+    }
+
+    @Override
+    public SmtpParameters parseSmtpParameters(SmtpParametersDTO smtpParametersDTO) {
+        SmtpParameters result = SmtpParameters.from(smtpParametersDTO);
+        // if password was not changed use current
+        if (!smtpParametersDTO.getPasswordChanged()) {
+            result.setPassword(getCurrentSettings().getSmtpParameters().getPassword());
         }
         return result;
     }

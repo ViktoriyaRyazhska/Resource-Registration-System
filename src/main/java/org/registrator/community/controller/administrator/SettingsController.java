@@ -64,9 +64,9 @@ public class SettingsController {
                                  RedirectAttributes redirectAttributes) {
         logger.debug("start changing settings");
 
-        redirectAttributes.addFlashAttribute("settings", settings);
         timeZoneValidator.validate(settings, result);
         if (result.hasErrors()) {
+            redirectAttributes.addFlashAttribute("settings", settings);
             settings.setError(true);
             logger.debug("Settings have errors {}", result);
             return "adminSettings";
@@ -82,8 +82,7 @@ public class SettingsController {
         }
 
         logger.info("settings are successfully changed");
-        settings.setSuccess(true);
-        redirectAttributes.addFlashAttribute("settings", settings);
+        redirectAttributes.addFlashAttribute("success", true);
         return "redirect:settings";
     }
 

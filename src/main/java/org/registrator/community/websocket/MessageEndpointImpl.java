@@ -62,6 +62,10 @@ public class MessageEndpointImpl implements MessageEndpoint {
     @OnError
     public void onError(Throwable t) throws Throwable {
         LOG.error("WebSocket Error: " + t.toString(), t);
+        if (!session.isOpen()) {
+            LOG.debug("WebSocket session closed.");
+            messagingService.deleteClient(this);
+        }
     }
 
     @Override

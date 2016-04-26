@@ -4,13 +4,14 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <div class="container">
+  <c:if test="${success}">
+    <div class="alert alert-success">
+      <span><spring:message code="label.admin.settings.save"/></span>
+    </div>
+  </c:if>
   <form:form id="сhangeReg" method="post" modelAttribute="settings"
     action="settings">
-    <c:if test="${settings.success}">
-      <div class="alert alert-success">
-        <span><spring:message code="label.admin.settings.save"/></span>
-      </div>
-    </c:if>
+
     <div class="panel panel-default" max>
       <div class="panel-heading">
         <h3 class="panel-title"><spring:message code="label.admin.settings.method" /></h3>
@@ -101,11 +102,15 @@
           <div class="row">
             <div class="col-md-4">
               <label for="smtpUsername"><spring:message code="label.admin.settings.smtp.username" /></label>
-              <input id = "smtpUsername" class="form-control" name="smtpParameters.username" value="${settings.smtpParameters.username}">
+              <input id = "smtpUsername" class="form-control" name="smtpParameters.username"
+                     value="${settings.smtpParameters.username}">
             </div>
             <div class="col-md-4">
               <label for="smtpPassword"><spring:message code="label.admin.settings.smtp.password" /></label>
-              <input type="password" id = "smtpPassword" class="form-control" name="smtpParameters.password" value="${settings.smtpParameters.password}">
+              <input type="password" id = "smtpPassword" class="form-control" name="smtpParameters.password"
+                     value="${settings.smtpParameters.password}">
+              <input type="input" id = "smtpPasswordChanged" class="hidden" name="smtpParameters.passwordChanged"
+                     value="${settings.smtpParameters.passwordChanged}">
             </div>
             <div class="col-md-1">
               <br>

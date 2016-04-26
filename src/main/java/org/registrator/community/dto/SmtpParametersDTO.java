@@ -3,18 +3,14 @@ package org.registrator.community.dto;
 import org.registrator.community.entity.SmtpParameters;
 
 public class SmtpParametersDTO {
-
+    private static final String passwordPlaceholder = "secured";
     private String host;
-
     private String  protocol;
-
     private String port;
-
     private String username;
-
     private String password;
-
-    private boolean tlsEnabled = true;
+    private boolean tlsEnabled;
+    private boolean passwordChanged;
 
     public SmtpParametersDTO() {}
     
@@ -66,14 +62,23 @@ public class SmtpParametersDTO {
         this.tlsEnabled = tlsEnabled;
     }
 
+    public boolean getPasswordChanged() {
+        return passwordChanged;
+    }
+
+    public void setPasswordChanged(boolean passwordChanged) {
+        this.passwordChanged = passwordChanged;
+    }
+
     public static SmtpParametersDTO from(SmtpParameters smtpParameters) {
         SmtpParametersDTO result = new SmtpParametersDTO();
         result.host = smtpParameters.getHost();
         result.protocol = smtpParameters.getProtocol().toString();
         result.port = String.valueOf(smtpParameters.getPort());
         result.username = smtpParameters.getUsername();
-        result.password = smtpParameters.getPassword();
+        result.password = passwordPlaceholder;
         result.tlsEnabled = smtpParameters.getTlsEnabled();
+        result.passwordChanged = false;
         return result;
     }
 }
