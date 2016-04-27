@@ -58,7 +58,7 @@ public class SettingsServiceImpl implements SettingsService {
         Settings settings = getCurrentSettings();
         settings.setRegistrationMethod(RegistrationMethod.valueOf(settingsDTO.getRegistrationMethod()));
         settings.setTimeZone(TimeZone.getTimeZone(settingsDTO.getTimeZone()));
-        settings.setSmtpParameters(SmtpParameters.from(settingsDTO.getSmtpParameters()));
+        settings.setSmtpParameters(parseSmtpParameters(settingsDTO.getSmtpParameters()));
         settingsRepository.save(settings);
     }
 
