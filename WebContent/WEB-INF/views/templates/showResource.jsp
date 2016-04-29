@@ -87,15 +87,13 @@
                         <span class="latitudeMinutes">${point.latitudeMinutes}</span>'
                         <span class="latitudeSeconds"> <fmt:formatNumber
                             type="number" maxFractionDigits="2"
-                            value="${point.latitudeSeconds}" />
-                      </span>"
+                            value="${point.latitudeSeconds}" /></span>"
                       </span> <span class="pointLng"> <span
                         class="longitudeDegrees">${point.longitudeDegrees}</span>°
                         <span class="longitudeMinutes">${point.longitudeMinutes}</span>'
                         <span class="longitudeSeconds"> <fmt:formatNumber
                             type="number" maxFractionDigits="2"
-                            value="${point.longitudeSeconds}" />
-                      </span>"
+                            value="${point.longitudeSeconds}" /></span>"
                       </span>
                     </div>
                   </c:forEach>
