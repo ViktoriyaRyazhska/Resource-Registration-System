@@ -25,7 +25,7 @@
               href="<c:url value='/administrator/users/get-all-users'/>"><spring:message
                   code="label.registrated.pagename" /></a></li>
             <li><a
-              href="<c:url value='/administrator/users/get-all-inactive-users'/>"><spring:message
+              href="<c:url value='/administrator/users/get-all-users?statusType=inactive'/>"><spring:message
                   code="label.inactive.pagename" /></a></li>
           </ul></li>
         <c:if

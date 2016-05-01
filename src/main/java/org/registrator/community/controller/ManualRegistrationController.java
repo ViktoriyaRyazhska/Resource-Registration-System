@@ -44,7 +44,8 @@ public class ManualRegistrationController {
     @PreAuthorize("hasRole('ROLE_COMMISSIONER') or hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/manualregistration", method = RequestMethod.GET)
     public String showNewUserRegisterForm(Model model) {
-        List<TerritorialCommunity> territorialCommunities = communityService.findAllByAsc();
+        List<TerritorialCommunity> territorialCommunities =
+                communityService.getCommunitiesToAssignByUser(userService.getLoggedUser());
         model.addAttribute("territorialCommunities", territorialCommunities);
         model.addAttribute("registrationForm", new UserRegistrationDTO());
         logger.info("Loaded registration form");
