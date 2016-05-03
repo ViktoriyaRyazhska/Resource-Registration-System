@@ -15,17 +15,9 @@
 <%-- scripts --%> 
   <script src="<c:url value='/resource/js/lib/jquery.dataTables.min.js'/>"></script>
   <script src="<c:url value='/resource/js/lib/dataTables.responsive.min.js'/>"></script>
- 
- 
-  <%-- <script src="http://maps.googleapis.com/maps/api/js?libraries=drawing,places,geometry&sensor=false"></script>
-  <script type="text/javascript" src="<c:url value='/resource/js/searchOnMap.js'/>"></script> --%>
-  
-  <link rel="stylesheet" href="<c:url value='/resource/js/lib/leafletJS/leaflet.css'/>" />
-  <script src="<c:url value='/resource/js/lib/leafletJS/leaflet.js'/>"></script> <!-- or use leaflet-src.js -->
-  <script src="<c:url value='/resource/js/lib/leafletJS/Leaflet.Editable.js'/>"></script>
-  <script src="<c:url value='/resource/js/lib/leafletJS/Map.SelectArea.js'/>"></script>
+  <script src="http://maps.googleapis.com/maps/api/js?libraries=drawing,places,geometry&sensor=false"></script>
+  <script type="text/javascript" src="<c:url value='/resource/js/searchOnMap.js'/>"></script>
 
-  
 <div class="container"
   style="margin-bottom: 25px; line-height: 28px; vertical-align: top;">
   <h3>
@@ -325,16 +317,11 @@
 <div class="container" id="searchResult" class="col-md-12"></div>
 <div id="paginationDiv" class="col-md-12"></div>
 <div id="resTypeFilter" class="col-md-12"></div>
-<div id="openMap"  class="container" style="height: 700px;"></div>
-<script type="text/javascript"  src="<c:url value='/resource/js/LeafLetMap/drawOnMap.js'/>"></script>
-<script type="text/javascript"  src="<c:url value='/resource/js/LeafLetMap/leafLetSearchMap.js'/>"></script>
-<script type="text/javascript"  src="<c:url value='/resource/js/LeafLetMap/searchOnMapLLJS.js'/>"></script>
-
-<!-- <div id="map_canvas" class="container" style="height: 700px;"></div> -->
+<div id="map_canvas" class="container" style="height: 700px;"></div>
 
 <%--Search field for Google Map--%>
-<!-- <p>
+<p>
   <input id="gmaps-input" class="controls gmap-input"
     style="width: 300px;" type="text"
     placeholder=<spring:message code="label.menu.searchOnMap"/>>
-</p> -->
+</p>

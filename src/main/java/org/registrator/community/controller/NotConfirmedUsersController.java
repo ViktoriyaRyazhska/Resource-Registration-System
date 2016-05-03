@@ -23,13 +23,13 @@ public class NotConfirmedUsersController {
     @Autowired
     private VerificationTokenService verificationTokenService;
     @Autowired
-    private NotConfirmedUsersService emailConfirmService;
+    private NotConfirmedUsersService notConfirmedUsersService;
 
     @PreAuthorize("hasRole('ROLE_ANONYMOUS') or hasRole('ROLE_ADMIN') or hasRole('ROLE_COMMISSIONER')")
     @RequestMapping(value = {"/manualregistration/confirm_email/{hash}", "/register/confirm_email/{hash}"}, method = RequestMethod.GET)
     public String getConfirmEmailPage(@PathVariable("hash") String hash, Model model) {
         if (verificationTokenService.isExistValidVerificationToken(hash)) {
-            model.addAttribute("msg", emailConfirmService.confirmEmail(hash));
+            model.addAttribute("msg", notConfirmedUsersService.confirmEmail(hash));
         }
         return "confirm_email";
     }
@@ -39,7 +39,7 @@ public class NotConfirmedUsersController {
     @RequestMapping(value = "/administrator/users/get-all-users/notcomfirmrd-user", method = RequestMethod.POST)
     public @ResponseBody String actionsWithNotConfirmedUsers(@RequestBody UsersDataNotConfJson usersDataNotConfJson) {
         logger.debug("Received JSON: {}", usersDataNotConfJson);
-        return emailConfirmService.actionsWithNotConfirmedUsers(usersDataNotConfJson);
+        return notConfirmedUsersService.actionsWithNotConfirmedUsers(usersDataNotConfJson);
     }
 
 
