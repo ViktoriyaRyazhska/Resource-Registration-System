@@ -189,7 +189,9 @@ function createDataTable(json) {
 
     $("#searchResult").html('<table id="datatable" class="table table-striped table-bordered" cellspacing="0"></table>');
     oTable = $('#datatable').DataTable({
+      "responsive" : true,
       "aaData" : json,
+      "bAutoWidth": false,
       "aoColumns" : [ {
         "sTitle" : description,
         "mData" : "resourceDescription"
