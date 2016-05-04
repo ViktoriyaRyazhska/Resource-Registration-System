@@ -180,8 +180,9 @@
           <spring:message code="label.resource.coordinates" />
         </legend>
 
-        <%--Container for Google map--%>
-        <div class="col-md-12" style="margin-bottom: 10px;">
+        
+       <!-- map help -->
+       <%--  <div class="col-md-12" style="margin-bottom: 10px;">
           <div class="col-md-12" id="mapManual">
             <span class="glyphicon glyphicon-triangle-right"></span> <span
               class="glyphicon glyphicon-triangle-bottom hidden"></span>
@@ -190,14 +191,18 @@
           <div class="spoiler col-md-12">
             <spring:message code="label.resource.mapHelp" />
           </div>
-        </div>
-
-        <div id="map_canvas" class="container"
+        </div> --%>
+        <%--Container for Google map--%>
+        <%-- <div id="map_canvas" class="container"
           style="height: 500px; padding: 20px 0px;"></div>
         <div class="col-md-12">
           <span id="infoBox" class="col-md-5"><spring:message
               code="label.resource.infoBox" /></span>
-        </div>
+        </div> --%>
+        
+         <%--Container for OpenStreet map--%>
+        <div id="openMap" class="container"
+          style="height: 500px; padding: 20px 0px;"></div>
 
         <div class="col-md-12">
           <input type="checkbox" id="allUkraine"
@@ -454,20 +459,21 @@
     </div>
   </form:form>
 
-  <%--Search on the map--%>
-  <p>
+  <%--Search on the google map--%>
+  <!-- <p>
     <input id="gmaps-input" class="controls gmap-input"
       style="width: 300px;" type="text"
       placeholder=<spring:message code="label.menu.searchOnMap"/>>
-  </p>
+  </p> -->
 
   <%--Search existing resources on the map--%>
   <p>
-    <a id="gmaps-show-res" class="controls gmap-button"><spring:message
-        code="label.showResources" /></a>
+    <!-- for google maps -->
+    <%-- <a id="gmaps-show-res" class="controls gmap-button"><spring:message
+        code="label.showResources" /></a> --%>
 
-    <%--Control buttons for polygon drawing--%>
-  <div id='cp-wrap' style="width: 80px;">
+    <%--Control buttons for polygon drawing--%><!-- for google maps -->
+  <%-- <div id='cp-wrap' style="width: 80px;">
     <span class="toggle"> <a data-action='save'
       class="controls gmap-button" style="position: relative;"><spring:message
           code="label.savePolygon" /></a> <a data-action='cancel'
@@ -479,7 +485,7 @@
     </span>
 
   </div>
-
+ --%>
   <%--AJAX Loader on the dark display--%>
   <div id="dark_bg">
     <div class="windows8">
@@ -502,7 +508,7 @@
   </div>
 
   <%--Scripts for Google Map--%>
-  <script
+  <%-- <script
     src="http://maps.googleapis.com/maps/api/js?sensor=false&libraries=drawing,places"></script>
   <script type="text/javascript"
     src="<c:url value="/resource/js/lib/polysnapper.js"/>"></script>
@@ -511,10 +517,27 @@
   <script type="text/javascript"
     src="<c:url value='/resource/js/checkIntersection.js'/>"></script>
   <script type="text/javascript"
-    src="<c:url value='/resource/js/isInsideUkraine.js'/>"></script>
+    src="<c:url value='/resource/js/isInsideUkraine.js'/>"></script> --%>
 </div>
-<script
-  src="http://maps.googleapis.com/maps/api/js?libraries=drawing,places,geometry&sensor=false"></script>
+
+
+<!-- <script
+  src="http://maps.googleapis.com/maps/api/js?libraries=drawing,places,geometry&sensor=false"></script> -->
+
+<link rel="stylesheet" href="<c:url value='/resource/js/lib/leafletJS/leaflet.css'/>" />
+<script src="<c:url value='/resource/js/lib/leafletJS/leaflet-src.js'/>"></script> <!-- or use leaflet-src.js -->
+<script src="<c:url value='/resource/js/lib/leafletJS/Leaflet.Editable.js'/>"></script>
+<script src="<c:url value='/resource/js/lib/leafletJS/GeometryUtil.js'/>"></script>
+
+
+<script type="text/javascript"  src="<c:url value='/resource/js/LeafLetMap/drawOnMap.js'/>"></script>
+<script type="text/javascript"  src="<c:url value='/resource/js/LeafLetMap/checkIntersection.js'/>"></script>
+<script type="text/javascript"  src="<c:url value='/resource/js/LeafLetMap/isInsideUkraine.js'/>"></script>
+<script type="text/javascript" src="<c:url value='/resource/js/LeafLetMap/addResourceOnMapLLJS.js'/>"></script>
+<script type="text/javascript"  src="<c:url value='/resource/js/LeafLetMap/leafLetAddMap.js'/>"></script>
+
+
+
 <script
   src="<c:url value='/resource/js/lib/jquery-ui.datepscker.min.js'/>"></script>
 <script
