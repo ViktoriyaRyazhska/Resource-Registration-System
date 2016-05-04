@@ -165,7 +165,7 @@ function searchByParameters(page) {
     dataType : 'json',
     success : function(data) {
       createDataTable(data.polygons);
-      drawPolygons(data);
+      drawPolygons(data.polygons);
       $("#dark_bg").hide();
     },
     error : function() {
