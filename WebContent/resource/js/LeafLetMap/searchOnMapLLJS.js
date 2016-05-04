@@ -44,7 +44,7 @@ function searchOnMapByPoint(latLng, page) {
     dataType : 'json',
     success : function(data) {
     	
-    	drawPolygons(data);
+    	drawPolygons(data.polygons);
         createDataTable(data.polygons);
 
       $("#dark_bg").hide();
