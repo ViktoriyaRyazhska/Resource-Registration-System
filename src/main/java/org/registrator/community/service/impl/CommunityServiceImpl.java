@@ -1,5 +1,6 @@
 package org.registrator.community.service.impl;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -10,6 +11,7 @@ import org.registrator.community.dto.CommunityDTO;
 import org.registrator.community.entity.TerritorialCommunity;
 import org.registrator.community.entity.User;
 import org.registrator.community.enumeration.CommunityStatus;
+import org.registrator.community.enumeration.RoleType;
 import org.registrator.community.service.CommunityService;
 import org.registrator.community.service.UserService;
 import org.slf4j.Logger;
@@ -35,6 +37,19 @@ public class CommunityServiceImpl implements CommunityService{
     public List<TerritorialCommunity> findAll() {
         return communityRepository.findAll();
     }
+
+    @Override
+    public List<TerritorialCommunity> getCommunitiesToAssignByUser(User user) {
+        RoleType roleType = user.getRole().getType();
+        if (roleType == RoleType.ADMIN) {
+            return findAll();
+        } else if (roleType == RoleType.COMMISSIONER) {
+            return Collections.singletonList(user.getTerritorialCommunity());
+        } else {
+            return Collections.emptyList();
+        }
+    }
+
     @Override
     public TerritorialCommunity findByName(String name) {
         return communityRepository.findByName(name);

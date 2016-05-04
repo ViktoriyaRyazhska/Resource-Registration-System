@@ -96,7 +96,9 @@ public class SmtpParameters {
         SmtpParameters result = new SmtpParameters();
         result.host = smtpParameters.getHost();
         result.username = smtpParameters.getUsername();
-        result.password = smtpParameters.getPassword();
+        if (smtpParameters.getPasswordChanged()) {
+            result.password = smtpParameters.getPassword();
+        }
         result.protocol = Protocol.valueOf(smtpParameters.getProtocol());
         result.port = Integer.valueOf(smtpParameters.getPort());
 

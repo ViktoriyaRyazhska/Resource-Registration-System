@@ -20,10 +20,10 @@ function initialize() {
     $(this).find(".coordinatesPoint").each(function() {
       var latitudeDegrees = Number($(this).find(".latitudeDegrees").html());
       var latitudeMinutes = Number($(this).find(".latitudeMinutes").html());
-      var latitudeSeconds = Number($(this).find(".latitudeSeconds").html());
+      var latitudeSeconds = Number($(this).find(".latitudeSeconds").html().replace(",","."));
       var longitudeDegrees = Number($(this).find(".longitudeDegrees").html());
       var longitudeMinutes = Number($(this).find(".longitudeMinutes").html());
-      var longitudeSeconds = Number($(this).find(".longitudeSeconds").html());
+      var longitudeSeconds = Number($(this).find(".longitudeSeconds").html().replace(",","."));
 
       var lat = latitudeDegrees + latitudeMinutes / 60 + latitudeSeconds / 3600;
       var lng = longitudeDegrees + longitudeMinutes / 60 + longitudeSeconds / 3600;

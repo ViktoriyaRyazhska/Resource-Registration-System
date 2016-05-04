@@ -10,9 +10,11 @@ import org.registrator.community.config.SecurityConfiguration;
 import org.registrator.community.config.root.DevelopmentConfiguration;
 import org.registrator.community.config.root.SpringRootConfig;
 import org.registrator.community.config.root.TestingConfiguration;
+import org.registrator.community.controller.filter.LocaleConfigurerFilter;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
+import org.springframework.web.filter.RequestContextFilter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 
@@ -41,7 +43,9 @@ public class MyWebInitializer extends
         CharacterEncodingFilter characterEncodingFilter = new CharacterEncodingFilter();
         characterEncodingFilter.setEncoding("UTF-8");
         characterEncodingFilter.setForceEncoding(true);
-        return new Filter[]{characterEncodingFilter};
+
+        LocaleConfigurerFilter localeConfigurerFilter = new LocaleConfigurerFilter();
+        return new Filter[]{characterEncodingFilter, localeConfigurerFilter};
     }
 
     @Override

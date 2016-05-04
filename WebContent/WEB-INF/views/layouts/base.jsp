@@ -34,6 +34,7 @@
 
 <!-- Our own css -->
 <link rel="stylesheet" href="<c:url value='/resource/css/system.css'/>">
+<link rel="stylesheet" href="<c:url value='/resource/css/messages.css'/>">
 
 <div class="container">
   <div id="header">

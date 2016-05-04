@@ -13,12 +13,11 @@
         </button>
       </div>
 
-    <div class="collapse navbar-collapse" id="navigationbar"> 
+    <div class="collapse navbar-collapse" id="navigationbar">
       <ul class="nav navbar-nav">
-              <li><a href="<c:url value='/'/>"
+        <li><a href="<c:url value='/'/>"
           class="glyphicon glyphicon-home"></a></li>
-          
-            <li class="dropdown"><a href="#" class="dropdown-toggle"
+        <li class="dropdown"><a href="#" class="dropdown-toggle"
             data-toggle="dropdown"><spring:message
               code="label.user.pagename" /><b class="caret"></b></a>
             <ul class="dropdown-menu">

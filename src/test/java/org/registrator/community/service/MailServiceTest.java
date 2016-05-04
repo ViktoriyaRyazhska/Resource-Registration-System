@@ -38,6 +38,7 @@ public class MailServiceTest extends PowerMockTestCase {
             put("login", recepientLogin);
             put("password", recepientPassword);
         }};
+    private String sessionId = "sessionID";
 
     @InjectMocks
     private MailService mailService = new MailServiceImpl();
@@ -77,7 +78,7 @@ public class MailServiceTest extends PowerMockTestCase {
                 .withAnyArguments()
                 .thenReturn(mock(MimeMessageHelper.class, RETURNS_MOCKS));
         List<Map<String, Object>> batches = Arrays.asList(batch);
-        mailService.sendBatchResetedPasswordMail(batches);
+        mailService.sendBatchResetedPasswordMail(batches, sessionId);
         verify(mailSender).send(anyListOf(MimeMessagePreparator.class).toArray(new MimeMessagePreparator[batches.size()]));
     }
 

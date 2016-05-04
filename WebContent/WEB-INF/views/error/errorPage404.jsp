@@ -6,7 +6,7 @@
 <html>
 <head>
 <title><spring:message>label.errorPage.notFoundTitle</spring:message></title>
-
+<meta charset="UTF-8">
 <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css">
 </head>

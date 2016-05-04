@@ -1,17 +1,5 @@
 $(document).ready(function() {
-  //$("#confirmRegistrationMethod").click(function() {
-  //
-  //  $.ajax({
-  //    type : "POST",
-  //    url : "settings",
-  //    data : $("#сhangeReg").serialize(),
-  //    success : function(data) {
-  //      bootbox.alert(jQuery.i18n.prop('msg.settingsChanged'));
-  //    }
-  //  });
-  //
-  //  return false;
-  //});
+  clearPassword = $('#smtpPasswordChanged').val() === 'false';
 
   $(document).ready(function(){
     $(".numeric").numeric({decimal:" ", negative:false});
@@ -38,5 +26,12 @@ $(document).ready(function() {
     });
 
     return false;
+  });
+
+  $('#smtpPassword').focus(function() {
+    if (clearPassword) {
+      $(this).val("");
+      $('#smtpPasswordChanged').val("true");
+    }
   });
 });

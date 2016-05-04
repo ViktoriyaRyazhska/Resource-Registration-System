@@ -188,6 +188,7 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
+    @Transactional
     public List<Resource> findByType(ResourceType type) {
         return resourceRepository.findByType(type);
     }
@@ -220,6 +221,7 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
+    @Transactional
     public Set<Resource> getAllByPoint(Double lat, Double lng, Integer page) {
         Set<Resource> resources = new HashSet<>();
         Pageable pageable = new PageRequest(page, 200);
@@ -242,6 +244,7 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
+    @Transactional
     public List<PolygonJson> createPolygonJSON(Resource resource, int i) {
         List<PolygonJson> polygonsJSON = new ArrayList<>();
 

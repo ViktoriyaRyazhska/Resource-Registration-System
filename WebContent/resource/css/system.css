@@ -27,6 +27,7 @@ body {
   display: flex;
 }
 
+
 #menubaruser, #menubarreg, #menubaradmin, #menubarcom {
   min-height: 20px;
   line-height: 40px;
@@ -130,6 +131,13 @@ body {
   margin: 0;
 }
 
+.controls .btn {
+  font-size: 1.5em;
+  margin: 2px 5px;
+  padding: 0 2px;
+  
+}
+
 #mapManual {
   font-style: italic;
   font-size: 15px;
@@ -191,4 +199,23 @@ label {
 }
 .error{
   color:red;
+}
+
+.search-toggle {
+  font-size: 2em;
+  cursor: pointer;
+}
+
+.nowrap {
+   white-space: nowrap; 
+}
+.detail-view {
+  margin-top: 2px;
+  width: 100%;
+}
+.top-margin {
+    margin: 5px 0 0 0;
+}
+.bottom-line {
+  border-bottom: 2px solid black;
 }

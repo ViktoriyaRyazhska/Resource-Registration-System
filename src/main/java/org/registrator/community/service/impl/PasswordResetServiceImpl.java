@@ -33,7 +33,7 @@ public class PasswordResetServiceImpl implements PasswordResetService{
 
     @Transactional
     @Override
-    public String batchPasswordReset(PasswordResetJson batch) {
+    public String batchPasswordReset(PasswordResetJson batch, String sessionId) {
         logger.info("Recieved package: " + batch.getLogin());
         List<User> userList = new ArrayList<User>();
 
@@ -66,7 +66,7 @@ public class PasswordResetServiceImpl implements PasswordResetService{
             logger.info("Data accepted and prepared in Thread: "+Thread.currentThread().getName());
         }
         // send mails asynchronously
-        mailService.sendBatchResetedPasswordMail(listTemplateVariables);
+        mailService.sendBatchResetedPasswordMail(listTemplateVariables, sessionId);
         
         return "msg.batchops.passwordResetSuccess";
     }

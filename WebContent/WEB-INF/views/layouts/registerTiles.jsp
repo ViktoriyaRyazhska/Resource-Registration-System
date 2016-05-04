@@ -35,6 +35,7 @@
 
 <!-- Our own css -->
 <link rel="stylesheet" href="${base}resource/css/system.css">
+<link rel="stylesheet" href="<c:url value='/resource/css/messages.css'/>">
 
 <!-- DataTables CSS-->
 <link rel="stylesheet"

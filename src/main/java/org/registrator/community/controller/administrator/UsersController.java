@@ -1,7 +1,6 @@
 package org.registrator.community.controller.administrator;
 
 import java.util.List;
-import java.util.Locale;
 
 import javax.validation.Valid;
 
@@ -91,7 +90,7 @@ public class UsersController {
         model.addAttribute("roleList", roleList);
         List<UserStatus> userStatusList = userService.fillInUserStatusforRegistratedUsers();
         model.addAttribute("userStatusList", userStatusList);
-        List<TerritorialCommunity> territorialCommunities = communityService.findAll();
+        List<TerritorialCommunity> territorialCommunities = communityService.getCommunitiesToAssignByUser(userService.getLoggedUser());
         model.addAttribute("territorialCommunities", territorialCommunities);
         model.addAttribute("failEdit", failEdit);
         logger.debug("end");
