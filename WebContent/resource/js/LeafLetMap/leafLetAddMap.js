@@ -1,9 +1,13 @@
 /**
  * author Pavlo Antentyk
  */
-var startPoint = [49.83523, 24.03381];
+
+$(function(){
+	
+
+startPoint = [49.83523, 24.03381];
 var polygonsFromMap = [];
-var resType;
+//var resType;
 
 //create map
 createMap();
@@ -21,7 +25,7 @@ L.NewPolygonControl = L.Control.extend({
         link.href = '#';
         link.title = 'Create a new polygon';
         //link.innerHTML = '▱';
-        link.innerHTML = "<img src=\"/resources/resource/img/leaflet/polygon.png\">";
+        link.innerHTML = "<img src=\""+baseUrl+"resource/img/leaflet/polygon.png\">";
         container.style.backgroundColor = 'white';
 	    container.style.width = '24px';
 	    container.style.height = '24px';
@@ -61,7 +65,7 @@ L.NewClearButtonControl = L.Control.extend({
 		    link = L.DomUtil.create('a', '', container);
 		    link.title = 'Cancel';
 		    link.href = '#';
-		    link.innerHTML = "<img src=\"/resources/resource/img/leaflet/cancel.png\">";
+		    link.innerHTML = "<img src=\""+baseUrl+"resource/img/leaflet/cancel.png\">";
 
 		    container.style.backgroundColor = 'white';
 		    container.style.width = '24px';
@@ -131,6 +135,8 @@ map.on('contextmenu', function(e){
 	console.log("right click");
 	console.log(polygons);
 	
+});
+
 });
 
 

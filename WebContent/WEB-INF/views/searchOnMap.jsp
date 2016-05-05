@@ -24,6 +24,9 @@
   <script src="<c:url value='/resource/js/lib/leafletJS/leaflet.js'/>"></script> <!-- or use leaflet-src.js -->
   <script src="<c:url value='/resource/js/lib/leafletJS/Leaflet.Editable.js'/>"></script>
   <script src="<c:url value='/resource/js/lib/leafletJS/Map.SelectArea.js'/>"></script>
+  
+  <script type="text/javascript"  src="<c:url value='/resource/js/LeafLetMap/drawOnMap.js'/>"></script>
+  <script type="text/javascript"  src="<c:url value='/resource/js/LeafLetMap/leafLetSearchMap.js'/>"></script>
 
   
 <div class="container"
@@ -326,8 +329,7 @@
 <div id="paginationDiv" class="col-md-12"></div>
 <div id="resTypeFilter" class="col-md-12"></div>
 <div id="openMap"  class="container" style="height: 700px;"></div>
-<script type="text/javascript"  src="<c:url value='/resource/js/LeafLetMap/drawOnMap.js'/>"></script>
-<script type="text/javascript"  src="<c:url value='/resource/js/LeafLetMap/leafLetSearchMap.js'/>"></script>
+
 <script type="text/javascript"  src="<c:url value='/resource/js/LeafLetMap/searchOnMapLLJS.js'/>"></script>
 
 <!-- <div id="map_canvas" class="container" style="height: 700px;"></div> -->
