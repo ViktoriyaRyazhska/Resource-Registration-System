@@ -1,11 +1,12 @@
 /**
  * author Pavlo Antentyk
  */
-var startPoint = [49.83523, 24.03381];
+
+$(function(){
+startPoint = [49.83523, 24.03381];
 var markers = new L.FeatureGroup();
 var marker = new  L.marker();
 var markerControl;
-
 
 // create map
 createMap();
@@ -23,7 +24,7 @@ L.NewMarkerControl = L.Control.extend({
         link = L.DomUtil.create('a', '', container);
         link.href = '#';
         link.title = 'Select point';
-        link.innerHTML = "<img src=\"/resources/resource/img/leaflet/marker.png\">";
+        link.innerHTML = "<img src=\""+baseUrl+"resource/img/leaflet/marker.png\">";
         //link.innerHTML = '⚫';
         container.style.backgroundColor = 'white';
 	    container.style.width = '24px';
@@ -70,7 +71,7 @@ L.NewAreaSelectControl = L.Control.extend({
         link = L.DomUtil.create('a', '', container);
         link.href = '#';
         link.title = 'Select area';
-        link.innerHTML = "<img src=\"/resources/resource/img/leaflet/areaSelect.png\">";
+        link.innerHTML = "<img src=\""+baseUrl+"resource/img/leaflet/areaSelect.png\">";
         //link.innerHTML = '#';
         container.style.backgroundColor = 'white';
 	    container.style.width = '24px';
@@ -97,6 +98,7 @@ map.on('areaselected', function(e){
 	  searchOnMapByArea(e.bounds);
 });
 
+});
 
 function clearMarker(){
 	map.removeLayer(markers);

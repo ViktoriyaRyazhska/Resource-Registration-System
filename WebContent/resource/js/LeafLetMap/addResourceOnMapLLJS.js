@@ -107,16 +107,6 @@ function calculateAreaPerimeter(polygon, i) {
   return retrn;
 }
 
-$( "#resourcesTypeSelect" ).change(function() {
-	 var resType = $("#resourcesTypeSelect").val();
-	  if (resType == undefined) {
-	    $("#resourcesTypeSelect").focus();
-	    bootbox.alert(jQuery.i18n.prop('msg.selectType'));
-	    return false;
-	  }
-	  getResources();
-	  
-});
 
 
 
@@ -158,9 +148,7 @@ function updatePointOnUI(polygonsFromMap){
 };
 
 
-$(document).on("click", "#addPointsToMap", function() {
-  addPointsToMap(false)
-});
+
 
 // this function adds polygons to map by points typed in text fields
 function addPointsToMap(allowEmptyArea) {
@@ -228,214 +216,234 @@ function addPointsToMap(allowEmptyArea) {
   }
 }
 
-$(document).on("click", "#submitForm", function() {
-	  
-	if(checkInterseption(polygons)){
-		bootbox.alert(jQuery.i18n.prop('msg.PolygonsCross'));
-		return false;
-	}
-	if (isPolygonsInsideUkraine(polygons)) return false;
-	var points = $('.clonedAreaInput');
-	  if (points.length == 2) {
-	    bootbox.alert(jQuery.i18n.prop('msg.twoPoints'));
-	    return false;
-	  }
-	  if ((newPolygons.length > 0) && (points.length > 1)) {
-	    var latArray = [];
-	    var lngArray = [];
-	    var different = false;
+function putParameter(name, value, length) {
+	  var param = $("div[data-calculated="+ name + "]");
 
-	   newPolygons.forEach(function(newPolygon) {
-	      var path = newPolygon;
-	      path.forEach(function(point) {
-	        latArray.push(point.lat);
-	        lngArray.push(point.lng);
-	      });
-	   });
-
-	    var i = 0;
-	    points.each(function() {
-	      var latGrad = Number($(this).find('#myparam1').val());
-	      var latMin = Number($(this).find('#myparam2').val());
-	      var latSec = Number($(this).find('#myparam3').val());
-	      var lngGrad = Number($(this).find('#myparam4').val());
-	      var lngMin = Number($(this).find('#myparam5').val());
-	      var lngSec = Number($(this).find('#myparam6').val());
-
-	      var lat = latGrad + latMin / 60 + latSec / 3600;
-	      var lng = lngGrad + lngMin / 60 + lngSec / 3600;
-
-	      //For unknown reasons when we create a new google point LatLng
-	      //the lng value changes a little bit. That's why we had to create
-	      //function checkWithTolerance where we calculate the difference
-	      //between two points and compare it with tolerance.
-	      var tolerance = 0.0000000001;
-
-	      if ((!checkWithTolerance(lat, latArray[i], tolerance)) || (!checkWithTolerance(lng, lngArray[i], tolerance))) {
-	        console.log("Difference in point " + i + ":");
-	        console.log("lat: " + lat + " lng: " + lng);
-	        console.log("lat: " + latArray[i] + " lng: " + lngArray[i]);
-	        $(this).find("input").css("background", "rgba(255,0,0,0.4)");
-	        different = true;
-	      }
-	      i++;
-	    });
-	    if (different) {
-	      bootbox.alert(jQuery.i18n.prop('msg.differentPoints'));
-	      return false;
+	  if (param.length > 0) {
+	    var id = param[0].attributes.getNamedItem("data-calculatedId").value;
+	    for (var i = 0; length - param.length  > i; i++) {
+	      addDiscreteValue(id, "", "");
 	    }
-	  } else if ((points.length == 1) && (points.find("#myparam1").val() == 200) && (points.find("#myparam4").val() == 200)) {
-	    return true;
+	    $("input[name='resourceDiscrete[" + id + "].valueDiscretes[" + (length - 1) + "].value']").val(value);
+	  }
+}
+
+$(function(){
+	$( "#resourcesTypeSelect" ).change(function() {
+		  resType = $("#resourcesTypeSelect").val();
+		  if (resType == undefined) {
+		    $("#resourcesTypeSelect").focus();
+		    bootbox.alert(jQuery.i18n.prop('msg.selectType'));
+		    return false;
+		  }
+		  getResources();
+		  
+	});
+	
+	$(document).on("click", "#addPointsToMap", function() {
+		  addPointsToMap(false)
+	});
+	$(document).on("click", "#submitForm", function() {
+		  
+		if(checkInterseption(polygons)){
+			bootbox.alert(jQuery.i18n.prop('msg.PolygonsCross'));
+			return false;
+		}
+		if (isPolygonsInsideUkraine(polygons)) return false;
+		var points = $('.clonedAreaInput');
+		  if (points.length == 2) {
+		    bootbox.alert(jQuery.i18n.prop('msg.twoPoints'));
+		    return false;
+		  }
+		  if ((newPolygons.length > 0) && (points.length > 1)) {
+		    var latArray = [];
+		    var lngArray = [];
+		    var different = false;
+
+		   newPolygons.forEach(function(newPolygon) {
+		      var path = newPolygon;
+		      path.forEach(function(point) {
+		        latArray.push(point.lat);
+		        lngArray.push(point.lng);
+		      });
+		   });
+
+		    var i = 0;
+		    points.each(function() {
+		      var latGrad = Number($(this).find('#myparam1').val());
+		      var latMin = Number($(this).find('#myparam2').val());
+		      var latSec = Number($(this).find('#myparam3').val());
+		      var lngGrad = Number($(this).find('#myparam4').val());
+		      var lngMin = Number($(this).find('#myparam5').val());
+		      var lngSec = Number($(this).find('#myparam6').val());
+
+		      var lat = latGrad + latMin / 60 + latSec / 3600;
+		      var lng = lngGrad + lngMin / 60 + lngSec / 3600;
+
+		      //For unknown reasons when we create a new google point LatLng
+		      //the lng value changes a little bit. That's why we had to create
+		      //function checkWithTolerance where we calculate the difference
+		      //between two points and compare it with tolerance.
+		      var tolerance = 0.0000000001;
+
+		      if ((!checkWithTolerance(lat, latArray[i], tolerance)) || (!checkWithTolerance(lng, lngArray[i], tolerance))) {
+		        console.log("Difference in point " + i + ":");
+		        console.log("lat: " + lat + " lng: " + lng);
+		        console.log("lat: " + latArray[i] + " lng: " + lngArray[i]);
+		        $(this).find("input").css("background", "rgba(255,0,0,0.4)");
+		        different = true;
+		      }
+		      i++;
+		    });
+		    if (different) {
+		      bootbox.alert(jQuery.i18n.prop('msg.differentPoints'));
+		      return false;
+		    }
+		  } else if ((points.length == 1) && (points.find("#myparam1").val() == 200) && (points.find("#myparam4").val() == 200)) {
+		    return true;
+		  } else {
+		    bootbox.alert(jQuery.i18n.prop('msg.enterPolygon'));
+		    return false;
+		  }
+		});
+
+
+
+
+
+	$(document).on("click", "#mapManual", function() {
+	  var spoiler = $(this).siblings(".spoiler");
+	  var icon = $(this).find(".glyphicon");
+	  if (!($(this).hasClass("active"))) {
+	    spoiler.slideDown(200);
+	    $(this).addClass("active");
+	    icon.each(function() {
+	      if ($(this).hasClass("hidden")) {
+	        $(this).removeClass("hidden");
+	      } else {
+	        $(this).addClass("hidden");
+	      }
+	    });
 	  } else {
-	    bootbox.alert(jQuery.i18n.prop('msg.enterPolygon'));
-	    return false;
+	    spoiler.slideUp(200);
+	    $(this).removeClass("active");
+	    icon.each(function() {
+	      if ($(this).hasClass("hidden")) {
+	        $(this).removeClass("hidden");
+	      } else {
+	        $(this).addClass("hidden");
+	      }
+	    });
 	  }
 	});
 
+	$(document).on("click", "#allUkraine", function() {
+	  var isChecked = $(this).is(':checked');
+	  if (isChecked) {
+	    cleanPoints();
+	    newPolygons.forEach(function(polygon) {
+	      polygon.setMap(null);
+	    });
+	    newPolygons = [];
+	    $("#infoBox").html(jQuery.i18n.prop('msg.infoBox'));
+
+	    addNewPoint(0, 200, 0, 0, 200, 0, 0);
+	    $("#latLngAdd").hide();
+	    //We make the link "Add polygon" inactive
+	    $(".toggle a").addClass("inactiveLink");
+	    $("#btnAddAreaPoint").attr('disabled', 'disabled');
+	    $('#btnDelAreaPoint').attr('disabled', 'disabled');
+	  } else {
+	    cleanPoints();
+	    $("#latLngAdd").show();
+	    $(".inactiveLink").removeClass("inactiveLink");
+	    $("#btnAddAreaPoint").removeAttr('disabled');
+	  }
+	});
+
+	$(document).on("click", "#clearAllPoints", function() {
+	  	deletePolygons(polygons);
+		cleanPoints();
+	  $(".inactiveLink").removeClass("inactiveLink");
+	});
+
+	/*$(document).on("click", "#delAllPolygons", function() {
+	  cleanPoints();
+	  newPolygons.forEach(function(polygon) {
+	    polygon.setMap(null);
+	  });
+	  newPolygons = [];
+	  $("#infoBox").html(jQuery.i18n.prop('msg.infoBox'));
+	  $(".inactiveLink").removeClass("inactiveLink");
+	});*/
+
+	$(document).on("click", "#resetForm", function() {
+	  cleanPoints();
+	  //$("input[id*='myparam']").removeAttr("disabled");
+	  $("#typeParameters").html("");
+	  $("#reasonInclusion").text("");
+	  $("#infoBox").html(jQuery.i18n.prop('msg.infoBox'));
+	  $('#will').attr("disabled", "disabled");
+	  $('#pass').attr("disabled", "disabled");
+	  $('#otherDocs').attr("disabled", "disabled");
+	  newPolygons.forEach(function(polygon) {
+	    polygon.setMap(null);
+	  });
+	  newPolygons = [];
+	  $(".inactiveLink").removeClass("inactiveLink");
+	});
 
 
-function putParameter(name, value, length) {
-  var param = $("div[data-calculated="+ name + "]");
+	$(document).on("click", ".delPoint", function() {
+	  var thisDel = $(this);
+	  var polygonDiv = $(this).closest("div[id^=polygon_]");
+	  if (polygonDiv.find(".clonedAreaInput").length > 1) {
+	    var pointNum = $(this).closest("div[id^=areaInput]").find("#pointNumber").val();
+	    $(this).closest("div[id^=areaInput]").remove();
+	    //Changing the index of next points
+	    polygonDiv.find(".clonedAreaInput").each(function(index) {
+	      if (index >= pointNum - 1) {
+	        $(this).find("#pointNumber").val(index + 1);
+	        $(this).attr("id", $(this).attr("id").replace('areaInput' + (index + 2), 'areaInput' + (index + 1)));
+	        $(this).find('input').each(function() {
+	          $(this).attr("name", $(this).attr("name").replace('points[' + (index + 1) + ']', 'points[' + index + ']'));
+	        });
 
-  if (param.length > 0) {
-    var id = param[0].attributes.getNamedItem("data-calculatedId").value;
-    for (var i = 0; length - param.length  > i; i++) {
-      addDiscreteValue(id, "", "");
-    }
-    $("input[name='resourceDiscrete[" + id + "].valueDiscretes[" + (length - 1) + "].value']").val(value);
-  }
-}
+	      }
+	    });
+	  } else {
+	    if ($("div[id^=polygon_]").length > 1) {
+	      bootbox.confirm(jQuery.i18n.prop('msg.delPolygon'), function() {
+	        var polygonNum = Number(polygonDiv.find(".polygonIndex").html()) - 1;
+	        polygonDiv.remove();
+	        //Changing the polygon indexes in all input fields
+	        $("div[id^=polygon_]").each(function(index) {
+	          if (index >= polygonNum) {
+	            $(this).attr("id", $(this).attr("id").replace('polygon_' + (index + 2), 'polygon_' + (index + 1)));
+	            $(this).find(".polygonIndex").html(index + 1);
+	            $(this).find('input').each(function() {
+	              $(this).attr("name", $(this).attr("name").replace('poligons[' + (index + 1) + ']', 'poligons[' + index + ']'));
+	            });
+	          }
+	        });
+	      });
+	    } else {
+	      $(this).closest("div[id^=areaInput]").find('#pointNumber').val(1);
+	      $(this).closest("div[id^=areaInput]").find('input:not(#pointNumber)').val(0);
+	      bootbox.alert(jQuery.i18n.prop('msg.lastPoint'));
+	    }
+	  }
+	});
 
-$(document).on("click", "#mapManual", function() {
-  var spoiler = $(this).siblings(".spoiler");
-  var icon = $(this).find(".glyphicon");
-  if (!($(this).hasClass("active"))) {
-    spoiler.slideDown(200);
-    $(this).addClass("active");
-    icon.each(function() {
-      if ($(this).hasClass("hidden")) {
-        $(this).removeClass("hidden");
-      } else {
-        $(this).addClass("hidden");
-      }
-    });
-  } else {
-    spoiler.slideUp(200);
-    $(this).removeClass("active");
-    icon.each(function() {
-      if ($(this).hasClass("hidden")) {
-        $(this).removeClass("hidden");
-      } else {
-        $(this).addClass("hidden");
-      }
-    });
-  }
+	$(document).on("click", "#addPolygon", function() {
+	  if ($('div[id^=polygon_]').last().find('.clonedAreaInput').length >= 3) {
+	    var num = $('div[id^=polygon_]').length;
+	    console.log("Polygons count: " + num);
+	    addNewPolygon(num);
+	  } else {
+	    bootbox.alert(jQuery.i18n.prop('msg.minPoints'));
+	  }
+	});
 });
 
-$(document).on("click", "#allUkraine", function() {
-  var isChecked = $(this).is(':checked');
-  if (isChecked) {
-    cleanPoints();
-    newPolygons.forEach(function(polygon) {
-      polygon.setMap(null);
-    });
-    newPolygons = [];
-    $("#infoBox").html(jQuery.i18n.prop('msg.infoBox'));
 
-    addNewPoint(0, 200, 0, 0, 200, 0, 0);
-    $("#latLngAdd").hide();
-    //We make the link "Add polygon" inactive
-    $(".toggle a").addClass("inactiveLink");
-    $("#btnAddAreaPoint").attr('disabled', 'disabled');
-    $('#btnDelAreaPoint').attr('disabled', 'disabled');
-  } else {
-    cleanPoints();
-    $("#latLngAdd").show();
-    $(".inactiveLink").removeClass("inactiveLink");
-    $("#btnAddAreaPoint").removeAttr('disabled');
-  }
-});
-
-$(document).on("click", "#clearAllPoints", function() {
-  	deletePolygons(polygons);
-	cleanPoints();
-  $(".inactiveLink").removeClass("inactiveLink");
-});
-
-/*$(document).on("click", "#delAllPolygons", function() {
-  cleanPoints();
-  newPolygons.forEach(function(polygon) {
-    polygon.setMap(null);
-  });
-  newPolygons = [];
-  $("#infoBox").html(jQuery.i18n.prop('msg.infoBox'));
-  $(".inactiveLink").removeClass("inactiveLink");
-});*/
-
-$(document).on("click", "#resetForm", function() {
-  cleanPoints();
-  //$("input[id*='myparam']").removeAttr("disabled");
-  $("#typeParameters").html("");
-  $("#reasonInclusion").text("");
-  $("#infoBox").html(jQuery.i18n.prop('msg.infoBox'));
-  $('#will').attr("disabled", "disabled");
-  $('#pass').attr("disabled", "disabled");
-  $('#otherDocs').attr("disabled", "disabled");
-  newPolygons.forEach(function(polygon) {
-    polygon.setMap(null);
-  });
-  newPolygons = [];
-  $(".inactiveLink").removeClass("inactiveLink");
-});
-
-
-$(document).on("click", ".delPoint", function() {
-  var thisDel = $(this);
-  var polygonDiv = $(this).closest("div[id^=polygon_]");
-  if (polygonDiv.find(".clonedAreaInput").length > 1) {
-    var pointNum = $(this).closest("div[id^=areaInput]").find("#pointNumber").val();
-    $(this).closest("div[id^=areaInput]").remove();
-    //Changing the index of next points
-    polygonDiv.find(".clonedAreaInput").each(function(index) {
-      if (index >= pointNum - 1) {
-        $(this).find("#pointNumber").val(index + 1);
-        $(this).attr("id", $(this).attr("id").replace('areaInput' + (index + 2), 'areaInput' + (index + 1)));
-        $(this).find('input').each(function() {
-          $(this).attr("name", $(this).attr("name").replace('points[' + (index + 1) + ']', 'points[' + index + ']'));
-        });
-
-      }
-    });
-  } else {
-    if ($("div[id^=polygon_]").length > 1) {
-      bootbox.confirm(jQuery.i18n.prop('msg.delPolygon'), function() {
-        var polygonNum = Number(polygonDiv.find(".polygonIndex").html()) - 1;
-        polygonDiv.remove();
-        //Changing the polygon indexes in all input fields
-        $("div[id^=polygon_]").each(function(index) {
-          if (index >= polygonNum) {
-            $(this).attr("id", $(this).attr("id").replace('polygon_' + (index + 2), 'polygon_' + (index + 1)));
-            $(this).find(".polygonIndex").html(index + 1);
-            $(this).find('input').each(function() {
-              $(this).attr("name", $(this).attr("name").replace('poligons[' + (index + 1) + ']', 'poligons[' + index + ']'));
-            });
-          }
-        });
-      });
-    } else {
-      $(this).closest("div[id^=areaInput]").find('#pointNumber').val(1);
-      $(this).closest("div[id^=areaInput]").find('input:not(#pointNumber)').val(0);
-      bootbox.alert(jQuery.i18n.prop('msg.lastPoint'));
-    }
-  }
-});
-
-$(document).on("click", "#addPolygon", function() {
-  if ($('div[id^=polygon_]').last().find('.clonedAreaInput').length >= 3) {
-    var num = $('div[id^=polygon_]').length;
-    console.log("Polygons count: " + num);
-    addNewPolygon(num);
-  } else {
-    bootbox.alert(jQuery.i18n.prop('msg.minPoints'));
-  }
-});
