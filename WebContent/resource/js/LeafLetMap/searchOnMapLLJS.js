@@ -43,9 +43,10 @@ function searchOnMapByPoint(latLng, page) {
     contentType : "application/x-www-form-urlencoded;charset=UTF-8",
     dataType : 'json',
     success : function(data) {
-    	
+    	polygons = data.polygons;
     	drawPolygons(data.polygons);
         createDataTable(data.polygons);
+        createFilter();
 
       $("#dark_bg").hide();
     },
@@ -63,13 +64,7 @@ function searchOnMapByArea(rectangle, page) {
   var minLng = rectangle._southWest.lng;
   var page = page || 0;
 
-  if (polygons.length > 0) {
-    for (var i = 0; i < polygons.length; i++) {
-      polygons[i].setMap(null);
-    }
-    polygons = [];
-  }
-
+ 
   $("#dark_bg").show();
   $.ajax({
     data : {
@@ -86,24 +81,10 @@ function searchOnMapByArea(rectangle, page) {
     contentType : "application/x-www-form-urlencoded;charset=UTF-8",
     dataType : 'json',
     success : function(data) {
+      polygons = data.polygons;	
       drawPolygons(data.polygons);
       createDataTable(data.polygons);
-      
-      resTypes = [];
-      
-      data.polygons.forEach(function(upoly){
-    	  if ($.inArray(upoly.resourceType, resTypes) == (-1)) {
-              resTypes.push(upoly.resourceType);
-    	  }
-      });
-      
-      if (resTypes.length > 0) {
-        var resTypeFilter = "<p>Фільтр:</p>";
-        for (var i = 0; i < resTypes.length; i++) {
-          resTypeFilter += '<button class="btn btn-default btn-filter">' + resTypes[i] + '</button>';
-        }
-      }
-      $("#resTypeFilter").html(resTypeFilter);
+      createFilter();
 
       $("#dark_bg").hide();
     },
@@ -164,8 +145,12 @@ function searchByParameters(page) {
     timeout : 60000,
     dataType : 'json',
     success : function(data) {
+      polygons = data.polygons;
       createDataTable(data.polygons);
       drawPolygons(data.polygons);
+      
+      
+      
       $("#dark_bg").hide();
     },
     error : function() {
@@ -177,7 +162,6 @@ function searchByParameters(page) {
 
 function createDataTable(json) {
 	
-	//json = json.polygons;
   if (json.length > 0 > 0) {
     var url = baseUrl.toString() + "/registrator/resource/get?id=";
 
@@ -257,6 +241,24 @@ function coordinatesCookie(lat, lng) {
   document.cookie = "LastMapSearchLat=" + lat + ";expires=" + d.toUTCString();
   document.cookie = "LastMapSearchLng=" + lng + ";expires=" + d.toUTCString();
 
+}
+
+function createFilter(){
+	resTypes = [];
+	$("#resTypeFilter").html('');
+	polygons.forEach(function(upoly){
+  	  if ($.inArray(upoly.resourceType, resTypes) == (-1)) {
+            resTypes.push(upoly.resourceType);
+  	  }
+    });
+    
+    if (resTypes.length > 0) {
+      var resTypeFilter = "<p>Фільтр:</p>";
+      for (var i = 0; i < resTypes.length; i++) {
+        resTypeFilter += '<button class="btn btn-default btn-filter">' + resTypes[i] + '</button>';
+      }
+    }
+    $("#resTypeFilter").html(resTypeFilter);
 }
 
 $(document).ready(function() {
@@ -444,8 +446,10 @@ $(document).on("click", "#showAllResources", function() {
     timeout : 60000,
     dataType : 'json',
     success : function(data) {
+    	polygons = data.polygons;
     	drawPolygons(data);
         createDataTable(data);
+        
         $("#dark_bg").hide();
     },
     error : function() {
