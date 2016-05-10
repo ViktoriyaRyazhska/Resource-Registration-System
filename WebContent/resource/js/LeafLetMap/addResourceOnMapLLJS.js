@@ -249,7 +249,7 @@ $(function(){
 			bootbox.alert(jQuery.i18n.prop('msg.PolygonsCross'));
 			return false;
 		}
-		if (isPolygonsInsideUkraine(polygons)) return false;
+		if (!isPolygonsInsideUkraine(polygons)) return false;
 		var points = $('.clonedAreaInput');
 		  if (points.length == 2) {
 		    bootbox.alert(jQuery.i18n.prop('msg.twoPoints'));
