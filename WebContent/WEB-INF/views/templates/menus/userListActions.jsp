@@ -66,6 +66,8 @@
   aria-labelledby="dropdownMenu">
     <li><a href="#" class="unblock"><spring:message code="label.modal.reactivate"/></a></li>
     <li><a href="#" class="block"><spring:message code="label.modal.block"/></a></li>
+      <li><a href="#" class="set-community"><spring:message
+     code="label.modal.setCommunity" /></a></li>
  </ul>
  </c:if>
  </sec:authorize>

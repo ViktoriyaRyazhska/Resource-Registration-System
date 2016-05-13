@@ -282,8 +282,18 @@ public class UsersController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "batch-status-change", method = RequestMethod.POST)
     public @ResponseBody ResponseEntity<String> setStatusForUsers(@Valid @RequestBody UserStatusJson userStatusJson, BindingResult result){
+    	massUserOpsValidator.validate(userStatusJson, result);
     	if(result.hasErrors()){
-    		String msg = UIMessages.WRONG_INPUT.getMessage();
+            ObjectError objectError;
+            String msg;
+            if (result.getGlobalErrorCount() > 0) {
+                objectError = result.getGlobalError();
+                msg = objectError.getCode();
+            } else {
+                objectError = result.getFieldError();
+                msg = objectError.getDefaultMessage();
+            }
+    		
     		ResponseEntity<String> response = new ResponseEntity<String>(msg, HttpStatus.BAD_REQUEST);
     		return response;
     	}else{

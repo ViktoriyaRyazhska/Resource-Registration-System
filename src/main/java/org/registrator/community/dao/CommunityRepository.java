@@ -17,7 +17,7 @@ public interface CommunityRepository extends
     @Query("select tc from TerritorialCommunity tc ORDER BY tc.name asc")
     List<TerritorialCommunity> findAllByAsc();
 
-    @Query("select tc from TerritorialCommunity tc WHERE tc.name LIKE :searchTerm%")
+    @Query("select tc from TerritorialCommunity tc WHERE tc.name LIKE :searchTerm% and tc.active!=0")
     List<TerritorialCommunity> findCommunityLikeProposed(
             @Param("searchTerm") String searchTerm);
 
