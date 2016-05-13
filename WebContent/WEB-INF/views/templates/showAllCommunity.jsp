@@ -3,6 +3,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <script src="<c:url value='/resource/js/deleteCommunity.js'/>"></script>
+<script src="<c:url value='/resource/js/communityMembers.js'/>"></script>
 
 <div style="text-align: center;">
   <h4>
@@ -34,7 +35,7 @@
     <c:if test="${not empty listOfTerritorialCommunity}">
       <c:forEach items="${listOfTerritorialCommunity}" var="commun">
         <tr class="commun" type="${commun.active}">
-          <td>${commun.name}</td>
+          <td><a href = "#" class = 'communName'>${commun.name}</a></td>
           <td>${commun.registrationNumber}</td>
           <td style="text-align: center; width: 100%;">
             <div
