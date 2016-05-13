@@ -1,17 +1,37 @@
 $(document).ready(function() {
-  $("#confirmRegistrationMethod").click(function() {
+  clearPassword = $('#smtpPasswordChanged').val() === 'false';
 
-    var url = "settings";
+  $(document).ready(function(){
+    $(".numeric").numeric({decimal:" ", negative:false});
+  });
 
+  $("#checkSMTP").click(function() {
+    $("#dark_bg").show();
     $.ajax({
       type : "POST",
-      url : url,
+      url : "checkParametersSMTP",
       data : $("#сhangeReg").serialize(),
       success : function(data) {
-        bootbox.alert(jQuery.i18n.prop('msg.settingsChanged'));
+        $("#dark_bg").hide();
+        if (data.status === "OK") {
+          bootbox.alert(jQuery.i18n.prop('msg.settings.okSMTP'));
+        } else {
+          bootbox.alert(jQuery.i18n.prop('msg.settings.errorSMTP'));
+        }
+
+      },
+      error : function(jqXHR, textStatus, errorThrown) {
+        $("#dark_bg").hide();
       }
     });
 
     return false;
+  });
+
+  $('#smtpPassword').focus(function() {
+    if (clearPassword) {
+      $(this).val("");
+      $('#smtpPasswordChanged').val("true");
+    }
   });
 });

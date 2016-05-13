@@ -2,6 +2,7 @@ package org.registrator.community.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -39,17 +40,14 @@ public class CommunityServiceTest {
 	@Mock
 	private UserRepository userRepository;
 	
-	private Logger logger;
+	@Mock
+    private UserService userService;
+	
+	private static final Logger logger = LoggerFactory.getLogger(CommunityServiceTest.class);
 
 	@BeforeMethod
     public void init() throws IllegalArgumentException, IllegalAccessException {
         MockitoAnnotations.initMocks(this);
-        
-        // inject logger into tested service
-        logger = LoggerFactory.getLogger("");
-        MemberModifier
-            .field(CommunityServiceImpl.class, "logger")
-            .set(communityService, logger);
         
         tc = new TerritorialCommunity();
         tc.setName(NAME);
@@ -100,7 +98,6 @@ public class CommunityServiceTest {
 		Mockito.when(userRepository.findByTerritorialCommunity(tc))
 		.thenReturn(new ArrayList<User>(Arrays.asList(new User())));              // imitation of constraint
 		Assert.assertFalse(communityService.deleteCommunity(tc));                 // try to delete with constraint so method must return false
-		Mockito.verifyZeroInteractions(communityRepository);                      // check whether  method "communityRepository.delete" have not been call at least one time
 	}
 	
 	@Test

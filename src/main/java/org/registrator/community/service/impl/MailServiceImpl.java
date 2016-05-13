@@ -1,17 +1,28 @@
 package org.registrator.community.service.impl;
 
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import org.apache.velocity.app.VelocityEngine;
+import org.registrator.community.dto.SmtpParametersDTO;
+import org.registrator.community.entity.SmtpParameters;
+import org.registrator.community.mailer.ReloadableMailSender;
 import org.registrator.community.service.MailService;
+import org.registrator.community.service.SettingsService;
+import org.registrator.community.util.LocalizationConst;
+import org.registrator.community.websocket.MessagingService;
+import org.registrator.community.util.Throwables;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.scheduling.annotation.Async;
@@ -21,6 +32,7 @@ import static org.springframework.ui.velocity.VelocityEngineUtils.mergeTemplateI
 
 @Service
 public class MailServiceImpl implements MailService{
+    private static final Logger logger = LoggerFactory.getLogger(MailServiceImpl.class);
 	
 	public static final String SEND_FROM = "resources.registrator@gmail.com";
 	
@@ -31,95 +43,116 @@ public class MailServiceImpl implements MailService{
 	public static final String RECOVER_PASSWORD_SUBJECT =  "Заявка на відновлення паролю";
 
     public static final String RESET_PASSWORD_LETTER_PATH =  "/velocity/resetPassword.vm";
-
     public static final String RESET_PASSWORD_SUBJECT =  "Ваш пароль скинуто адміном";
 	
 	
 	@Autowired
-	private JavaMailSender mailSender;
+	private ReloadableMailSender mailSender;
 	
 	@Autowired
     private VelocityEngine velocityEngine;
-	
-	@Autowired
-    private Logger logger;
-	
-	@Override
+
+    @Autowired
+    private MessagingService messagingService;
+
+    @Autowired
+    private SettingsService settingsService;
+
+
+    @Override
 	@Async
-	public void sendComfirmEMail(String recepientEmail, String recepientName, String token, String url) {
-		
-		MimeMessagePreparator preparator = new MimeMessagePreparator() {
-            public void prepare(MimeMessage mimeMessage) throws Exception {
-                MimeMessageHelper message = new MimeMessageHelper(mimeMessage);
-                message.setTo(recepientEmail);
-                message.setFrom(new InternetAddress("resources.registrator@gmail.com", "Registrator system"));
-                Map<String, Object> templateVariables = new HashMap<>();
-                templateVariables.put("name", recepientName);
-                templateVariables.put("url", url);
-                templateVariables.put("token", token);
-                String body = mergeTemplateIntoString(velocityEngine, CONFIRM_EMAIL_LETTER_PATH, "UTF-8", templateVariables);
-                message.setText(body, true);
-                message.setSubject(CONFIRM_EMAIL_SUBJECT);
-            }
-        };
-        try{
-        	mailSender.send(preparator);
+	public void sendComfirmEMail(String recepientEmail, String recepientName, String login, String token, String url) {
+	    logger.debug("Method asynchronously starts it Thread: {}", Thread.currentThread().getName());
+	    Map<String, Object> templateVariables = new HashMap<>();
+	    templateVariables.put("name", recepientName);
+        templateVariables.put("login", login);
+        templateVariables.put("url", url);
+        templateVariables.put("token", token);
+        MimeMessagePreparator preparator = prepareMail(recepientEmail, templateVariables, CONFIRM_EMAIL_LETTER_PATH, CONFIRM_EMAIL_SUBJECT);
+        try {
+            mailSender.send(preparator);
+        } catch (MailException e) {
+            logger.error("Send mail exception to {}, exception: {}", recepientEmail, e);
         }
-        catch(MailException e){
-            logger.error("Send mail exception to {}", recepientEmail);
-        }
+        logger.info("Method asynchronously complete it Thread: {}", Thread.currentThread().getName());
 	}
 
 	@Override
 	@Async
-	public void sendRecoveryPasswordMail(String recepientEmail, String recepientName, String token, String url) {
-		
-		MimeMessagePreparator preparator = new MimeMessagePreparator() {
-            public void prepare(MimeMessage mimeMessage) throws Exception {
-                MimeMessageHelper message = new MimeMessageHelper(mimeMessage);
-                message.setTo(recepientEmail);
-                message.setFrom(new InternetAddress("resources.registrator@gmail.com", "Registrator system"));
-                Map<String, Object> templateVariables = new HashMap<>();
-                templateVariables.put("name", recepientName);
-                templateVariables.put("url", url);
-                templateVariables.put("token", token);
-                String body = mergeTemplateIntoString(velocityEngine, RECOVER_PASSWORD_LETTER_PATH, "UTF-8", templateVariables);
-                message.setText(body, true);
-                message.setSubject(RECOVER_PASSWORD_SUBJECT);
-            }
-        };
-        try{
-        	mailSender.send(preparator);
+	public void sendRecoveryPasswordMail(String recepientEmail, String token, String url) {
+	    logger.debug("Method asynchronously starts it Thread: {}", Thread.currentThread().getName());
+	    Map<String, Object> templateVariables = new HashMap<>();
+        templateVariables.put("url", url);
+        templateVariables.put("token", token);
+	    MimeMessagePreparator preparator = prepareMail(recepientEmail, templateVariables, RECOVER_PASSWORD_LETTER_PATH, RECOVER_PASSWORD_SUBJECT);
+        try {
+            mailSender.send(preparator);
+        } catch (MailException e) {
+            logger.error("Send mail exception to {}, exception: {}", recepientEmail, e);
         }
-        catch(MailException e){
-            logger.error("Send mail exception to {}", recepientEmail);
-        } 
+        logger.info("Method asynchronously complete it Thread: {}", Thread.currentThread().getName());
 	}
 
     @Override
     @Async
     public void sendResetedPasswordMail(String recepientEmail, String recepientName, String login, String password){
-
+        logger.debug("Method asynchronously starts it Thread: {}", Thread.currentThread().getName());
+        Map<String, Object> templateVariables = new HashMap<>();
+        templateVariables.put("name", recepientName);
+        templateVariables.put("login", login);
+        templateVariables.put("password", password);
+        MimeMessagePreparator preparator = prepareMail(recepientEmail, templateVariables, RESET_PASSWORD_LETTER_PATH, RESET_PASSWORD_SUBJECT);
+        try {
+            mailSender.send(preparator);
+        } catch (MailException e) {
+            logger.error("Send mail exception to {}, exception: {}", recepientEmail, Throwables.getRootCause(e));
+        }
+        logger.info("Method asynchronously complete it Thread: {}", Thread.currentThread().getName());
+    }
+    
+    @Override
+    @Async
+    public void sendBatchResetedPasswordMail(List<Map<String, Object>> listTemplateVariables, String ownerSessionId){
+        logger.debug("Method asynchronously starts it Thread: {}", Thread.currentThread().getName());
+        List<MimeMessagePreparator> preparators = new ArrayList<MimeMessagePreparator>(listTemplateVariables.size());
+        // prepare messages
+        for(Map<String, Object> templateVariables: listTemplateVariables){
+            MimeMessagePreparator preparator = prepareMail((String)templateVariables.get("email"), templateVariables, RESET_PASSWORD_LETTER_PATH, RESET_PASSWORD_SUBJECT);
+            preparators.add(preparator);
+        }
+        // send multiple messages
+        try {
+            mailSender.send(preparators.toArray(new MimeMessagePreparator[preparators.size()]));
+        } catch (MailException e) {
+            Throwable cause = Throwables.getRootCause(e);
+            logger.error("Send mail exception, message {}", cause.getMessage(), e);
+            messagingService.sendMessage(ownerSessionId, LocalizationConst.WS_SMTP_ERROR);
+        }
+        logger.info("Method asynchronously complete it Thread: {}", Thread.currentThread().getName());
+    }
+    
+    private MimeMessagePreparator prepareMail(String recepientEmail,Map<String, Object> templateVariables, String templatePath, String subject){
         MimeMessagePreparator preparator = new MimeMessagePreparator() {
-            public void prepare(MimeMessage mimeMessage) throws Exception {
+            public void prepare(MimeMessage mimeMessage) throws MessagingException, UnsupportedEncodingException {
                 MimeMessageHelper message = new MimeMessageHelper(mimeMessage);
                 message.setTo(recepientEmail);
                 message.setFrom(new InternetAddress("resources.registrator@gmail.com", "Registrator system"));
-                Map<String, Object> templateVariables = new HashMap<>();
-                templateVariables.put("name", recepientName);
-                templateVariables.put("login", login);
-                templateVariables.put("password", password);
-                String body = mergeTemplateIntoString(velocityEngine, RESET_PASSWORD_LETTER_PATH, "UTF-8", templateVariables);
+                String body = mergeTemplateIntoString(velocityEngine, templatePath, "UTF-8", templateVariables);
                 message.setText(body, true);
-                message.setSubject(RESET_PASSWORD_SUBJECT);
+                message.setSubject(subject);
             }
         };
-        try{
-            mailSender.send(preparator);
-        }
-        catch(MailException e){
-            logger.error("Send mail exception to {}", recepientEmail);
-        }
+        return preparator; 
     }
 
+    @Override
+    public boolean testConnection(SmtpParametersDTO parameters) {
+
+        return mailSender.testConnection(settingsService.parseSmtpParameters(parameters));
+    }
+
+    @Override
+    public void applyNewParameters(SmtpParameters smtpParameters) {
+        mailSender.applyNewParameters(smtpParameters);
+    }
 }

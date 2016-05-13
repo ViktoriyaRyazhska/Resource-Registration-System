@@ -2,9 +2,9 @@ package org.registrator.community.service.impl;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import org.registrator.community.dao.AddressRepository;
 import org.registrator.community.dao.PassportRepository;
@@ -22,7 +22,6 @@ import org.registrator.community.dto.json.CommunityParamJson;
 import org.registrator.community.dto.json.ResourceNumberJson;
 import org.registrator.community.dto.json.RoleTypeJson;
 import org.registrator.community.dto.json.UserStatusJson;
-import org.registrator.community.dto.search.Search;
 import org.registrator.community.entity.Address;
 import org.registrator.community.entity.OtherDocuments;
 import org.registrator.community.entity.PassportInfo;
@@ -37,8 +36,6 @@ import org.registrator.community.enumeration.UserStatus;
 import org.registrator.community.exceptions.BadInputDataException;
 import org.registrator.community.service.CommunityService;
 import org.registrator.community.service.UserService;
-import org.registrator.community.service.search.TableColumnSetting;
-import org.registrator.community.service.search.TableSetting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +55,7 @@ public class UserServiceImpl implements UserService {
     private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
 
     private static final int MAX_ATTEMPTS = 2;
+    private static final long LOCKING_TIME = 300000;// 5 min.
 
     @Autowired
     private UserRepository userRepository;
@@ -77,8 +75,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private TomeRepository tomeRepository;
 
-    @Autowired
-    private Logger logger;
+    private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Autowired
     private PasswordEncoder userPasswordEncoder;
@@ -617,8 +614,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findUserByEmail(String email) {
-        return userRepository.getUserByEmail(email);
+    public List<User> findUsersByEmail(String email) {
+        return userRepository.getUsersByEmail(email);
     }
 
     /**
@@ -760,6 +757,7 @@ public class UserServiceImpl implements UserService {
 
                 if (user.getAttempts() + 1 > MAX_ATTEMPTS) {
                     user.setAccountNonLocked(0);
+                    user.setLockedTill(System.currentTimeMillis() + LOCKING_TIME);
                 }
 
             }
@@ -781,6 +779,7 @@ public class UserServiceImpl implements UserService {
         try {
             User user = userRepository.findUserByLogin(login);
             user.setAttempts(0);
+            user.setLockedTill(0);
             user.setLastModified(null);
         } catch (Exception e) {
             logger.error("Failed to resetFailAttempts() " + e);
@@ -918,5 +917,28 @@ public class UserServiceImpl implements UserService {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         return getUserByLogin(auth.getName());
+    }
+    
+    @Override
+    @Transactional
+    public void deactiveUsersOfCommunity(TerritorialCommunity community){
+    	logger.debug("begin");
+    	logger.debug("fetching user list. Community id: %d",community.getTerritorialCommunityId());
+    	List<User> users = userRepository.findByTerritorialCommunity(community);
+    	RoleType adminRole = RoleType.ADMIN;
+    	UserStatus supportedUserStatus = UserStatus.ACTIVE;
+    	UserStatus newUserStatus = UserStatus.INACTIVE;
+    	logger.debug("updating roles");
+    	for(User user : users){
+    		if(user.getRole().getType() == adminRole){
+    			continue;
+    		}
+    		if(user.getStatus() == supportedUserStatus){
+    			user.setStatus(newUserStatus);
+    		}
+    	}
+    	logger.debug("saving changes");
+    	userRepository.save(users);
+    	logger.debug("end");
     }
 }

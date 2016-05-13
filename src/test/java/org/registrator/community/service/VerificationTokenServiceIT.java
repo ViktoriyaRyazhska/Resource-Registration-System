@@ -4,13 +4,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.registrator.community.config.LoggingConfig;
 import org.registrator.community.config.root.SpringRootConfig;
 import org.registrator.community.config.root.TestingConfiguration;
 import org.registrator.community.dao.VerificationTokenRepository;
 import org.registrator.community.entity.VerificationToken;
 import org.registrator.community.enumeration.TokenType;
-import org.registrator.community.service.VerificationTokenService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,27 +20,28 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 @ActiveProfiles("testing")
-@ContextConfiguration(classes = { TestingConfiguration.class, LoggingConfig.class, SpringRootConfig.class })
+@ContextConfiguration(classes = { TestingConfiguration.class, SpringRootConfig.class })
 public class VerificationTokenServiceIT extends AbstractTestNGSpringContextTests {
 	@Autowired
 	private VerificationTokenRepository verificationTokenRepository;
 	@Autowired
 	private VerificationTokenService verificationTokenService;
 	
-	private Logger logger = LoggerFactory.getLogger(VerificationTokenService.class);
+	private static final Logger logger = LoggerFactory.getLogger(VerificationTokenService.class);
 	private Date date = new Date();
 	private List<VerificationToken> cTokenList = new ArrayList<VerificationToken>();
 	private static final int DESIRED_RESOURCES = 10;
 
 	// DataProviders
 	@DataProvider(name = "ProviderForTokenFormation")
-	public Object[][] formEmailStrings() {
+	public Object[][] formEmailAndLoginStrings() {
 		logger.debug("Generating email strings");
-		Object[][] tmp = new Object[DESIRED_RESOURCES][1];
+		Object[][] tmp = new Object[DESIRED_RESOURCES][2];
 		String emailMask = "tokenEmail#%03d@gmail.com";
-
+		String login = "login%d";
 		for (int i = 0; i < tmp.length; i++) {
 			tmp[i][0] = String.format(emailMask, i);
+			tmp[i][1] = String.format(login, i);
 		}
 		return tmp;
 	}
@@ -85,16 +84,17 @@ public class VerificationTokenServiceIT extends AbstractTestNGSpringContextTests
 	}
 
 	@Test(dataProvider = "ProviderForTokenFormation", priority=2)
-	public void savePasswordVerificationToken(String email) {
+	public void savePasswordVerificationToken(String email, String login) {
 		logger.debug("Start");
-		VerificationToken actual = verificationTokenService.savePasswordVerificationToken(email, date),
-				expected = new VerificationToken(actual.getToken(), email, actual.getExpiryDate(),
+		VerificationToken actual = verificationTokenService.savePasswordVerificationToken(email,login, date),
+				expected = new VerificationToken(actual.getToken(), 
+				        login, email, actual.getExpiryDate(),
 						TokenType.RECOVER_PASSWORD);
 
 		Assert.assertEquals(expected.getUserEmail(), actual.getUserEmail());
 		Assert.assertEquals(expected.getExpiryDate(), actual.getExpiryDate());
 
-		VerificationToken extraCheck = verificationTokenRepository.findTokenByEmail(actual.getUserEmail());
+		List<VerificationToken> extraCheck = verificationTokenRepository.findTokensByEmail(actual.getUserEmail());
 		Assert.assertNotNull(extraCheck);
 
 		cTokenList.add(actual);
@@ -134,7 +134,7 @@ public class VerificationTokenServiceIT extends AbstractTestNGSpringContextTests
 		for(int i = 0; i< listSize; i++){
 			VerificationToken tok = verificationTokenRepository.findVerificationTokenByToken(cTokenList.get(i).getToken());
 			if(i%2==0){
-				verificationTokenService.deletePasswordVerificationTokenByEmail(tok.getUserEmail());
+				verificationTokenService.deletePasswordVerificationTokenByLogin(tok.getUserLogin());
 			}else{
 				verificationTokenService.deleteVerificationToken(tok);
 			}

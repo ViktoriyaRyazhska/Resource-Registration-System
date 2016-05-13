@@ -1,22 +1,28 @@
 package org.registrator.community.service.impl;
 
+import java.util.Collections;
 import java.util.List;
+
+import javax.transaction.Transactional;
 
 import org.registrator.community.dao.CommunityRepository;
 import org.registrator.community.dao.UserRepository;
 import org.registrator.community.dto.CommunityDTO;
 import org.registrator.community.entity.TerritorialCommunity;
 import org.registrator.community.entity.User;
+import org.registrator.community.enumeration.CommunityStatus;
+import org.registrator.community.enumeration.RoleType;
 import org.registrator.community.service.CommunityService;
+import org.registrator.community.service.UserService;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class CommunityServiceImpl implements CommunityService{
 
-    @Autowired
-    private Logger logger;
+    private static final Logger logger = LoggerFactory.getLogger(CommunityServiceImpl.class);
     
     @Autowired
     private CommunityRepository communityRepository;
@@ -24,10 +30,26 @@ public class CommunityServiceImpl implements CommunityService{
     @Autowired
     private UserRepository userRepository;
     
+    @Autowired
+    private UserService userService;
+    
     @Override
     public List<TerritorialCommunity> findAll() {
         return communityRepository.findAll();
     }
+
+    @Override
+    public List<TerritorialCommunity> getCommunitiesToAssignByUser(User user) {
+        RoleType roleType = user.getRole().getType();
+        if (roleType == RoleType.ADMIN) {
+            return findAll();
+        } else if (roleType == RoleType.COMMISSIONER) {
+            return Collections.singletonList(user.getTerritorialCommunity());
+        } else {
+            return Collections.emptyList();
+        }
+    }
+
     @Override
     public TerritorialCommunity findByName(String name) {
         return communityRepository.findByName(name);
@@ -49,20 +71,31 @@ public class CommunityServiceImpl implements CommunityService{
      */
     @Override
     public boolean deleteCommunity(TerritorialCommunity territorialCommunity) {
-        
+        logger.debug("begin");
         List<User> listOfUsers = userRepository.findByTerritorialCommunity(territorialCommunity);
-        if(listOfUsers.isEmpty()){
+        if (listOfUsers.isEmpty()) {
             communityRepository.delete(territorialCommunity);
-            logger.info("end: return true if list of co-ownwers is empty");
+            logger.debug("end: community deleted");
             return true;
+        } else {
+            userService.deactiveUsersOfCommunity(territorialCommunity);
+            CommunityStatus newStatus = CommunityStatus.INACTIVE;
+            setCommunityStatus(territorialCommunity, newStatus);
+            logger.debug("end: users of community deactivated");
+            return false;
         }
-        logger.info("end: return false if list co-owners isn't empty");
-        return false;
-        
     }
     @Override
     public List<TerritorialCommunity> findAllByAsc() {
         return communityRepository.findAllByAsc();
+    }
+
+    @Override
+    @Transactional
+    public void setCommunityStatus(TerritorialCommunity community, CommunityStatus status) {
+        int statusId = status.getStatusId();
+        community.setActive(statusId);
+        communityRepository.save(community);
     }
     
     /**

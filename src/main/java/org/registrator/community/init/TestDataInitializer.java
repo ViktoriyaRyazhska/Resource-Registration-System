@@ -25,8 +25,10 @@ public class TestDataInitializer {
 		SessionFactory sessionFactory = entityManagerFactory.unwrap(SessionFactory.class);
 		Session session = sessionFactory.openSession();
 
+        Transaction settingsTransaction = session.beginTransaction();
         Settings settings = new Settings();
         session.persist(settings);
+        settingsTransaction.commit();
 
 		Transaction territorialCommunity = session.beginTransaction();
         TerritorialCommunity globalTerritorialCommunity = new TerritorialCommunity();

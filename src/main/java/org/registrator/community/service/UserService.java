@@ -7,6 +7,7 @@ import org.registrator.community.dto.UserRegistrationDTO;
 import org.registrator.community.dto.json.CommunityParamJson;
 import org.registrator.community.dto.json.RoleTypeJson;
 import org.registrator.community.dto.json.UserStatusJson;
+import org.registrator.community.entity.TerritorialCommunity;
 import org.registrator.community.entity.User;
 import org.registrator.community.enumeration.UserStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -45,17 +46,17 @@ public interface UserService {
 
     List<UserDTO> getUserBySearchTag(String searchTag);
 
-    User findUserByEmail(String email);
+    List<User> findUsersByEmail(String email);
 
     void createTomeAndRecourceNumber(UserDTO userDto);
 
-    public void updateFailAttempts(String login);
+    void updateFailAttempts(String login);
 
-    public void resetFailAttempts(String login);
+    void resetFailAttempts(String login);
 
-    public User findUserByLogin(String login);
+    User findUserByLogin(String login);
 
-    public void resetAllFailAttempts();
+    void resetAllFailAttempts();
     
     void delete(List<User> userList);
     
@@ -80,4 +81,6 @@ public interface UserService {
     User getLoggedUser();
 
 	void changeUserStatuses(UserStatusJson userStatusJson);
+
+	public void deactiveUsersOfCommunity(TerritorialCommunity community);
 }

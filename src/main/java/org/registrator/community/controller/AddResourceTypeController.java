@@ -6,6 +6,7 @@ import org.registrator.community.dto.ResourceTypeDTO;
 import org.registrator.community.service.ResourceTypeService;
 import org.registrator.community.validator.ResTypeDTOValidator;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -19,8 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @RequestMapping(value = "/registrator/resourcetypes/")
 public class AddResourceTypeController {
 
-    @Autowired
-    private Logger logger;  
+    private static final Logger logger = LoggerFactory.getLogger(AddResourceTypeController.class);
     @Autowired
     private ResTypeDTOValidator validator;
     @Autowired

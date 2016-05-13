@@ -39,6 +39,7 @@ import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * <p>This class works with PDF documents. It has methods to generate : </p>
@@ -79,6 +80,7 @@ public class PrintServiceImpl implements PrintService {
 	 * </p>
 	 */
 
+    @Transactional
 	@Override
 	public ByteArrayOutputStream printProcuration(Integer inquiryId) throws IOException, DocumentException {
 
@@ -182,8 +184,10 @@ public class PrintServiceImpl implements PrintService {
 			document.add(p);
 		}
 
-		Paragraph header4 = new Paragraph(extract.getLastNameOfUser() + " " + extract.getFirstNameOfUser() + " "
-				+ extract.getMiddleNameOfUser(), fontTimesNewRomanFat);
+		Paragraph header4 = extract.getMiddleNameOfUser().length() == 0 ?
+                new Paragraph(extract.getLastNameOfUser() + " " + extract.getFirstNameOfUser(), fontTimesNewRomanFat):
+                new Paragraph(extract.getLastNameOfUser() + " " + extract.getFirstNameOfUser() +
+                        " " + extract.getMiddleNameOfUser(), fontTimesNewRomanFat);
 		header4.getFont().setSize(22f);
 		header4.setAlignment(Element.ALIGN_CENTER);
 		document.add(header4);
@@ -208,9 +212,10 @@ public class PrintServiceImpl implements PrintService {
 		header7.getFont().setSize(12f);
 		document.add(header7);
 
-		Paragraph header8 = new Paragraph(extract.getRegistratorLastName() + " "
-				+ extract.getRegistratorFirtstName() + " " + extract.getRegistratorMiddleName(),
-				fontTimesNewRomanFat);
+		Paragraph header8 = extract.getRegistratorMiddleName().length() == 0 ?
+                new Paragraph(extract.getRegistratorLastName() + " " + extract.getRegistratorFirtstName(), fontTimesNewRomanFat):
+                new Paragraph(extract.getRegistratorLastName() + " " + extract.getRegistratorFirtstName() +
+                        " " + extract.getRegistratorMiddleName(), fontTimesNewRomanFat);
 		header8.setAlignment(Element.ALIGN_RIGHT);
 		header8.getFont().setSize(12f);
 		document.add(header8);
@@ -243,11 +248,15 @@ public class PrintServiceImpl implements PrintService {
 
 		document.add(Chunk.NEWLINE);
 
-		Paragraph header13 = new Paragraph("Я, людина " + extract.getLastNameOfUser() + " "
-				+ extract.getFirstNameOfUser() + " " + extract.getMiddleNameOfUser()
-				+ " доручаю надати мені витяг з Децентралізованого майнового реєстру природних ресурсів України щодо об’єкту з номером "
-				+ extract.getObjectNumber(), fontTimesNewRomanBase);
-		header13.setAlignment(Element.ALIGN_LEFT);
+        Paragraph header13 = extract.getMiddleNameOfUser().length() == 0 ? new Paragraph("Я, людина " + extract.getLastNameOfUser() + " "
+                + extract.getFirstNameOfUser()
+                + " доручаю надати мені витяг з Децентралізованого майнового реєстру природних ресурсів України щодо об’єкту з номером "
+                + extract.getObjectNumber(), fontTimesNewRomanBase) :
+                new Paragraph("Я, людина " + extract.getLastNameOfUser() + " "
+                        + extract.getFirstNameOfUser() + " " + extract.getMiddleNameOfUser()
+                        + " доручаю надати мені витяг з Децентралізованого майнового реєстру природних ресурсів України щодо об’єкту з номером "
+                        + extract.getObjectNumber(), fontTimesNewRomanBase);
+        header13.setAlignment(Element.ALIGN_LEFT);
 		header13.getFont().setSize(12f);
 		document.add(header13);
 
@@ -259,11 +268,11 @@ public class PrintServiceImpl implements PrintService {
 		header14.getFont().setSize(12f);
 		header14.add(Chunk.TABBING);
 		char[] firstNameArray = extract.getFirstNameOfUser().toCharArray();
-		char[] MiddleNameArray = extract.getMiddleNameOfUser().toCharArray();
+		char[] middleNameArray = extract.getMiddleNameOfUser().toCharArray();
 		String firstNameC = "" + firstNameArray[0];
-		String MiddleNameC = "" + MiddleNameArray[0];
-		String nameForFooter = extract.getLastNameOfUser() + " " + firstNameC.toUpperCase() + ". "
-				+ MiddleNameC.toUpperCase() + ".";
+        String middleNameC = middleNameArray.length == 0 ? "" : "" + middleNameArray[0];
+        String nameForFooter = middleNameArray.length == 0 ? extract.getLastNameOfUser() + " " + firstNameC.toUpperCase() + "." :
+                extract.getLastNameOfUser() + " " + firstNameC.toUpperCase() + ". " + middleNameC.toUpperCase() + ".";
 		header14.add(nameForFooter);
 		header14.add(Chunk.TABBING);
 		header14.add(Chunk.TABBING);
@@ -285,6 +294,7 @@ public class PrintServiceImpl implements PrintService {
 	 * creates pdf document "Витяг"
 	 * </p>
 	 */
+    @Transactional
 	@Override
 	public ByteArrayOutputStream printExtract(Integer inquiryId) throws IOException, DocumentException{
 
@@ -482,9 +492,9 @@ public class PrintServiceImpl implements PrintService {
 		char[] firstNameArray = extract.getRegistratorFirtstName().toCharArray();
 		char[] middleNameArray = extract.getRegistratorMiddleName().toCharArray();
 		String firstNameC = "" + firstNameArray[0];
-		String middleNameC = "" + middleNameArray[0];
-		String nameForFooter = extract.getRegistratorLastName() + " " + firstNameC.toUpperCase() + ". "
-				+ middleNameC.toUpperCase() + ".";
+        String middleNameC = middleNameArray.length == 0 ? "" : "" + middleNameArray[0];
+        String nameForFooter = middleNameArray.length == 0 ? extract.getRegistratorLastName() + " " + firstNameC.toUpperCase() + "." :
+                extract.getRegistratorLastName() + " " + firstNameC.toUpperCase() + ". " + middleNameC.toUpperCase() + ".";
 
 		footer.add(new Chunk("людина" + " " + nameForFooter));
 		document.add(footer);
@@ -618,13 +628,19 @@ public class PrintServiceImpl implements PrintService {
 		table.addCell(cell1);
 		table.addCell(cell2);
 
-		th = new Paragraph("ПІБ та поштова адреса народного реєстратора", fontTimesNewRomanFat);
-		td = new Paragraph(
-				extract.getRegistratorLastName() + " " + extract.getRegistratorFirtstName() + " "
-						+ extract.getRegistratorMiddleName() + ", " + extract.getRegistratorZipcode() + ", м. "
-						+ extract.getRegistratorCity() + ", вул." + extract.getRegistratorStreetName() + " "
-						+ extract.getRegistratorStreetNumber() + ", кв. " + extract.getRegistratorHomeNumber(),
-				fontTimesNewRomanItalic);
+		th = extract.getRegistratorMiddleName().length() == 0 ? new Paragraph("ПІ та поштова адреса народного реєстратора", fontTimesNewRomanFat):
+                new Paragraph("ПІБ та поштова адреса народного реєстратора", fontTimesNewRomanFat);
+        td = extract.getRegistratorMiddleName().length() == 0 ? new Paragraph(
+                extract.getRegistratorLastName() + " " + extract.getRegistratorFirtstName() + ", " + extract.getRegistratorZipcode()
+                        + ", м. " + extract.getRegistratorCity() + ", вул." + extract.getRegistratorStreetName() + " "
+                        + extract.getRegistratorStreetNumber() + ", кв. " + extract.getRegistratorHomeNumber(),
+                fontTimesNewRomanItalic) :
+                new Paragraph(
+                        extract.getRegistratorLastName() + " " + extract.getRegistratorFirtstName() + " "
+                                + extract.getRegistratorMiddleName() + ", " + extract.getRegistratorZipcode() + ", м. "
+                                + extract.getRegistratorCity() + ", вул." + extract.getRegistratorStreetName() + " "
+                                + extract.getRegistratorStreetNumber() + ", кв. " + extract.getRegistratorHomeNumber(),
+                        fontTimesNewRomanItalic);
 
 		cell1 = new PdfPCell(th);
 		cell2 = new PdfPCell(td);
@@ -714,10 +730,11 @@ public class PrintServiceImpl implements PrintService {
 		header7.getFont().setSize(12f);
 		document.add(header7);
 
-		Paragraph header8 = new Paragraph(extract.getRegistratorLastName() + " "
-				+ extract.getRegistratorFirtstName() + " " + extract.getRegistratorMiddleName(),
-				fontTimesNewRomanFat);
-		header8.setAlignment(Element.ALIGN_RIGHT);
+        Paragraph header8 = extract.getRegistratorMiddleName().length() == 0 ? new Paragraph(extract.getRegistratorLastName() + " "
+                + extract.getRegistratorFirtstName(), fontTimesNewRomanFat) :
+                new Paragraph(extract.getRegistratorLastName() + " " + extract.getRegistratorFirtstName() + " "
+                        + extract.getRegistratorMiddleName(), fontTimesNewRomanFat);
+        header8.setAlignment(Element.ALIGN_RIGHT);
 		header8.getFont().setSize(12f);
 		document.add(header8);
 
@@ -750,11 +767,13 @@ public class PrintServiceImpl implements PrintService {
 
 		document.add(Chunk.NEWLINE);
 
-		Paragraph header13 = new Paragraph(
-				"Я, людина " + extract.getLastNameOfUser() + " " + extract.getFirstNameOfUser() + " "
-						+ extract.getMiddleNameOfUser() + " доручаю внести до ДМРПРУ такі відомості:",
-				fontTimesNewRomanBase);
-		header13.setAlignment(Element.ALIGN_LEFT);
+        Paragraph header13 = extract.getMiddleNameOfUser().length() == 0 ? new Paragraph(
+                "Я, людина " + extract.getLastNameOfUser() + " " + extract.getFirstNameOfUser()
+                        + " доручаю внести до ДМРПРУ такі відомості:", fontTimesNewRomanBase) :
+                new Paragraph("Я, людина " + extract.getLastNameOfUser() + " " + extract.getFirstNameOfUser() + " "
+                        + extract.getMiddleNameOfUser() + " доручаю внести до ДМРПРУ такі відомості:",
+                        fontTimesNewRomanBase);
+        header13.setAlignment(Element.ALIGN_LEFT);
 		header13.getFont().setSize(12f);
 		document.add(header13);
 
@@ -773,9 +792,9 @@ public class PrintServiceImpl implements PrintService {
 		char[] firstNameArray = extract.getFirstNameOfUser().toCharArray();
 		char[] MiddleNameArray = extract.getMiddleNameOfUser().toCharArray();
 		String firstNameC = "" + firstNameArray[0];
-		String MiddleNameC = "" + MiddleNameArray[0];
-		String nameForFooter = extract.getLastNameOfUser() + " " + firstNameC.toUpperCase() + ". "
-				+ MiddleNameC.toUpperCase() + ".";
+        String MiddleNameC = MiddleNameArray.length == 0 ? "" : "" + MiddleNameArray[0];
+		String nameForFooter = MiddleNameArray.length == 0 ? extract.getLastNameOfUser() + " " + firstNameC.toUpperCase() + "." :
+                extract.getLastNameOfUser() + " " + firstNameC.toUpperCase() + ". " + MiddleNameC.toUpperCase() + ".";
 		header14.add(nameForFooter);
 		header14.add(Chunk.TABBING);
 		header14.add(Chunk.TABBING);
@@ -973,6 +992,7 @@ public class PrintServiceImpl implements PrintService {
 	 * </p>
 	 */
 
+    @Transactional
 	@Override
 	public ByteArrayOutputStream printProcurationOnSubmitInfo(Integer inquiryId) throws DocumentException, IOException{
 

@@ -26,7 +26,7 @@ package org.registrator.community.service;
 	
 	public class LinearParameterServiceTest {
 		 
-		private Logger testLogger = LoggerFactory.getLogger(LinearParameterServiceTest.class);
+		private static final Logger testLogger = LoggerFactory.getLogger(LinearParameterServiceTest.class);
 		private Integer ID = 111;
 		private String uniNAME = "MGG";
 		private String deScripto = "Radio";
@@ -38,8 +38,7 @@ package org.registrator.community.service;
 	    private ResourceType type;
 	    @Mock
 	    private LinearParameterRepository parametrLineRepository;	    
-	    @Mock
-	    private Logger logger;
+
 	    @BeforeMethod
 	    public void init() {
 	        MockitoAnnotations.initMocks(this);

@@ -6,12 +6,12 @@ import javax.validation.Valid;
 
 import org.registrator.community.dto.CommunityDTO;
 import org.registrator.community.entity.TerritorialCommunity;
+import org.registrator.community.enumeration.CommunityStatus;
 import org.registrator.community.service.CommunityService;
 import org.registrator.community.validator.CommunityValidator;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,8 +26,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping(value = "/administrator/communities/")
 public class CommunityController {
     
-    @Autowired
-    private Logger logger;
+    private static final Logger logger = LoggerFactory.getLogger(CommunityController.class);
 
     @Autowired
     private CommunityService communityService;
@@ -90,18 +89,27 @@ public class CommunityController {
      * database
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @RequestMapping(value = "/deleteCommunity/{territorialCommunityId}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/deleteCommunity/{territorialCommunityId}",
+            method = RequestMethod.DELETE)
     @ResponseBody
-    public ResponseEntity<String> deleteCommunity(@PathVariable Integer territorialCommunityId) {
-        boolean isDeleted = communityService.deleteCommunity(communityService.findById(territorialCommunityId));
-        if (isDeleted) {
-            logger.info("end: deleted chosen community");
-            return new ResponseEntity<String>(HttpStatus.OK);
-        }
-        logger.info("end: it's impossible to delete territorial community");
-        return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
+    public boolean deleteCommunity(@PathVariable Integer territorialCommunityId) {
+        logger.debug("deleting chosen community");
+        boolean isDeleted =
+                communityService.deleteCommunity(communityService.findById(territorialCommunityId));
+        return isDeleted;
     }
-    
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @RequestMapping(value = "/activateCommunity/{territorialCommunityId}",
+            method = RequestMethod.POST)
+    @ResponseBody
+    public void activateCommunity(@PathVariable Integer territorialCommunityId) {
+        logger.debug("activating chosen community");
+        CommunityStatus newStatus = CommunityStatus.ACTIVE;
+        TerritorialCommunity community = communityService.findById(territorialCommunityId);
+        communityService.setCommunityStatus(community, newStatus);
+        logger.debug("end");
+    }
     /**
      * Method display page for edition 
      * @param id community ID to edit

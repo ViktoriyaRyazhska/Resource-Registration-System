@@ -345,13 +345,11 @@ function searchByParameters(page) {
     var id_param = $(this).attr("param_id");
     var value = $(this).find(".value").val();
     if (value) {
-
       var node = new Object();
       node.id = id_param;
       node.compare = compare_sign;
       node.value = value;
       json.linearParameters.push(node);
-
     }
   });
 
@@ -363,8 +361,44 @@ function searchByParameters(page) {
     timeout : 60000,
     dataType : 'json',
     success : function(data) {
-      createDataTable(data.polygons);
       createPolygons(data, page);
+      showPolygons(polygons);
+      createDataTable(data.polygons);
+
+      $("#dark_bg").hide();
+    },
+    error : function() {
+      $("#dark_bg").hide();
+      bootbox.alert(jQuery.i18n.prop('msg.error'));
+    }
+  });
+}
+
+// TODO: pagination
+function searchAll(page){
+  var page = page || 0;
+
+  $("#dark_bg").show();
+
+  var resType = $("#resourcesTypeSelect").val();
+
+  $.ajax({
+    type : "POST",
+    url : baseUrl.toString() + "/registrator/resource/showAllResources",
+    data : {
+      "resType" : resType
+    },
+    contentType : 'application/x-www-form-urlencoded;charset=UTF-8',
+    timeout : 60000,
+    dataType : 'json',
+    success : function(data) {
+      var jsonData = {};
+      jsonData.polygons = data;
+      jsonData.countPolygons = data.length;
+      createPolygons(jsonData, page);
+      showPolygons(polygons);
+      createDataTable(jsonData.polygons);
+
       $("#dark_bg").hide();
     },
     error : function() {
@@ -384,9 +418,11 @@ function createDataTable(json) {
     var date = jQuery.i18n.prop('msg.date');
     var details = jQuery.i18n.prop('msg.more');
 
-    $("#searchResult").html('<table id="datatable" class="table table-striped table-bordered" cellspacing="0"></table>');
+    $("#searchResult").html('<table id="datatable" class="table table-striped table-bordered" cellspacing="0" style="width: 100%;"></table>');
     oTable = $('#datatable').DataTable({
+      "responsive" : true,
       "aaData" : json,
+      "bAutoWidth": false,
       "aoColumns" : [ {
         "sTitle" : description,
         "mData" : "resourceDescription"
@@ -474,7 +510,7 @@ function createPolygons(json, page) {
       });
 
       google.maps.event.addListener(polygon, 'click', function(event) {
-        contentString = "<tr>" + "<td>" + this.resDescription + "</td>" + "<td>" + this.resType + "</td>" + "<td><a href='" + baseUrl.toString() + "/registrator/resource/get/" + this.identifier + "'><i>Детальніше</i></a> </td>" + "</tr>";
+        contentString = "<tr>" + "<td>" + this.resDescription + "</td>" + "<td>" + this.resType + "</td>" + "<td><a href='" + baseUrl.toString() + "/registrator/resource/get?id=" + this.identifier + "'><i>Детальніше</i></a> </td>" + "</tr>";
         infowindow.setContent(infoWindowContent + contentString);
         infowindow.setPosition(event.latLng);
         infowindow.open(map);
@@ -722,30 +758,7 @@ $(document).on("click", "#search", function() {
 });
 
 $(document).on("click", "#showAllResources", function() {
-  $("#dark_bg").show();
-
-  var resType = $("#resourcesTypeSelect").val();
-
-  $.ajax({
-    type : "POST",
-    url : baseUrl.toString() + "/registrator/resource/showAllResources",
-    data : {
-      "resType" : resType
-    },
-    contentType : 'application/x-www-form-urlencoded;charset=UTF-8',
-    timeout : 60000,
-    dataType : 'json',
-    success : function(data) {
-      createDataTable(data);
-      createPolygons(data);
-      $("#dark_bg").hide();
-    },
-    error : function() {
-      $("#dark_bg").hide();
-      bootbox.alert(jQuery.i18n.prop('msg.error'));
-    }
-  });
-
+  searchAll();
 });
 
 $(document).on("click", "#datatable tbody tr", function() {

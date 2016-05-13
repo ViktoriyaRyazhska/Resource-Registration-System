@@ -87,15 +87,13 @@
                         <span class="latitudeMinutes">${point.latitudeMinutes}</span>'
                         <span class="latitudeSeconds"> <fmt:formatNumber
                             type="number" maxFractionDigits="2"
-                            value="${point.latitudeSeconds}" />
-                      </span>"
+                            value="${point.latitudeSeconds}" /></span>"
                       </span> <span class="pointLng"> <span
                         class="longitudeDegrees">${point.longitudeDegrees}</span>°
                         <span class="longitudeMinutes">${point.longitudeMinutes}</span>'
                         <span class="longitudeSeconds"> <fmt:formatNumber
                             type="number" maxFractionDigits="2"
-                            value="${point.longitudeSeconds}" />
-                      </span>"
+                            value="${point.longitudeSeconds}" /></span>"
                       </span>
                     </div>
                   </c:forEach>
@@ -163,11 +161,12 @@
   <br />
   <p>
 
-    <%--Connect Google Maps--%>
+ 
 
 
-    <c:if test="${!allUrkaine}">
-      <div id="map_canvas" class="container" style="height: 500px;"
+     <c:if test="${!allUrkaine}">
+         <%--Connect Google Maps--%>
+<%--      <div id="map_canvas" class="container" style="height: 500px;"
         centerLat="<c:out value="${
             resource.resourceArea.poligons[0].points[0].latitudeDegrees +
             resource.resourceArea.poligons[0].points[0].latitudeMinutes/60 +
@@ -176,9 +175,28 @@
             resource.resourceArea.poligons[0].points[0].longitudeDegrees +
             resource.resourceArea.poligons[0].points[0].longitudeMinutes/60 +
             resource.resourceArea.poligons[0].points[0].longitudeSeconds/3600}"/>">
+      </div> --%>
+     
+     
+       <%--Connect OpenStreetMap--%> 
+       <div id="openMap"  class="container" style="height: 500px;"
+      centerLat="<c:out value="${
+            resource.resourceArea.poligons[0].points[0].latitudeDegrees +
+            resource.resourceArea.poligons[0].points[0].latitudeMinutes/60 +
+            resource.resourceArea.poligons[0].points[0].latitudeSeconds/3600}"/>"
+      centerLng="<c:out value="${
+            resource.resourceArea.poligons[0].points[0].longitudeDegrees +
+            resource.resourceArea.poligons[0].points[0].longitudeMinutes/60 +
+            resource.resourceArea.poligons[0].points[0].longitudeSeconds/3600}"/>">
+      
       </div>
-      <script src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+      <link rel="stylesheet" href="<c:url value='/resource/js/lib/leafletJS/leaflet.css'/>" />
+      <script src="<c:url value='/resource/js/lib/leafletJS/leaflet.js'/>"></script> <!-- or use leaflet-src.js -->
+      <script src="<c:url value='/resource/js/lib/leafletJS/Leaflet.Editable.js'/>"></script>
+      <script type="text/javascript"  src="<c:url value='/resource/js/LeafLetMap/showResourceLeafLetMap.js'/>"></script>
+      
+      <%-- <script src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
       <script type="text/javascript"
-        src="<c:url value='/resource/js/showResourceMap.js'/>"></script>
+        src="<c:url value='/resource/js/showResourceMap.js'/>"></script> --%>
     </c:if>
 </div>

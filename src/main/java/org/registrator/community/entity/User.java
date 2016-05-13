@@ -34,7 +34,7 @@ public class User implements Serializable {
     @GeneratedValue
     private Integer userId;
 
-    @Column(name = "login", unique = true, nullable = false)
+    @Column(name = "login", length = 30, unique = true, nullable = false)
     private String login;
 
     @Column(name = "password", nullable = false)
@@ -94,25 +94,28 @@ public class User implements Serializable {
     @ManyToOne
     @JoinColumn(name = "territorialCommunity_id", nullable = false)
     private TerritorialCommunity territorialCommunity;
-    
-    
+
+
     @Column(name = "attempts")
- 	private int attempts=0;
-     
-     @Column(name = "last_modified")
- 	private Timestamp lastModified;
-     
-     @Column(name = "enabled")
-     private int enabled=1;
-     
-     @Column(name = "account_non_expired")
-     private int accountNonExpired=1;
-     
-     @Column(name = "account_non_locked")
-     private int accountNonLocked=1;
-     
-     @Column(name = "credentials_non_expired")
-     private int credentialsNonExpired=1;
+    private int attempts = 0;
+
+    @Column(name = "last_modified")
+    private Timestamp lastModified;
+
+    @Column(name = "enabled")
+    private int enabled = 1;
+
+    @Column(name = "account_non_expired")
+    private int accountNonExpired = 1;
+
+    @Column(name = "account_non_locked")
+    private int accountNonLocked = 1;
+
+    @Column(name = "locked_till", nullable = false, columnDefinition = "bigint default 0")
+    private long lockedTill = 0;
+
+    @Column(name = "credentials_non_expired")
+    private int credentialsNonExpired = 1;
     
     
     
@@ -156,6 +159,14 @@ public class User implements Serializable {
 	public void setAccountNonLocked(int accountNonLocked) {
 		this.accountNonLocked = accountNonLocked;
 	}
+
+    public long getLockedTill() {
+        return lockedTill;
+    }
+
+    public void setLockedTill(long lockedTill) {
+        this.lockedTill = lockedTill;
+    }
 
 	public int getCredentialsNonExpired() {
 		return credentialsNonExpired;

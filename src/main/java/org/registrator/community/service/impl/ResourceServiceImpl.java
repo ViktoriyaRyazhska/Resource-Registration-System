@@ -44,6 +44,7 @@ import org.registrator.community.service.ResourceService;
 import org.registrator.community.service.SettingsService;
 import org.registrator.community.service.UserService;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -63,8 +64,7 @@ import javax.transaction.Transactional;
 @Service
 public class ResourceServiceImpl implements ResourceService {
 
-    @Autowired
-    private Logger logger;
+    private static final Logger logger = LoggerFactory.getLogger(ResourceServiceImpl.class);
 
     @Autowired
     private ResourceRepository resourceRepository;
@@ -135,7 +135,7 @@ public class ResourceServiceImpl implements ResourceService {
          /* form the resource entity and save in into database */
 
         Resource resourceEntity = resourceRepository.findByIdentifier(resourceDTO.getIdentifier());
-        boolean isNew = (resourceEntity == null);
+        boolean isNew = resourceEntity == null;
         resourceEntity = parseToResourseEntity(resourceDTO, registrator);
         resourceEntity = resourceRepository.save(resourceEntity);
 
@@ -188,6 +188,7 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
+    @Transactional
     public List<Resource> findByType(ResourceType type) {
         return resourceRepository.findByType(type);
     }
@@ -220,6 +221,7 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
+    @Transactional
     public Set<Resource> getAllByPoint(Double lat, Double lng, Integer page) {
         Set<Resource> resources = new HashSet<>();
         Pageable pageable = new PageRequest(page, 200);
@@ -242,6 +244,7 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
+    @Transactional
     public List<PolygonJson> createPolygonJSON(Resource resource, int i) {
         List<PolygonJson> polygonsJSON = new ArrayList<>();
 
@@ -673,11 +676,10 @@ public class ResourceServiceImpl implements ResourceService {
         Calendar today = Calendar.getInstance(settingsService.getTimeZone());
         Calendar createdAt = resourceEntity.getCreatedAt();
 
-        boolean sameDate =  ((today != null) && (createdAt != null)
+        boolean sameDate =  (today != null) && (createdAt != null)
                 && (today.get(Calendar.YEAR) == createdAt.get(Calendar.YEAR))
                 && (today.get(Calendar.MONTH) == createdAt.get(Calendar.MONTH))
-                && (today.get(Calendar.DATE) == createdAt.get(Calendar.DATE))
-        );
+                && (today.get(Calendar.DATE) == createdAt.get(Calendar.DATE));
 
         return user.equals(resourceEntity.getRegistrator()) && sameDate;
     }

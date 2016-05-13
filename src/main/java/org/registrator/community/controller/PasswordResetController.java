@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.request.RequestContextHolder;
 
 @Controller
 public class PasswordResetController {
@@ -19,15 +20,13 @@ public class PasswordResetController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/administrator/users/get-all-users/batch-password-reset", method = RequestMethod.POST)
     public @ResponseBody String resetPasswordForUsers(@RequestBody PasswordResetJson passwordResetJson) {
-        String msg = passwordResetService.batchPasswordReset(passwordResetJson);
-
+        String msg = passwordResetService.batchPasswordReset(passwordResetJson, RequestContextHolder.currentRequestAttributes().getSessionId());
         return msg;
     }
 
     @RequestMapping(value = "/reset_password", method = RequestMethod.GET)
     public @ResponseBody String resetUserPassword() {
         String msg = passwordResetService.passwordReset();
-
         return msg;
     }
 }

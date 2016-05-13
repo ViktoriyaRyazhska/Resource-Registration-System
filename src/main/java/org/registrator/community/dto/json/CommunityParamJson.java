@@ -1,9 +1,12 @@
 package org.registrator.community.dto.json;
 
+import javax.validation.constraints.Pattern;
+
 import org.hibernate.validator.constraints.NotEmpty;
 
 public class CommunityParamJson {
     @NotEmpty
+    @Pattern(regexp = "^[a-zA-Z0-9,]+$", message = "typeMismatch")
     private String login;
     @NotEmpty
     private String communityId;

@@ -1,6 +1,8 @@
 package org.registrator.community.dto.json;
 
+
 public class PasswordResetJson {
+
     private String login;
 
     public String getLogin() {

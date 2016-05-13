@@ -5,15 +5,17 @@ import java.util.Properties;
 
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.exception.VelocityException;
+import org.registrator.community.mailer.ReloadableMailSender;
+import org.registrator.community.mailer.ReloadableMailSenderImpl;
+import org.registrator.community.service.SettingsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.ui.velocity.VelocityEngineFactoryBean;
+
 
 @Configuration
 @ComponentScan({"org.registrator.community.components", "org.registrator.community.dao"})
@@ -23,23 +25,12 @@ public class AdditionalAppConfig {
     @Autowired
     private Environment env;
 
-    @Bean(name = "mailSender")
-    public JavaMailSender mailSender(){
-        JavaMailSenderImpl sender = new JavaMailSenderImpl();
-        sender.setDefaultEncoding("UTF-8");
-        sender.setHost("smtp.gmail.com");
-        sender.setProtocol("smtps");
-        sender.setPort(465);
-        sender.setUsername("resources.registrator@gmail.com");
-        sender.setPassword("m@!RljNg");
-       
-        Properties javaMailProperties = new Properties();
-        javaMailProperties.setProperty("mail.smtp.auth", "true");
-        javaMailProperties.setProperty("mail.smtp.starttls.enable", "true");
-        javaMailProperties.setProperty("mail.smtp.socketFactory.fallback", "true");
-        sender.setJavaMailProperties(javaMailProperties);
+    @Autowired
+    private SettingsService settingsService;
 
-        return sender;
+    @Bean(name = "mailSender")
+    public ReloadableMailSender mailSender(){
+        return new ReloadableMailSenderImpl(settingsService.getSmtpParameters());
     }
     
     @Bean
@@ -53,5 +44,8 @@ public class AdditionalAppConfig {
         factory.setVelocityProperties(props);
         return factory.createVelocityEngine();
     }
+    
+
+    
 }
 

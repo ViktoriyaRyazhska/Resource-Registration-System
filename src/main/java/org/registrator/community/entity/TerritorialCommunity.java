@@ -1,6 +1,7 @@
 package org.registrator.community.entity;
 
 import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -23,8 +24,19 @@ public class TerritorialCommunity implements Serializable {
     
     @Column(name = "registrationNumber")
     private String registrationNumber;
+    
+	@Column(name = "isActive", nullable = false, columnDefinition = "int default 1")
+	private Integer active = 1;
 
-    public TerritorialCommunity() {
+    public Integer getActive() {
+		return active;
+	}
+
+	public void setActive(Integer active) {
+		this.active = active;
+	}
+
+	public TerritorialCommunity() {
         
     }
 

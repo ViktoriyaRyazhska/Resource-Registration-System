@@ -17,6 +17,7 @@ import org.registrator.community.enumeration.InquiryType;
 import org.registrator.community.enumeration.RoleType;
 import org.registrator.community.service.InquiryService;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,12 +32,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class InquiryServiceImpl implements InquiryService{
 	
-	@Autowired
-	private Logger logger;
+	private static final Logger logger = LoggerFactory.getLogger(InquiryServiceImpl.class);
+
 	@Autowired
 	private InquiryRepository inquiryRepository;
+
 	@Autowired
 	private UserRepository userRepository;
+
 	@Autowired
 	private ResourceRepository resourceRepository;
 

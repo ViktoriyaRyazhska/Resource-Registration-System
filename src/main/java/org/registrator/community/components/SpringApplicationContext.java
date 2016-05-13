@@ -12,9 +12,8 @@ import org.springframework.stereotype.Component;
  */
 
 @Component
-public class SpringApplicationContext implements ApplicationContextAware, MessageSourceAware {
+public class SpringApplicationContext implements ApplicationContextAware {
     private static ApplicationContext CONTEXT;
-    private static MessageSource MESSAGE_SOURCE;
 
     @Override
     public void setApplicationContext(final ApplicationContext context)
@@ -22,16 +21,10 @@ public class SpringApplicationContext implements ApplicationContextAware, Messag
         CONTEXT = context;
     }
 
-    @Override
-    public void setMessageSource(MessageSource messageSource) {
-        MESSAGE_SOURCE = messageSource;
-    }
-
-    public static MessageSource getMessageSource() {
-        return MESSAGE_SOURCE;
-    }
-
     public static <T> T getBean(Class<T> clazz) {
+        if (CONTEXT == null) {
+            return null;
+        }
         return CONTEXT.getBean(clazz);
     }
 }

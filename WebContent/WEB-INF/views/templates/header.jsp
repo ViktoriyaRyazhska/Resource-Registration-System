@@ -1,6 +1,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c'%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <div class="container-fluid" id="header">
 
@@ -42,10 +43,17 @@
     </div>
     <div class="col-md-5 col-xs-6 hlanguage">
       <select id="changeLanguage" class="form-control" style="height: 30px">
-        <option value="ua">українська</option>
+        <option value="uk">українська</option>
         <option value="ru">русский</option>
         <option value="en">english</option>
       </select>
+      <sec:authorize access="hasRole('ROLE_ADMIN')">
+        <div id="messageView" class="messagebox fade in" style="display:none">
+          <h3 id="messageTitle" class="message-title">Header</h3>
+          <div id="messageText" class="message-content">Blabla</div>
+          <div id="messageClose" class="close-popup"></div>
+        </div>
+      </sec:authorize>
     </div>
   </div>
 </div>
