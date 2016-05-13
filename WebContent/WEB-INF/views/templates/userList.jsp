@@ -18,6 +18,7 @@
   <script src="<c:url value='/resource/js/lib/jquery.dataTables.min.js'/>"></script>
   <script src="<c:url value='/resource/js/lib/dataTables.responsive.min.js'/>"></script>
   <script src="<c:url value='/resource/js/asearch_row.js'/>"></script>
+  <script src="<c:url value='/resource/js/communityMembers.js'/>"></script>
 
 
 <c:if test="${not empty tableSetting.script}">
