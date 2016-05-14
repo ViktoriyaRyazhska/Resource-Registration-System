@@ -148,6 +148,9 @@ function checkSinglePolygonLinesCross(lines){
 
 function getNeighborPolygons(upolygon){
 	var neighborPolygons = [];
+	var resType1 = $("#resourcesTypeSelect").val();
+	var identifier = $("#identifier").val();
+	
 	if (upolygon.getBounds() === undefined)
 	    return;
 	  var bounds = upolygon.getBounds();
@@ -170,7 +173,7 @@ function getNeighborPolygons(upolygon){
 	      "minLng" : minLng,
 	      "maxLng" : maxLng,
 	      "page" : 0,
-	      "resType" : resType
+	      "resType" : resType1
 	    },
 	    type : "POST",
 	    async : false,
@@ -193,9 +196,11 @@ function getNeighborPolygons(upolygon){
 				        polygonPath.push(myLatLng);
 				       
 				      }
+					if(polygon.identifier!=identifier){
+						var neighborPolygon = L.polygon(polygonPath);
+						neighborPolygons.push(neighborPolygon);
+					}
 					
-					var neighborPolygon = L.polygon(polygonPath);
-					neighborPolygons.push(neighborPolygon);
 				}
 			}
 			
