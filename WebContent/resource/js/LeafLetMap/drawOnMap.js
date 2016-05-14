@@ -3,7 +3,7 @@
  */
 // create map
 function createMap(){
-	map = L.map('openMap',  {editable: true}).setView(startPoint, 13);
+	map = L.map('openMap',  {editable: true}).setView(startPoint, 12);
 	L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpandmbXliNDBjZWd2M2x6bDk3c2ZtOTkifQ._QA7i5Mpkd_m30IGElHziw', {
 		maxZoom: 25,
 		attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
@@ -18,7 +18,6 @@ function drawPolygons(polygons) {
 	var i;
 	var infoWindowContent = "<table id='infowindow_table'><tr><th>" + jQuery.i18n.prop('msg.description') + "</th><th>" + jQuery.i18n.prop('msg.subclass') + "</th><th></th></tr>";
 	var contentString = "";
-	
 	if (polygons && polygons.length>0) {
 		for (i = 0; i < polygons.length; i++) {
 			

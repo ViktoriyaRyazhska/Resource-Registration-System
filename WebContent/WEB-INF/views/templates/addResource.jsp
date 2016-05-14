@@ -530,11 +530,13 @@
 <script src="<c:url value='/resource/js/lib/leafletJS/GeometryUtil.js'/>"></script>
 
 
-<script type="text/javascript"  src="<c:url value='/resource/js/LeafLetMap/drawOnMap.js'/>"></script>
+
 <script type="text/javascript"  src="<c:url value='/resource/js/LeafLetMap/checkIntersection.js'/>"></script>
 <script type="text/javascript"  src="<c:url value='/resource/js/LeafLetMap/isInsideUkraine.js'/>"></script>
-<script type="text/javascript" src="<c:url value='/resource/js/LeafLetMap/addResourceOnMapLLJS.js'/>"></script>
+<script type="text/javascript"  src="<c:url value='/resource/js/LeafLetMap/drawOnMap.js'/>"></script>
 <script type="text/javascript"  src="<c:url value='/resource/js/LeafLetMap/leafLetAddMap.js'/>"></script>
+<script type="text/javascript" src="<c:url value='/resource/js/LeafLetMap/addResourceOnMapLLJS.js'/>"></script>
+
 
 
 
