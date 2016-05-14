@@ -48,14 +48,16 @@ function getResources() {
     dataType : 'json',
     success : function(data) {
     	
-    	//exept editing polygons
+    	//except  polygons which are editing
+    	var exceptPoly = data.polygons;
     	for(var i =0; i<data.polygons.length; i++){
     		if(data.polygons[i].identifier==identifier){
-    			data.polygons.splice(i,1);
+    			exceptPoly.splice(i,1);
+    			i--;
     		}
     	}
     	
-    	drawPolygons(data.polygons);
+    	drawPolygons(exceptPoly);
     	
       $("#dark_bg").hide();
     },
@@ -265,7 +267,7 @@ $(function(){
 	$(document).on("click", "#submitForm", function() {
 		  
 		if(checkInterseption(polygons)){
-			bootbox.alert(jQuery.i18n.prop('msg.PolygonsCross'));
+			bootbox.alert(jQuery.i18n.prop('msg.resoursesIntersect'));
 			return false;
 		}
 		if (!isPolygonsInsideUkraine(polygons)) return false;
