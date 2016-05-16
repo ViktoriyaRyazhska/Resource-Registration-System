@@ -5,7 +5,8 @@ public enum UIMessages {
     IS_ADMIN("msg.batchops.cantChangeAdmins"),
     CANT_CHANGE_SELF("msg.batchops.cantChangeOwnState"),
     DIFFIRENT_TCS("msg.batchops.moreThenOneTC"),
-    CHANGES_ACCEPTED("msg.batchops.changesaccepted");
+    CHANGES_ACCEPTED("msg.batchops.changesaccepted"),
+    INACTIVE_TC("msg.batchops.inactiveTC");
 
     private UIMessages(final String message){
         value = message;

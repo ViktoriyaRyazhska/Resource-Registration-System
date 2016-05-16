@@ -7,8 +7,10 @@ import java.util.List;
 import org.registrator.community.dao.UserRepository;
 import org.registrator.community.dto.json.CommunityParamJson;
 import org.registrator.community.dto.json.RoleTypeJson;
+import org.registrator.community.dto.json.UserStatusJson;
 import org.registrator.community.entity.TerritorialCommunity;
 import org.registrator.community.entity.User;
+import org.registrator.community.enumeration.CommunityStatus;
 import org.registrator.community.enumeration.RoleType;
 import org.registrator.community.enumeration.UIMessages;
 import org.registrator.community.service.CommunityService;
@@ -39,6 +41,7 @@ public class MassUserOpsValidator implements Validator {
     public boolean supports(Class<?> clazz) {
         supportedClasses.add(CommunityParamJson.class);
         supportedClasses.add(RoleTypeJson.class);
+        supportedClasses.add(UserStatusJson.class);
         return supportedClasses.contains(clazz);
     }
 
@@ -50,6 +53,9 @@ public class MassUserOpsValidator implements Validator {
         } else if (target instanceof RoleTypeJson) {
             RoleTypeJson taskInfo = (RoleTypeJson) target;
             validateRoleTypeJson(taskInfo, errors);
+        } else if (target instanceof UserStatusJson){
+            UserStatusJson taskInfo = (UserStatusJson) target;
+            validateStatusJson(taskInfo, errors);
         }
     }
 
@@ -115,6 +121,35 @@ public class MassUserOpsValidator implements Validator {
         }
     }
     
+    private void validateStatusJson(UserStatusJson task, Errors errors){
+        if (task.getLogin() == null
+                || task.getStatus() == null) {
+            logger.warn("Empty UserStatusJson batch file");
+            errors.reject(UIMessages.WRONG_INPUT.getMessage());
+            return;
+        }
+
+        if (!checkIfUsersExist(task.getLogin())) {
+            errors.reject(UIMessages.WRONG_INPUT.getMessage());
+            return;
+        }
+
+        if (!checkIfIsSelf()) {
+            errors.reject(UIMessages.CANT_CHANGE_SELF.getMessage());
+            return;
+        }
+
+        if (!checkIfIsAdmin()) {
+            errors.reject(UIMessages.IS_ADMIN.getMessage());
+            return;
+        }
+        
+        if(!checkForInactiveCommunities()){
+            errors.reject(UIMessages.INACTIVE_TC.getMessage());
+            return;
+        }
+    }
+    
     private boolean checkIfUsersExist(String userLogins) {
         List<String> givenUsers = new ArrayList<String>();
         Collections.addAll(givenUsers, userLogins.split(","));
@@ -164,6 +199,17 @@ public class MassUserOpsValidator implements Validator {
                     logger.warn("Cant select users with diffirent communities");
                     return false;
                 }
+            }
+        }
+        return true;
+    }
+    
+    private boolean checkForInactiveCommunities(){
+        for(User user :userList){
+            TerritorialCommunity community = user.getTerritorialCommunity();
+            if(community.getActive() == CommunityStatus.INACTIVE.getStatusId()){
+                logger.warn("Cant change user status for an innactive community member");
+                return false;
             }
         }
         return true;
