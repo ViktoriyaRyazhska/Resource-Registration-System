@@ -4,6 +4,7 @@ var newPolygons = [];
 var polygonsFromCoordinates = [];
 var PS = null;
 var activePolygon;
+var resType;
 
 function getCookie(cname) {
   var name = cname + "=";
@@ -18,15 +19,11 @@ function getCookie(cname) {
   return "";
 }
 
-$(document).ready(function() {
-	addPointsToMap(true);
-});
-
 function getResources() {
   //var resType = $("#resourcesTypeSelect").val();
-	resType = $("#resourcesTypeSelect").val();
-  if (map.getBounds() === undefined)
-    return;
+  var identifier = $("#identifier").val();	
+  resType = $("#resourcesTypeSelect").val();
+  if (map.getBounds() === undefined) return;
   var bounds = map.getBounds();
   var maxLat = bounds._northEast.lat;
   var minLat = bounds._southWest.lat;
@@ -50,7 +47,18 @@ function getResources() {
     contentType : "application/x-www-form-urlencoded;charset=UTF-8",
     dataType : 'json',
     success : function(data) {
-    	drawPolygons(data.polygons);
+    	
+    	//except  polygons which are editing
+    	var exceptPoly = data.polygons;
+    	for(var i =0; i<data.polygons.length; i++){
+    		if(data.polygons[i].identifier==identifier){
+    			exceptPoly.splice(i,1);
+    			i--;
+    		}
+    	}
+    	
+    	drawPolygons(exceptPoly);
+    	
       $("#dark_bg").hide();
     },
     error : function() {
@@ -91,7 +99,7 @@ function calculateAreaPerimeter(polygon, i) {
   var area =  L.GeometryUtil.geodesicArea(polygon.getLatLngs());
   area = L.GeometryUtil.readableArea(area);
   perimeter = L.GeometryUtil.polyPerimetr(polygon);
-  console.log("area="+area+"  perim="+perimetr);
+  console.log("area="+area+"  perim="+perimeter);
 
   //area = Math.round(area * 100) / 100;
   //perimeter = Math.round(perimeter * 100) / 100;
@@ -228,7 +236,20 @@ function putParameter(name, value, length) {
 	  }
 }
 
+function updateMap(){
+	resType = $("#resourcesTypeSelect").val();
+	if (resType){
+		getResources(polygons);
+	}
+	
+	addPointsToMap(true);
+}
+
+
 $(function(){
+	
+	updateMap();
+	
 	$( "#resourcesTypeSelect" ).change(function() {
 		  resType = $("#resourcesTypeSelect").val();
 		  if (resType == undefined) {
@@ -246,7 +267,7 @@ $(function(){
 	$(document).on("click", "#submitForm", function() {
 		  
 		if(checkInterseption(polygons)){
-			bootbox.alert(jQuery.i18n.prop('msg.PolygonsCross'));
+			bootbox.alert(jQuery.i18n.prop('msg.resoursesIntersect'));
 			return false;
 		}
 		if (!isPolygonsInsideUkraine(polygons)) return false;

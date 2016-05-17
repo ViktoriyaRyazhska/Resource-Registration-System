@@ -6,11 +6,11 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 public class UserStatusJson {
 	@NotEmpty
-    @Pattern(regexp = "^[a-zA-Z0-9,]+$", message = "typeMismatch")
+    @Pattern(regexp = "^[a-zA-Z0-9,]+$", message = "msg.batchops.wrongInput")
     private String login;
 	
     @NotEmpty
-    @Pattern(regexp = "BLOCK|ACTIVE|INACTIVE|NOTCOMFIRMED")
+    @Pattern(regexp = "BLOCK|ACTIVE|INACTIVE|NOTCOMFIRMED", message = "msg.batchops.wrongInput")
     private String status;
 
     public UserStatusJson(String login, String status) {

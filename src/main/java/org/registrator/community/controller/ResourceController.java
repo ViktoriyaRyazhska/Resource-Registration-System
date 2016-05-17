@@ -371,8 +371,9 @@ public class ResourceController {
      * @return searchOnMap.jsp
      */
     @PreAuthorize("hasRole('ROLE_REGISTRATOR')")
-    @RequestMapping(value = "/delete/{resourceIdentifier}")
-    public String deleteResource(@PathVariable String resourceIdentifier) {
+    //@RequestMapping(value = "/delete/{resourceIdentifier}")
+    @RequestMapping(value = "delete", method = RequestMethod.GET)
+    public String deleteResource(@RequestParam(value = "id") String resourceIdentifier/*@PathVariable String resourceIdentifier*/) {
         logger.info("begin deleteResource, param resourceIdentifier = " + resourceIdentifier);
         resourceDeleteService.deleteResource(resourceIdentifier);
         logger.info("end deleteResource");

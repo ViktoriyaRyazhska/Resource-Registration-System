@@ -2,11 +2,12 @@
  * author Pavlo Antentyk
  */
 
+
+var polygonsFromMap = [];
 $(function(){
-	
 
 startPoint = [49.83523, 24.03381];
-var polygonsFromMap = [];
+
 //var resType;
 
 //create map
@@ -100,7 +101,7 @@ map.on('editable:drawing:end',function(e){
 	if(e.layer._latlngs.length>=3){
 		polygonsFromMap.push(drawnPolygon);
 		drawnPolygon.exeptClear = true;
-		if(checkInterseption(polygonsFromMap)) bootbox.alert(jQuery.i18n.prop('msg.PolygonsCross'));
+		if(checkInterseption(polygonsFromMap)) bootbox.alert(jQuery.i18n.prop('msg.resoursesIntersect'));
 		var area =  L.GeometryUtil.geodesicArea(drawnPolygon.getLatLngs());
 		area = L.GeometryUtil.readableArea(area, true);
 		console.log(area);
@@ -125,10 +126,16 @@ map.on('editable:vertex:dragend',function(e){
 	area = L.GeometryUtil.readableArea(area, true);
 	perimetr = L.GeometryUtil.polyPerimetr(editedPolygon);
 	console.log("area="+area+"  perim="+perimetr);
-	if(checkInterseption(polygonsFromMap)) bootbox.alert(jQuery.i18n.prop('msg.PolygonsCross'));
+	if(checkInterseption(polygonsFromMap)) bootbox.alert(jQuery.i18n.prop('msg.resoursesIntersect'));
 	updatePointOnUI(polygonsFromMap);
 	
 });
+
+map.on('moveend', function(){
+	updateMap();
+});
+
+
 
 //used for development
 map.on('contextmenu', function(e){
@@ -147,7 +154,7 @@ function drawPolygonsfromUI(polygons){
 		var drawnPolygon = L.polygon(polygon, {color:'blue', weight:'5'}).addTo(map);
 		drawnPolygon.enableEdit();
 		polygonsFromMap.push(drawnPolygon);
-		if(checkInterseption(polygonsFromMap)) bootbox.alert(jQuery.i18n.prop('msg.PolygonsCross'));
+		if(checkInterseption(polygonsFromMap)) bootbox.alert(jQuery.i18n.prop('msg.resoursesIntersect'));
 	})
 	
 	

@@ -21,6 +21,7 @@ $(function(){
 	if(location.includes('get-all-users')){
 		communityName = window.location.hash.substring(1);
 		if(communityName){
+			communityName = decodeURIComponent(communityName);
 			$('#inputIndex4').val(communityName);
 			$('#bth-search').click();
 		}
