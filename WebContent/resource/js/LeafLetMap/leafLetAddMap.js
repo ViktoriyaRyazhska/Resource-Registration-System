@@ -111,8 +111,7 @@ map.on('editable:drawing:end',function(e){
 	}else{
 		map.removeLayer(drawnPolygon);
 	}
-	
-	 
+
 });
 
 //fired when after dragging any polygon vertex

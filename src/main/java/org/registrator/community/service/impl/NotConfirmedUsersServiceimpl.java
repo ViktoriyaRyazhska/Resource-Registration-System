@@ -161,7 +161,7 @@ public class NotConfirmedUsersServiceimpl implements NotConfirmedUsersService {
     
     @Transactional
     public void deleteListVerificationToken(List<String> loginList){
-        logger.debug("Looking for verifacationTokens with logins: {}", loginList);
+        logger.debug("Looking for verificationTokens with logins: {}", loginList);
         List<VerificationToken> verifacationTokenList = verificationTokenService.findVerificationTokensByLoginsAndTokenType(loginList, TokenType.CONFIRM_EMAIL);
         if (verifacationTokenList.isEmpty()){
             logger.warn("no such VerificationToken found in database");

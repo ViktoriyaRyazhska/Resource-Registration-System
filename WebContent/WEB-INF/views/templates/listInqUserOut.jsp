@@ -53,7 +53,7 @@
           </sec:authorize>
           <td hidden="true">${inquiryUserOut.inquiryType}</td>
           <td><a
-            href="<c:url value='/registrator/resource/get?id={inquiryUserOut.resourceIdentifier}' />">
+            href="<c:url value='/registrator/resource/get?id=${inquiryUserOut.resourceIdentifier}' />">
               ${inquiryUserOut.resourceIdentifier} </a></td>
           <td>
             <%-- .nowrap is defined inside system.css --%>
