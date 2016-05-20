@@ -296,19 +296,7 @@ $(document).on('click', '#searchByPointButton, #searchByAreaButton, #searchByPar
 	$("#searchResult").html('');//clear dataTable
 })
 
-/*$(document).on('click', '#searchByPointButton', function(){
-	//map.editTools.startMarker();
-	startSearchByPoint();
-})*/
 
-/*$(document).on('click', function(e){
-	if(e.target.parentElement.id != 'searchByPointButton'){
-		stopSearchByPoint();
-	}
-	
-	//console.log(e);
-	//console.log(e.target.parentElement.id);
-})*/
 
 $(document).on("click", "#searchOnMapButton_area", function() {
   var firstPoint = $("#first_point");
@@ -395,8 +383,9 @@ $(document).on("click", ".btn-filter", function() {
     $(this).addClass("active");
     var resType = $(this).html();
     for (var i = 0; i < polygons.length; i++) {
-      if ((polygons[i].resType == resType) && (polygons[i].map == null)) {
-        polygons[i].setMap(map);
+      if (polygons[i].resType == resType)  {
+        
+    	  polygons[i].setMap(map);
       } else if ((polygons[i].map != null) && (polygons[i].resType != resType)) {
         polygons[i].setMap(null);
       }
