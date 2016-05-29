@@ -382,23 +382,19 @@ $(document).on("click", ".btn-filter", function() {
     $(this).siblings().removeClass("active");
     $(this).addClass("active");
     var resType = $(this).html();
+    var filteredPolygons = [];
     for (var i = 0; i < polygons.length; i++) {
-      if (polygons[i].resType == resType)  {
-        
-    	  polygons[i].setMap(map);
-      } else if ((polygons[i].map != null) && (polygons[i].resType != resType)) {
-        polygons[i].setMap(null);
+      if (polygons[i].resourceType == resType)  {
+    	  filteredPolygons.push(polygons[i]);
       }
     }
+    drawPolygons(filteredPolygons);
+    
     $("#dark_bg").hide();
   } else {
     $("#dark_bg").show();
     $(this).removeClass("active");
-    for (var i = 0; i < polygons.length; i++) {
-      if (polygons[i].map == null) {
-        polygons[i].setMap(map);
-      }
-    }
+    drawPolygons(polygons);
     $("#dark_bg").hide();
   }
 });
