@@ -229,23 +229,7 @@ function addPointsToMap(allowEmptyArea) {
   }
 }
 
-/*function clearParameters(name, value, length, inputNumber) {
-	  var param = $("div[data-calculated="+ name + "]");
 
-	  if (param.length > 0) {
-	    var id = param[0].attributes.getNamedItem("data-calculatedId").value;
-	    for (var i = 0; length - param.length  > i; i++) {
-	      addDiscreteValue(id, "", "");
-	    }
-	    if (inputNumber != undefined){
-	    	$("input[name='resourceDiscrete[" + id + "].valueDiscretes[" + inputNumber + "].value']").val(value);
-	    }else{
-	    	$("input[name='resourceDiscrete[" + id + "].valueDiscretes[" + (length - 1) + "].value']").val(value);
-	    }
-	    
-	    
-	  }
-}*/
 
 function putParameter(name, value, length, inputNumber) {
 	  var param = $("div[data-calculated="+ name + "]");
@@ -265,6 +249,7 @@ function putParameter(name, value, length, inputNumber) {
 	  }
 }
 
+//old version
 /*function putParameter(name, value, length) {
 	  var param = $("div[data-calculated="+ name + "]");
 
