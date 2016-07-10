@@ -2,7 +2,6 @@ package org.registrator.community.service.impl;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
@@ -12,6 +11,7 @@ import org.registrator.community.dao.ResourceNumberRepository;
 import org.registrator.community.dao.RoleRepository;
 import org.registrator.community.dao.TomeRepository;
 import org.registrator.community.dao.UserRepository;
+import org.registrator.community.dao.WillDocumentRepository;
 import org.registrator.community.dto.AddressDTO;
 import org.registrator.community.dto.PassportDTO;
 import org.registrator.community.dto.ResourceNumberDTO;
@@ -74,6 +74,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private TomeRepository tomeRepository;
+    
+    @Autowired
+    private WillDocumentRepository willDocumentRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
@@ -466,8 +469,7 @@ public class UserServiceImpl implements UserService {
             passport.setComment(passportDTO.getComment());
 
             passportRepository.save(passport);
-            log.info("Inserted passport data for user with passport_data_id", user.getLogin(),
-                    passport.getPassportId());
+            log.info("Inserted passport data for user with passport_data_id "+ passport.getPassportId());
 
             // insert user's address records into "address" table
             AddressDTO addressDTO = registrationForm.getAddress();
@@ -482,7 +484,14 @@ public class UserServiceImpl implements UserService {
             address.setPostCode(addressDTO.getPostcode());
 
             addressRepository.save(address);
-            log.info("Inserted address data for user with address_id", user.getLogin(), address.getAddressId());
+            log.info("Inserted address data for user with address_id "+ address.getAddressId());
+            
+            // insert accession date
+            WillDocument willDocument = new WillDocument();
+            willDocument.setUser(user);
+            willDocument.setAccessionDate(registrationForm.getDateOfAccession());
+            willDocumentRepository.save(willDocument);
+            log.info("Inserted accession date for user "+ user.getLogin());
         }
 
     }
