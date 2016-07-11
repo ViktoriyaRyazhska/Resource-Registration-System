@@ -3,6 +3,7 @@ package org.registrator.community.service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.mockito.InjectMocks;
@@ -18,6 +19,7 @@ import org.registrator.community.dao.ResourceNumberRepository;
 import org.registrator.community.dao.RoleRepository;
 import org.registrator.community.dao.TomeRepository;
 import org.registrator.community.dao.UserRepository;
+import org.registrator.community.dao.WillDocumentRepository;
 import org.registrator.community.dto.AddressDTO;
 import org.registrator.community.dto.PassportDTO;
 import org.registrator.community.dto.UserDTO;
@@ -67,6 +69,8 @@ public class UserServiceTest {
 	private ResourceNumberRepository resourceNumberRepository;
 	@Mock
 	private TomeRepository tomeRepository;
+	@Mock
+	private WillDocumentRepository willDocumentRepository;
 	@Mock
 	private PasswordEncoder userPasswordEncoder;
 	
@@ -644,6 +648,7 @@ public class UserServiceTest {
 		registrationForm.setPassword("pikaso");
 		registrationForm.setPhoneNumber("0950000000");
 		registrationForm.setTerritorialCommunity("Україна");
+		registrationForm.setDateOfAccession(new Date());
 		// test action
 		boolean isPassportOk=false, isAddressOk = false;
 		userService.registerUser(registrationForm);
